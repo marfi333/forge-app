@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/marfi333/forge-app/compare/v1.0.1...v1.0.2) (2026-05-10)
+
+
+### Bug Fixes
+
+* homepage layout ([1d0fd7c](https://github.com/marfi333/forge-app/commit/1d0fd7cf49b2c733549f2445288233ece0e19684))
+
 ## [1.0.1](https://github.com/marfi333/forge-app/compare/v1.0.0...v1.0.1) (2026-05-10)
 
 
