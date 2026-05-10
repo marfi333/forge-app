@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { signIn } from "@/auth";
+import appLogo from "@/../public/app_logo.png";
 
 export default function SignInPage() {
   return (
@@ -6,11 +8,18 @@ export default function SignInPage() {
       <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-card p-8 backdrop-blur-xl">
         <div className="space-y-8 text-center">
           <div className="space-y-4">
-            <img
-              src="/app_logo_with_text.png"
-              alt="FORGE"
-              className="mx-auto h-16"
-            />
+            <div className="flex items-center justify-center gap-3">
+              <Image
+                src={appLogo}
+                alt="FORGE"
+                className="h-12 w-12"
+                width={48}
+                height={48}
+              />
+              <span className="text-3xl font-bold tracking-tight text-foreground">
+                FORGE
+              </span>
+            </div>
             <p className="text-sm text-muted-foreground">
               Track. Progress. Build.
             </p>
@@ -24,7 +33,7 @@ export default function SignInPage() {
           >
             <button
               type="submit"
-              className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 active:opacity-80"
+              className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 active:bg-gray-200"
             >
               <GoogleIcon />
               Continue with Google
