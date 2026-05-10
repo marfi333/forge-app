@@ -169,7 +169,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="h-14 animate-pulse rounded-xl bg-card ring-1 ring-foreground/10"
+            className="h-14 animate-pulse rounded-2xl bg-muted"
           />
         ))}
       </div>

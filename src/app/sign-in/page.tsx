@@ -3,28 +3,30 @@ import { signIn } from "@/auth";
 export default function SignInPage() {
   return (
     <div className="flex min-h-svh flex-col items-center justify-center px-6">
-      <div className="w-full max-w-sm space-y-8 text-center">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight">FORGE</h1>
-          <p className="text-muted-foreground text-sm">
-            Track. Progress. Build.
-          </p>
-        </div>
+      <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-card p-8 backdrop-blur-xl">
+        <div className="space-y-8 text-center">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-bold tracking-tight">FORGE</h1>
+            <p className="text-sm text-muted-foreground">
+              Track. Progress. Build.
+            </p>
+          </div>
 
-        <form
-          action={async () => {
-            "use server";
-            await signIn("google", { redirectTo: "/" });
-          }}
-        >
-          <button
-            type="submit"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex w-full items-center justify-center gap-3 rounded-md px-4 py-3 text-sm font-medium transition-colors"
+          <form
+            action={async () => {
+              "use server";
+              await signIn("google", { redirectTo: "/" });
+            }}
           >
-            <GoogleIcon />
-            Continue with Google
-          </button>
-        </form>
+            <button
+              type="submit"
+              className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 active:opacity-80"
+            >
+              <GoogleIcon />
+              Continue with Google
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

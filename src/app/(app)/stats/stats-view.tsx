@@ -23,16 +23,16 @@ export function StatsView() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-xl font-bold tracking-tight">Progression</h1>
+      <h1 className="text-2xl font-bold">Progression</h1>
 
-      <div className="flex gap-1 rounded-lg bg-muted p-1">
+      <div className="flex gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
         {TABS.map((tab) => (
           <button
             key={tab}
             type="button"
-            className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+            className={`flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
               activeTab === tab
-                ? "bg-background text-foreground shadow-sm"
+                ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:text-foreground"
             }`}
             onClick={() => setActiveTab(tab)}

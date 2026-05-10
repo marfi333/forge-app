@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { BottomNav } from "@/components/bottom-nav";
 import { ServiceWorkerRegister } from "@/components/sw-register";
+import { TopHeader } from "@/components/top-header";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -26,6 +27,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  viewportFit: "cover",
   themeColor: "#121414",
 };
 
@@ -40,6 +42,7 @@ export default function RootLayout({
         className={`${inter.variable} font-sans antialiased`}
       >
         <Providers>
+          <TopHeader />
           {children}
           <BottomNav />
           <ServiceWorkerRegister />

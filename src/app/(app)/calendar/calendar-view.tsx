@@ -121,17 +121,12 @@ function DayCell({
     <div
       {...bind()}
       className={`relative flex aspect-square touch-none flex-col items-center justify-center rounded-lg text-sm transition-all select-none ${
-        calDay?.type === "workout"
-          ? "bg-primary/20 text-primary"
-          : calDay?.type === "rest"
-            ? "bg-muted text-muted-foreground"
-            : "hover:bg-muted/50"
+        calDay?.type === "rest"
+          ? "bg-muted text-muted-foreground"
+          : "hover:bg-muted/50"
       } ${isSelected ? "ring-2 ring-primary" : isToday ? "ring-1 ring-primary/50" : ""} ${pressing ? "scale-90 opacity-75" : ""}`}
     >
       <span className="font-medium">{day}</span>
-      {calDay?.type === "workout" && (
-        <Dumbbell className="absolute bottom-0.5 size-3" />
-      )}
       {calDay?.type === "rest" && (
         <Moon className="absolute bottom-0.5 size-3" />
       )}
@@ -346,7 +341,7 @@ export function CalendarView() {
             .filter((s) => s.date === selectedDate)
             .map((s) => (
               <Link key={s.id} href={`/sessions/${s.id}`}>
-                <div className="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
+                <div className="rounded-2xl border border-white/10 bg-card p-3 backdrop-blur-xl">
                   <span className="text-sm font-medium">
                     Workout — {s.status}
                   </span>
@@ -355,7 +350,7 @@ export function CalendarView() {
             ))
         )}
         <Link href={`/sessions/new?date=${selectedDate}`}>
-          <Button size="sm" className="mt-2 w-full">
+          <Button className="mt-2 h-10 w-full">
             Start Workout
           </Button>
         </Link>

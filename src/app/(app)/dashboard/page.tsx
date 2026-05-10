@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+import { DashboardView } from "./dashboard-view";
 
-export default async function HomePage() {
+export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user) redirect("/sign-in");
-  redirect("/dashboard");
+
+  return <DashboardView />;
 }

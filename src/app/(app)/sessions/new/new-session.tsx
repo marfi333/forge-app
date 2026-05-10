@@ -67,7 +67,7 @@ export function NewSession() {
             {[1, 2].map((i) => (
               <div
                 key={i}
-                className="h-14 animate-pulse rounded-xl bg-card ring-1 ring-foreground/10"
+                className="h-14 animate-pulse rounded-2xl bg-muted"
               />
             ))}
           </div>
@@ -104,7 +104,7 @@ export function NewSession() {
             Or start blank
           </h2>
           <Button
-            className="w-full"
+            className="h-10 w-full"
             onClick={() => createSession.mutate(undefined)}
             disabled={createSession.isPending}
           >

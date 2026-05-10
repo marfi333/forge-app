@@ -70,7 +70,7 @@ export function TemplateList() {
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="h-16 animate-pulse rounded-xl bg-card ring-1 ring-foreground/10"
+            className="h-16 animate-pulse rounded-2xl bg-muted"
           />
         ))}
       </div>
@@ -84,7 +84,7 @@ export function TemplateList() {
         <Dialog open={createOpen} onOpenChange={setCreateOpen}>
           <DialogTrigger
             render={
-              <Button size="sm">
+              <Button>
                 <Plus data-icon="inline-start" />
                 New
               </Button>
@@ -131,13 +131,14 @@ export function TemplateList() {
       <div className="space-y-3">
         {templates?.map((template) => (
           <Card key={template.id} size="sm">
-            <CardHeader className="flex-row items-center justify-between">
-              <Link href={`/templates/${template.id}`} className="flex-1">
-                <CardTitle>{template.name}</CardTitle>
+            <CardHeader className="flex flex-row items-center justify-between gap-2">
+              <Link href={`/templates/${template.id}`} className="min-w-0 flex-1">
+                <CardTitle className="truncate">{template.name}</CardTitle>
               </Link>
               <Button
                 variant="ghost"
                 size="icon-sm"
+                className="shrink-0"
                 onClick={() => deleteMutation.mutate(template.id)}
                 disabled={deleteMutation.isPending}
               >

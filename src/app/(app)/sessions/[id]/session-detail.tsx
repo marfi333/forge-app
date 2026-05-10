@@ -333,7 +333,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
         {[1, 2].map((i) => (
           <div
             key={i}
-            className="h-32 animate-pulse rounded-xl bg-card ring-1 ring-foreground/10"
+            className="h-32 animate-pulse rounded-2xl bg-muted"
           />
         ))}
       </div>

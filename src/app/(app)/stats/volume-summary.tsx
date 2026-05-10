@@ -51,10 +51,10 @@ export function VolumeSummary() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-1 rounded-lg border border-border p-1">
+      <div className="flex gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
         <button
           type="button"
-          className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+          className={`flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
             period === "session"
               ? "bg-primary text-primary-foreground"
               : "text-muted-foreground hover:text-foreground"
@@ -65,7 +65,7 @@ export function VolumeSummary() {
         </button>
         <button
           type="button"
-          className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+          className={`flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
             period === "week"
               ? "bg-primary text-primary-foreground"
               : "text-muted-foreground hover:text-foreground"
