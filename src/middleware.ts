@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 const publicPaths = ["/sign-in", "/api/auth", "/offline"];
 
-export function proxy(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const isPublic = publicPaths.some((path) => pathname.startsWith(path));
