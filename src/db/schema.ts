@@ -57,3 +57,27 @@ export const verificationTokens = sqliteTable(
   },
   (vt) => [primaryKey({ columns: [vt.identifier, vt.token] })],
 );
+
+export const workoutTemplates = sqliteTable("workout_templates", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
+export const templateExercises = sqliteTable("template_exercises", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  templateId: text("template_id")
+    .notNull()
+    .references(() => workoutTemplates.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  order: integer("order").notNull(),
+});
