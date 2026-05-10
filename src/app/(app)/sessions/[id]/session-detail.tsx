@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -281,6 +282,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [addExOpen, setAddExOpen] = useState(false);
   const [exerciseName, setExerciseName] = useState("");
+  const [deleteExConfirmOpen, setDeleteExConfirmOpen] = useState(false);
 
   const { data: session, isLoading } = useQuery<WorkoutSession>({
     queryKey: ["sessions", sessionId],
@@ -328,6 +330,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
         queryKey: ["sessions", sessionId],
       });
       invalidateWorkoutDependentQueries(queryClient);
+      setDeleteExConfirmOpen(false);
       if (
         session &&
         currentExerciseIndex >= session.exercises.length - 1 &&
@@ -470,11 +473,18 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
             <Button
               variant="ghost"
               size="icon-sm"
-              onClick={() => deleteExercise.mutate(currentExercise.id)}
-              disabled={deleteExercise.isPending}
+              onClick={() => setDeleteExConfirmOpen(true)}
             >
               <Trash2 className="size-4 text-muted-foreground" />
             </Button>
+            <ConfirmDeleteDialog
+              open={deleteExConfirmOpen}
+              onOpenChange={setDeleteExConfirmOpen}
+              title="Delete exercise"
+              description={`Are you sure you want to delete "${currentExercise.name}" and all its sets? This action cannot be undone.`}
+              onConfirm={() => deleteExercise.mutate(currentExercise.id)}
+              isPending={deleteExercise.isPending}
+            />
           </div>
 
           {/* Set Rows */}

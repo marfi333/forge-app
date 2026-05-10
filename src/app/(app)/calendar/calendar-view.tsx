@@ -1,11 +1,10 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useDrag } from "@use-gesture/react";
-import { Check, ChevronLeft, ChevronRight, Dumbbell, Moon } from "lucide-react";
-import Link from "next/link";
-import { useCallback, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Dumbbell, Moon } from "lucide-react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { DayActionSheet } from "./day-action-sheet";
 
 interface CalendarDay {
   id: string;
@@ -54,8 +53,6 @@ const MONTH_NAMES = [
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-const LONG_PRESS_MS = 500;
-
 interface DayCellProps {
   day: number;
   dateStr: string;
@@ -63,8 +60,7 @@ interface DayCellProps {
   hasSession: boolean;
   isToday: boolean;
   isSelected: boolean;
-  onSelect: (dateStr: string) => void;
-  onLongPress: (dateStr: string) => void;
+  onTap: (dateStr: string) => void;
 }
 
 function DayCell({
@@ -74,69 +70,31 @@ function DayCell({
   hasSession,
   isToday,
   isSelected,
-  onSelect,
-  onLongPress,
+  onTap,
 }: DayCellProps) {
-  const longPressTriggered = useRef(false);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [pressing, setPressing] = useState(false);
-
-  function clearTimer() {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = null;
-    }
-    setPressing(false);
-  }
-
-  const bind = useDrag(
-    ({ tap, first, last, movement: [mx, my] }) => {
-      if (tap) {
-        if (!longPressTriggered.current) {
-          onSelect(dateStr);
-        }
-        longPressTriggered.current = false;
-        setPressing(false);
-        return;
-      }
-      if (first) {
-        longPressTriggered.current = false;
-        setPressing(true);
-        timerRef.current = setTimeout(() => {
-          longPressTriggered.current = true;
-          setPressing(false);
-          onLongPress(dateStr);
-        }, LONG_PRESS_MS);
-      }
-      if (Math.abs(mx) > 5 || Math.abs(my) > 5) {
-        clearTimer();
-      }
-      if (last) {
-        clearTimer();
-      }
-    },
-    { filterTaps: true, pointer: { touch: true } },
-  );
-
   return (
-    <div
-      {...bind()}
-      className={`relative flex aspect-square touch-none flex-col items-center justify-center rounded-lg text-sm transition-all select-none ${
+    <button
+      type="button"
+      onClick={() => onTap(dateStr)}
+      className={`relative flex aspect-square flex-col items-center justify-center rounded-lg text-sm transition-all active:scale-95 ${
         calDay?.type === "rest"
           ? "bg-muted text-muted-foreground"
           : isToday
-            ? "bg-primary/15 hover:bg-primary/20"
-            : "hover:bg-muted/50"
-      } ${isSelected ? "ring-2 ring-primary" : ""} ${pressing ? "scale-90 opacity-75" : ""}`}
+            ? "bg-primary/15"
+            : ""
+      } ${isSelected ? "ring-2 ring-primary" : ""}`}
     >
       <span className="font-medium">{day}</span>
+      {calDay?.type === "workout" && (
+        <Dumbbell className="absolute bottom-0.5 size-3 text-primary" />
+      )}
       {calDay?.type === "rest" && (
         <Moon className="absolute bottom-0.5 size-3" />
       )}
       {hasSession && (
         <span className="absolute top-2 right-2 size-1.5 rounded-full bg-primary" />
       )}
-    </div>
+    </button>
   );
 }
 
@@ -211,23 +169,12 @@ export function CalendarView() {
   const daysInMonth = getDaysInMonth(year, month);
   const firstDay = getFirstDayOfWeek(year, month);
 
-  const handleDaySelect = useCallback((dateStr: string) => {
-    setSelectedDate(dateStr);
-  }, []);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
-  const handleDayLongPress = useCallback(
-    (dateStr: string) => {
-      const existing = dayMap.get(dateStr);
-      if (!existing) {
-        upsertDay.mutate({ date: dateStr, type: "workout" });
-      } else if (existing.type === "workout") {
-        upsertDay.mutate({ date: dateStr, type: "rest" });
-      } else {
-        deleteDay.mutate(dateStr);
-      }
-    },
-    [dayMap, upsertDay, deleteDay],
-  );
+  const handleDayTap = useCallback((dateStr: string) => {
+    setSelectedDate(dateStr);
+    setSheetOpen(true);
+  }, []);
 
   function prevMonth() {
     setCurrentDate(new Date(year, month - 1, 1));
@@ -310,8 +257,7 @@ export function CalendarView() {
               hasSession={hasSession}
               isToday={isToday}
               isSelected={isSelected}
-              onSelect={handleDaySelect}
-              onLongPress={handleDayLongPress}
+              onTap={handleDayTap}
             />
           );
         })}
@@ -329,79 +275,15 @@ export function CalendarView() {
         </span>
       </div>
 
-      <div className="space-y-3">
-        <h2 className="text-sm font-medium text-muted-foreground">
-          {selectedDate === todayStr
-            ? "Today’s Sessions"
-            : `Sessions — ${selectedDate}`}
-        </h2>
-        {sessions.filter((s) => s.date === selectedDate).length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            No sessions for this day.
-          </p>
-        ) : (
-          <div className="space-y-2">
-            {sessions
-              .filter((s) => s.date === selectedDate)
-              .map((s) => {
-                const isCompleted = s.status === "completed";
-                const isInProgress = s.status === "in_progress";
-                return (
-                  <Link key={s.id} href={`/sessions/${s.id}`} className="block">
-                    <div
-                      className={`flex items-center gap-3 rounded-xl border p-3.5 backdrop-blur-xl transition-colors ${
-                        isCompleted
-                          ? "border-primary/30 bg-primary/5"
-                          : isInProgress
-                            ? "border-yellow-500/30 bg-yellow-500/5"
-                            : "border-white/10 bg-card"
-                      }`}
-                    >
-                      <div
-                        className={`flex size-8 items-center justify-center rounded-lg ${
-                          isCompleted
-                            ? "bg-primary/15 text-primary"
-                            : isInProgress
-                              ? "bg-yellow-500/15 text-yellow-500"
-                              : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        {isCompleted ? (
-                          <Check className="size-4" />
-                        ) : (
-                          <Dumbbell className="size-4" />
-                        )}
-                      </div>
-                      <div className="flex flex-col flex-1 min-w-0">
-                        <span className="text-sm font-medium truncate">
-                          {s.templateName || "Workout"}
-                        </span>
-                        <span
-                          className={`text-xs ${
-                            isCompleted
-                              ? "text-primary"
-                              : isInProgress
-                                ? "text-yellow-500"
-                                : "text-muted-foreground"
-                          }`}
-                        >
-                          {isCompleted
-                            ? "Completed"
-                            : isInProgress
-                              ? "In Progress"
-                              : s.status}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
-          </div>
-        )}
-        <Link href={`/sessions/new?date=${selectedDate}`}>
-          <Button className="h-10 w-full">Start Workout</Button>
-        </Link>
-      </div>
+      <DayActionSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        selectedDate={selectedDate}
+        currentType={dayMap.get(selectedDate)?.type ?? null}
+        sessions={sessions.filter((s) => s.date === selectedDate)}
+        onSetType={(type) => upsertDay.mutate({ date: selectedDate, type })}
+        onClear={() => deleteDay.mutate(selectedDate)}
+      />
     </div>
   );
 }

@@ -18,6 +18,7 @@ import {
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -244,6 +245,7 @@ function SortableExercise({
   onDelete: (id: string) => void;
   isDeleting: boolean;
 }) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const { ref, isDragging } = useSortable({
     id: exercise.id,
     index,
@@ -293,13 +295,23 @@ function SortableExercise({
           <Button
             variant="ghost"
             size="icon-sm"
-            onClick={() => onDelete(exercise.id)}
-            disabled={isDeleting}
+            onClick={() => setConfirmOpen(true)}
           >
             <Trash2 className="text-muted-foreground" />
           </Button>
         </div>
       </CardContent>
+      <ConfirmDeleteDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title="Delete exercise"
+        description={`Are you sure you want to delete "${exercise.name}"? This action cannot be undone.`}
+        onConfirm={() => {
+          onDelete(exercise.id);
+          setConfirmOpen(false);
+        }}
+        isPending={isDeleting}
+      />
     </Card>
   );
 }

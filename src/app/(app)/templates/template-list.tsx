@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Dumbbell, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -147,6 +148,9 @@ export function TemplateList() {
   const queryClient = useQueryClient();
   const [createOpen, setCreateOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
+  const [deletingTemplateId, setDeletingTemplateId] = useState<string | null>(
+    null,
+  );
 
   const { data: templates, isLoading } = useQuery<Template[]>({
     queryKey: ["templates"],
@@ -202,6 +206,7 @@ export function TemplateList() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["templates"] });
+      setDeletingTemplateId(null);
     },
   });
 
@@ -279,8 +284,7 @@ export function TemplateList() {
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  onClick={() => deleteMutation.mutate(template.id)}
-                  disabled={deleteMutation.isPending}
+                  onClick={() => setDeletingTemplateId(template.id)}
                 >
                   <Trash2 className="text-muted-foreground" />
                 </Button>
@@ -289,6 +293,19 @@ export function TemplateList() {
           </Card>
         ))}
       </div>
+
+      <ConfirmDeleteDialog
+        open={!!deletingTemplateId}
+        onOpenChange={(open) => {
+          if (!open) setDeletingTemplateId(null);
+        }}
+        title="Delete template"
+        description="Are you sure you want to delete this template? This action cannot be undone."
+        onConfirm={() => {
+          if (deletingTemplateId) deleteMutation.mutate(deletingTemplateId);
+        }}
+        isPending={deleteMutation.isPending}
+      />
 
       {editingTemplate && (
         <TemplateFormDialog
