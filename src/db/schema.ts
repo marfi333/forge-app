@@ -81,3 +81,58 @@ export const templateExercises = sqliteTable("template_exercises", {
   name: text("name").notNull(),
   order: integer("order").notNull(),
 });
+
+export const calendarDays = sqliteTable("calendar_days", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  date: text("date").notNull(),
+  type: text("type", { enum: ["workout", "rest"] }).notNull(),
+});
+
+export const workoutSessions = sqliteTable("workout_sessions", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  date: text("date").notNull(),
+  templateId: text("template_id").references(() => workoutTemplates.id, {
+    onDelete: "set null",
+  }),
+  status: text("status", { enum: ["in_progress", "completed"] })
+    .notNull()
+    .default("in_progress"),
+  notes: text("notes"),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
+export const sessionExercises = sqliteTable("session_exercises", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  sessionId: text("session_id")
+    .notNull()
+    .references(() => workoutSessions.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  order: integer("order").notNull(),
+});
+
+export const exerciseSets = sqliteTable("exercise_sets", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  sessionExerciseId: text("session_exercise_id")
+    .notNull()
+    .references(() => sessionExercises.id, { onDelete: "cascade" }),
+  setNumber: integer("set_number").notNull(),
+  reps: integer("reps"),
+  weight: integer("weight"),
+  completed: integer("completed", { mode: "boolean" }).notNull().default(false),
+});

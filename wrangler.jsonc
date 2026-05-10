@@ -40,7 +40,8 @@
 		{
 			"binding": "DB",
 			"database_name": "forge-db",
-			"database_id": "placeholder-will-be-set-after-creation"
+			"database_id": "placeholder-will-be-set-after-creation",
+			"migrations_dir": "drizzle"
 		}
 	]
 	/**
