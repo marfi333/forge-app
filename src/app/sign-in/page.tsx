@@ -8,7 +8,7 @@ export default function SignInPage() {
       <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-card p-8 backdrop-blur-xl">
         <div className="space-y-8 text-center">
           <div className="space-y-4">
-            <div className="flex items-center justify-center gap-3">
+            <div className="flex items-center justify-center gap-0">
               <Image
                 src={appLogo}
                 alt="FORGE"
