@@ -1,9 +1,10 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useDrag } from "@use-gesture/react";
 import { ChevronLeft, ChevronRight, Dumbbell, Moon } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 interface CalendarDay {
@@ -52,9 +53,102 @@ const MONTH_NAMES = [
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+const LONG_PRESS_MS = 500;
+
+interface DayCellProps {
+  day: number;
+  dateStr: string;
+  calDay: CalendarDay | undefined;
+  hasSession: boolean;
+  isToday: boolean;
+  isSelected: boolean;
+  onSelect: (dateStr: string) => void;
+  onLongPress: (dateStr: string) => void;
+}
+
+function DayCell({
+  day,
+  dateStr,
+  calDay,
+  hasSession,
+  isToday,
+  isSelected,
+  onSelect,
+  onLongPress,
+}: DayCellProps) {
+  const longPressTriggered = useRef(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [pressing, setPressing] = useState(false);
+
+  function clearTimer() {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    setPressing(false);
+  }
+
+  const bind = useDrag(
+    ({ tap, first, last, movement: [mx, my] }) => {
+      if (tap) {
+        if (!longPressTriggered.current) {
+          onSelect(dateStr);
+        }
+        longPressTriggered.current = false;
+        setPressing(false);
+        return;
+      }
+      if (first) {
+        longPressTriggered.current = false;
+        setPressing(true);
+        timerRef.current = setTimeout(() => {
+          longPressTriggered.current = true;
+          setPressing(false);
+          onLongPress(dateStr);
+        }, LONG_PRESS_MS);
+      }
+      if (Math.abs(mx) > 5 || Math.abs(my) > 5) {
+        clearTimer();
+      }
+      if (last) {
+        clearTimer();
+      }
+    },
+    { filterTaps: true, pointer: { touch: true } },
+  );
+
+  return (
+    <div
+      {...bind()}
+      className={`relative flex aspect-square touch-none flex-col items-center justify-center rounded-lg text-sm transition-all select-none ${
+        calDay?.type === "workout"
+          ? "bg-primary/20 text-primary"
+          : calDay?.type === "rest"
+            ? "bg-muted text-muted-foreground"
+            : "hover:bg-muted/50"
+      } ${isSelected ? "ring-2 ring-primary" : isToday ? "ring-1 ring-primary/50" : ""} ${pressing ? "scale-90 opacity-75" : ""}`}
+    >
+      <span className="font-medium">{day}</span>
+      {calDay?.type === "workout" && (
+        <Dumbbell className="absolute bottom-0.5 size-3" />
+      )}
+      {calDay?.type === "rest" && (
+        <Moon className="absolute bottom-0.5 size-3" />
+      )}
+      {hasSession && (
+        <span className="absolute top-0.5 right-0.5 size-1.5 rounded-full bg-primary" />
+      )}
+    </div>
+  );
+}
+
 export function CalendarView() {
   const queryClient = useQueryClient();
   const [currentDate, setCurrentDate] = useState(() => new Date());
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    return formatDate(today.getFullYear(), today.getMonth(), today.getDate());
+  });
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
   const monthStr = getMonthString(currentDate);
@@ -119,16 +213,23 @@ export function CalendarView() {
   const daysInMonth = getDaysInMonth(year, month);
   const firstDay = getFirstDayOfWeek(year, month);
 
-  function handleDayClick(dateStr: string) {
-    const existing = dayMap.get(dateStr);
-    if (!existing) {
-      upsertDay.mutate({ date: dateStr, type: "workout" });
-    } else if (existing.type === "workout") {
-      upsertDay.mutate({ date: dateStr, type: "rest" });
-    } else {
-      deleteDay.mutate(dateStr);
-    }
-  }
+  const handleDaySelect = useCallback((dateStr: string) => {
+    setSelectedDate(dateStr);
+  }, []);
+
+  const handleDayLongPress = useCallback(
+    (dateStr: string) => {
+      const existing = dayMap.get(dateStr);
+      if (!existing) {
+        upsertDay.mutate({ date: dateStr, type: "workout" });
+      } else if (existing.type === "workout") {
+        upsertDay.mutate({ date: dateStr, type: "rest" });
+      } else {
+        deleteDay.mutate(dateStr);
+      }
+    },
+    [dayMap, upsertDay, deleteDay],
+  );
 
   function prevMonth() {
     setCurrentDate(new Date(year, month - 1, 1));
@@ -200,31 +301,20 @@ export function CalendarView() {
           const calDay = dayMap.get(dateStr);
           const hasSession = sessionMap.has(dateStr);
           const isToday = dateStr === todayStr;
+          const isSelected = dateStr === selectedDate;
 
           return (
-            <button
-              type="button"
+            <DayCell
               key={day}
-              className={`relative flex aspect-square flex-col items-center justify-center rounded-lg text-sm transition-colors ${
-                calDay?.type === "workout"
-                  ? "bg-primary/20 text-primary"
-                  : calDay?.type === "rest"
-                    ? "bg-muted text-muted-foreground"
-                    : "hover:bg-muted/50"
-              } ${isToday ? "ring-1 ring-primary" : ""}`}
-              onClick={() => handleDayClick(dateStr)}
-            >
-              <span className="font-medium">{day}</span>
-              {calDay?.type === "workout" && (
-                <Dumbbell className="absolute bottom-0.5 size-3" />
-              )}
-              {calDay?.type === "rest" && (
-                <Moon className="absolute bottom-0.5 size-3" />
-              )}
-              {hasSession && (
-                <span className="absolute top-0.5 right-0.5 size-1.5 rounded-full bg-primary" />
-              )}
-            </button>
+              day={day}
+              dateStr={dateStr}
+              calDay={calDay}
+              hasSession={hasSession}
+              isToday={isToday}
+              isSelected={isSelected}
+              onSelect={handleDaySelect}
+              onLongPress={handleDayLongPress}
+            />
           );
         })}
       </div>
@@ -243,15 +333,17 @@ export function CalendarView() {
 
       <div className="space-y-2">
         <h2 className="text-sm font-medium text-muted-foreground">
-          Today&apos;s Sessions
+          {selectedDate === todayStr
+            ? "Today’s Sessions"
+            : `Sessions — ${selectedDate}`}
         </h2>
-        {sessions.filter((s) => s.date === todayStr).length === 0 ? (
+        {sessions.filter((s) => s.date === selectedDate).length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            No sessions for today.
+            No sessions for this day.
           </p>
         ) : (
           sessions
-            .filter((s) => s.date === todayStr)
+            .filter((s) => s.date === selectedDate)
             .map((s) => (
               <Link key={s.id} href={`/sessions/${s.id}`}>
                 <div className="rounded-xl bg-card p-3 ring-1 ring-foreground/10">
@@ -262,7 +354,7 @@ export function CalendarView() {
               </Link>
             ))
         )}
-        <Link href={`/sessions/new?date=${todayStr}`}>
+        <Link href={`/sessions/new?date=${selectedDate}`}>
           <Button size="sm" className="mt-2 w-full">
             Start Workout
           </Button>
