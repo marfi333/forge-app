@@ -47,13 +47,10 @@ export async function GET(request: Request) {
   const exerciseIds = exercises.map((e) => e.id);
   const exerciseMap = new Map(exercises.map((e) => [e.id, e]));
 
-  const allSets = await db
-    .select()
-    .from(schema.exerciseSets)
-    .where(eq(schema.exerciseSets.completed, true));
+  const allSets = await db.select().from(schema.exerciseSets);
 
-  const matchingSets = allSets.filter((s) =>
-    exerciseIds.includes(s.sessionExerciseId),
+  const matchingSets = allSets.filter(
+    (s) => exerciseIds.includes(s.sessionExerciseId) && s.weight !== null,
   );
 
   const prMap = new Map<string, PersonalRecord>();

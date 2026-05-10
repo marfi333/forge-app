@@ -52,13 +52,13 @@ export async function GET(request: Request) {
     matchingExercises.map((e) => [e.id, e.sessionId]),
   );
 
-  const allSets = await db
-    .select()
-    .from(schema.exerciseSets)
-    .where(eq(schema.exerciseSets.completed, true));
+  const allSets = await db.select().from(schema.exerciseSets);
 
-  const matchingSets = allSets.filter((s) =>
-    exerciseIds.includes(s.sessionExerciseId),
+  const matchingSets = allSets.filter(
+    (s) =>
+      exerciseIds.includes(s.sessionExerciseId) &&
+      s.reps !== null &&
+      s.weight !== null,
   );
 
   if (period === "session") {

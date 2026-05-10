@@ -11,7 +11,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Card, CardContent } from "@/components/ui/card";
 
 interface HistoryEntry {
   date: string;
@@ -69,59 +68,70 @@ export function ExerciseChart({ exerciseNames }: { exerciseNames: string[] }) {
       </select>
 
       {isLoading ? (
-        <div className="h-48 animate-pulse rounded-xl bg-muted" />
+        <div className="h-48 animate-pulse rounded-xl bg-white/5" />
       ) : chartData.length === 0 ? (
-        <Card>
-          <CardContent className="flex items-center justify-center py-12">
-            <p className="text-sm text-muted-foreground">
-              No completed sets for this exercise yet.
-            </p>
-          </CardContent>
-        </Card>
+        <div className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+          <p className="text-center text-sm text-muted-foreground">
+            No completed sets for this exercise yet.
+          </p>
+        </div>
       ) : (
-        <Card>
-          <CardContent>
-            <p className="mb-3 text-sm font-medium text-muted-foreground">
-              Best Weight (kg)
-            </p>
-            <div>
-              <ResponsiveContainer width="100%" height={192}>
-                <LineChart data={chartData}>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="hsl(var(--muted))"
-                  />
-                  <XAxis
-                    dataKey="date"
-                    tick={{ fontSize: 11 }}
-                    stroke="hsl(var(--muted-foreground))"
-                  />
-                  <YAxis
-                    tick={{ fontSize: 11 }}
-                    stroke="hsl(var(--muted-foreground))"
-                    width={40}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
-                      borderRadius: "0.5rem",
-                      fontSize: "0.75rem",
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="weight"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    dot={{ r: 3, fill: "hsl(var(--primary))" }}
-                    activeDot={{ r: 5 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+          <p className="mb-3 text-sm font-medium text-muted-foreground">
+            Best Weight (kg)
+          </p>
+          <div>
+            <ResponsiveContainer width="100%" height={192}>
+              <LineChart data={chartData}>
+                <defs>
+                  <filter id="glow">
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feMerge>
+                      <feMergeNode in="blur" />
+                      <feMergeNode in="SourceGraphic" />
+                    </feMerge>
+                  </filter>
+                </defs>
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="var(--muted)"
+                  strokeOpacity={0.3}
+                />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fontSize: 11 }}
+                  stroke="var(--muted-foreground)"
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 11 }}
+                  stroke="var(--muted-foreground)"
+                  width={40}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "var(--card)",
+                    border: "1px solid var(--border)",
+                    borderRadius: "0.75rem",
+                    fontSize: "0.75rem",
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="weight"
+                  stroke="var(--chart-1)"
+                  strokeWidth={2}
+                  dot={{ r: 3, fill: "var(--chart-1)" }}
+                  activeDot={{ r: 5 }}
+                  filter="url(#glow)"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       )}
     </div>
   );

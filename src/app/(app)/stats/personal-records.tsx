@@ -2,7 +2,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Trophy } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 
 interface PersonalRecord {
   exerciseName: string;
@@ -25,7 +24,10 @@ export function PersonalRecords() {
     return (
       <div className="space-y-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-16 animate-pulse rounded-xl bg-muted" />
+          <div
+            key={i}
+            className="h-16 animate-pulse rounded-xl bg-white/5"
+          />
         ))}
       </div>
     );
@@ -46,29 +48,30 @@ export function PersonalRecords() {
   return (
     <div className="space-y-3">
       {records.map((record) => (
-        <Card key={record.exerciseName}>
-          <CardContent className="flex items-center gap-3">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/20">
-              <Trophy className="size-5 text-primary" />
-            </div>
-            <div className="flex-1">
-              <p className="font-semibold">{record.exerciseName}</p>
-              <p className="text-sm text-muted-foreground">
-                {new Date(`${record.date}T12:00:00`).toLocaleDateString()}
+        <div
+          key={record.exerciseName}
+          className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm"
+        >
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-(--chart-1)/20">
+            <Trophy className="size-5 text-chart-1" />
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold">{record.exerciseName}</p>
+            <p className="text-sm text-muted-foreground">
+              {new Date(`${record.date}T12:00:00`).toLocaleDateString()}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-lg font-bold text-chart-1">
+              {record.maxWeight} kg
+            </p>
+            {record.reps !== null && (
+              <p className="text-xs text-muted-foreground">
+                {record.reps} reps
               </p>
-            </div>
-            <div className="text-right">
-              <p className="text-lg font-bold text-primary">
-                {record.maxWeight} kg
-              </p>
-              {record.reps !== null && (
-                <p className="text-xs text-muted-foreground">
-                  {record.reps} reps
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+            )}
+          </div>
+        </div>
       ))}
     </div>
   );

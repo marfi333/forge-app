@@ -139,13 +139,17 @@ describe("GET /api/stats/exercise-history", () => {
 
   it("returns exercise history with best weight and volume", async () => {
     setupAuthed();
-    mockDb.where.mockResolvedValueOnce(
-      sessions.map((s) => ({ sessionId: s.id, date: s.date })),
-    );
-    mockDb.where.mockResolvedValueOnce(
-      exercises.filter((e) => e.name === "Bench Press"),
-    );
-    mockDb.where.mockResolvedValueOnce(sets.filter((s) => s.completed));
+    mockDb.where
+      .mockResolvedValueOnce(
+        sessions.map((s) => ({ sessionId: s.id, date: s.date })),
+      )
+      .mockResolvedValueOnce(
+        exercises.filter((e) => e.name === "Bench Press"),
+      );
+    mockDb.from
+      .mockReturnValueOnce(mockDb)
+      .mockReturnValueOnce(mockDb)
+      .mockResolvedValueOnce(sets);
 
     const { GET } = await import("./exercise-history/route");
     const res = await GET(
@@ -192,15 +196,13 @@ describe("GET /api/stats/personal-records", () => {
 
   it("returns personal records sorted by exercise name", async () => {
     setupAuthed();
-    mockDb.where
-      .mockResolvedValueOnce(
-        sessions.map((s) => ({ sessionId: s.id, date: s.date })),
-      )
-      .mockResolvedValueOnce(sets.filter((s) => s.completed));
+    mockDb.where.mockResolvedValueOnce(
+      sessions.map((s) => ({ sessionId: s.id, date: s.date })),
+    );
     mockDb.from
       .mockReturnValueOnce(mockDb)
       .mockResolvedValueOnce(exercises)
-      .mockReturnValueOnce(mockDb);
+      .mockResolvedValueOnce(sets);
 
     const { GET } = await import("./personal-records/route");
     const res = await GET(
@@ -255,15 +257,13 @@ describe("GET /api/stats/volume", () => {
 
   it("returns session volume data", async () => {
     setupAuthed();
-    mockDb.where
-      .mockResolvedValueOnce(
-        sessions.map((s) => ({ sessionId: s.id, date: s.date })),
-      )
-      .mockResolvedValueOnce(sets.filter((s) => s.completed));
+    mockDb.where.mockResolvedValueOnce(
+      sessions.map((s) => ({ sessionId: s.id, date: s.date })),
+    );
     mockDb.from
       .mockReturnValueOnce(mockDb)
       .mockResolvedValueOnce(exercises)
-      .mockReturnValueOnce(mockDb);
+      .mockResolvedValueOnce(sets);
 
     const { GET } = await import("./volume/route");
     const res = await GET(
@@ -276,15 +276,13 @@ describe("GET /api/stats/volume", () => {
 
   it("returns weekly volume data", async () => {
     setupAuthed();
-    mockDb.where
-      .mockResolvedValueOnce(
-        sessions.map((s) => ({ sessionId: s.id, date: s.date })),
-      )
-      .mockResolvedValueOnce(sets.filter((s) => s.completed));
+    mockDb.where.mockResolvedValueOnce(
+      sessions.map((s) => ({ sessionId: s.id, date: s.date })),
+    );
     mockDb.from
       .mockReturnValueOnce(mockDb)
       .mockResolvedValueOnce(exercises)
-      .mockReturnValueOnce(mockDb);
+      .mockResolvedValueOnce(sets);
 
     const { GET } = await import("./volume/route");
     const res = await GET(
@@ -297,6 +295,145 @@ describe("GET /api/stats/volume", () => {
       sessionCount: number;
     }[];
     expect(data.length).toBeGreaterThanOrEqual(1);
+  });
+});
+
+describe("GET /api/stats/summary", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+    chainMock();
+  });
+
+  it("returns 401 when not authenticated", async () => {
+    mockGetAuthedDb.mockResolvedValue({ db: null, userId: null });
+    const { GET } = await import("./summary/route");
+    const res = await GET(
+      new Request("http://localhost/api/stats/summary?period=week"),
+    );
+    expect(res.status).toBe(401);
+  });
+
+  it("returns 400 with invalid period", async () => {
+    setupAuthed();
+    const { GET } = await import("./summary/route");
+    const res = await GET(
+      new Request("http://localhost/api/stats/summary?period=year"),
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it("returns zeros when no sessions", async () => {
+    setupAuthed();
+    mockDb.where.mockResolvedValueOnce([]);
+    const { GET } = await import("./summary/route");
+    const res = await GET(
+      new Request("http://localhost/api/stats/summary?period=week"),
+    );
+    expect(res.status).toBe(200);
+    const data = (await res.json()) as {
+      current: { totalVolume: number };
+      previous: { totalVolume: number };
+    };
+    expect(data.current.totalVolume).toBe(0);
+    expect(data.previous.totalVolume).toBe(0);
+  });
+
+  it("returns summary with current and previous periods", async () => {
+    setupAuthed();
+    mockDb.where.mockResolvedValueOnce(
+      sessions.map((s) => ({ sessionId: s.id, date: s.date })),
+    );
+    mockDb.from
+      .mockReturnValueOnce(mockDb)
+      .mockResolvedValueOnce(exercises)
+      .mockResolvedValueOnce(sets);
+
+    const { GET } = await import("./summary/route");
+    const res = await GET(
+      new Request("http://localhost/api/stats/summary?period=month"),
+    );
+    expect(res.status).toBe(200);
+    const data = (await res.json()) as {
+      current: {
+        totalVolume: number;
+        totalSets: number;
+        workoutCount: number;
+        prCount: number;
+      };
+      previous: {
+        totalVolume: number;
+        totalSets: number;
+        workoutCount: number;
+        prCount: number;
+      };
+    };
+    expect(data).toHaveProperty("current");
+    expect(data).toHaveProperty("previous");
+    expect(typeof data.current.totalVolume).toBe("number");
+    expect(typeof data.current.totalSets).toBe("number");
+    expect(typeof data.current.workoutCount).toBe("number");
+    expect(typeof data.current.prCount).toBe("number");
+  });
+});
+
+describe("GET /api/stats/activity", () => {
+  beforeEach(() => {
+    vi.resetAllMocks();
+    chainMock();
+  });
+
+  it("returns 401 when not authenticated", async () => {
+    mockGetAuthedDb.mockResolvedValue({ db: null, userId: null });
+    const { GET } = await import("./activity/route");
+    const res = await GET(
+      new Request("http://localhost/api/stats/activity"),
+    );
+    expect(res.status).toBe(401);
+  });
+
+  it("returns 400 with invalid weeks param", async () => {
+    setupAuthed();
+    const { GET } = await import("./activity/route");
+    const res = await GET(
+      new Request("http://localhost/api/stats/activity?weeks=0"),
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it("returns empty days when no sessions", async () => {
+    setupAuthed();
+    mockDb.where.mockResolvedValueOnce([]);
+    const { GET } = await import("./activity/route");
+    const res = await GET(
+      new Request("http://localhost/api/stats/activity?weeks=4"),
+    );
+    expect(res.status).toBe(200);
+    const data = (await res.json()) as { days: unknown[]; weeks: number };
+    expect(data.days).toEqual([]);
+    expect(data.weeks).toBe(4);
+  });
+
+  it("returns activity data with sets and volume per day", async () => {
+    setupAuthed();
+    mockDb.where.mockResolvedValueOnce(
+      sessions.map((s) => ({ sessionId: s.id, date: s.date })),
+    );
+    mockDb.from
+      .mockReturnValueOnce(mockDb)
+      .mockResolvedValueOnce(exercises)
+      .mockResolvedValueOnce(sets);
+
+    const { GET } = await import("./activity/route");
+    const res = await GET(
+      new Request("http://localhost/api/stats/activity?weeks=12"),
+    );
+    expect(res.status).toBe(200);
+    const data = (await res.json()) as {
+      days: { date: string; sets: number; volume: number }[];
+      weeks: number;
+    };
+    expect(data.weeks).toBe(12);
+    expect(Array.isArray(data.days)).toBe(true);
   });
 });
 
