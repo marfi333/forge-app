@@ -1,47 +1,52 @@
-# OpenNext Starter
+# Forge
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+A workout tracker I built for myself. Mobile-first PWA for logging gym sessions, tracking weights/reps over time, and keeping things simple.
 
-## Getting Started
+Live at [forge.erkely.tech](https://forge.erkely.tech)
 
-Read the documentation at https://opennext.js.org/cloudflare.
+## What it does
 
-## Develop
+- **Calendar** — Mark workout and rest days, see your training week at a glance
+- **Templates** — Create reusable workouts (Push Day, Pull Day, etc.) and start sessions from them
+- **Session logging** — Log sets, reps, and weight per exercise during your workout
+- **Stats** — Weight progression charts, personal records, volume tracking
 
-Run the Next.js development server:
+## Stack
+
+- Next.js 16 + React 19
+- Tailwind CSS + shadcn/ui
+- Cloudflare Workers + D1 (SQLite) + R2
+- Drizzle ORM
+- Auth.js (Google OAuth)
+- TanStack Query for data fetching
+- PWA with offline support
+
+## Dev setup
 
 ```bash
-npm run dev
-# or similar package manager command
+pnpm install
+pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Needs a `.env.local` with:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+AUTH_SECRET=
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
+```
 
-## Preview
-
-Preview the application locally on the Cloudflare runtime:
+Database migrations:
 
 ```bash
-npm run preview
-# or similar package manager command
+pnpm db:generate   # generate migration from schema changes
+pnpm db:migrate     # apply migrations locally
 ```
 
 ## Deploy
 
-Deploy the application to Cloudflare:
-
 ```bash
-npm run deploy
-# or similar package manager command
+pnpm deploy
 ```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Deploys to Cloudflare Workers via [OpenNext](https://opennext.js.org/cloudflare).
