@@ -133,7 +133,7 @@ function DayCell({
         <Moon className="absolute bottom-0.5 size-3" />
       )}
       {hasSession && (
-        <span className="absolute top-0.5 right-0.5 size-1.5 rounded-full bg-primary" />
+        <span className="absolute top-2 right-2 size-1.5 rounded-full bg-primary" />
       )}
     </div>
   );
