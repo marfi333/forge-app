@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/marfi333/forge-app/compare/v1.0.0...v1.0.1) (2026-05-10)
+
+
+### Bug Fixes
+
+* add test run before release ([885e4ec](https://github.com/marfi333/forge-app/commit/885e4ec45d17d270a7159eb1ce3614efc9fd5751))
+
 # 1.0.0 (2026-05-10)
 
 
