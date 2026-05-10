@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { BottomNav } from "@/components/bottom-nav";
+import { ServiceWorkerRegister } from "@/components/sw-register";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -42,7 +44,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <BottomNav />
+          <ServiceWorkerRegister />
+        </Providers>
       </body>
     </html>
   );

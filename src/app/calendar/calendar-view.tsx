@@ -59,7 +59,7 @@ export function CalendarView() {
   const month = currentDate.getMonth();
   const monthStr = getMonthString(currentDate);
 
-  const { data: days = [] } = useQuery<CalendarDay[]>({
+  const { data: days = [], isLoading } = useQuery<CalendarDay[]>({
     queryKey: ["calendar", monthStr],
     queryFn: async () => {
       const res = await fetch(`/api/calendar?month=${monthStr}`);
@@ -144,6 +144,26 @@ export function CalendarView() {
     today.getMonth(),
     today.getDate(),
   );
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="size-8" />
+          <div className="h-6 w-36 animate-pulse rounded bg-muted" />
+          <div className="size-8" />
+        </div>
+        <div className="grid grid-cols-7 gap-1">
+          {Array.from({ length: 35 }).map((_, i) => (
+            <div
+              key={`skel-${i.toString()}`}
+              className="aspect-square animate-pulse rounded-lg bg-muted"
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
