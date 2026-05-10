@@ -50,7 +50,7 @@ export default async function SettingsPage() {
       </div>
 
       <p className="text-center text-xs text-muted-foreground">
-        FORGE v1.0
+        FORGE v{process.env.NEXT_PUBLIC_APP_VERSION}
       </p>
     </>
   );
