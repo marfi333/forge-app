@@ -123,8 +123,10 @@ function DayCell({
       className={`relative flex aspect-square touch-none flex-col items-center justify-center rounded-lg text-sm transition-all select-none ${
         calDay?.type === "rest"
           ? "bg-muted text-muted-foreground"
-          : "hover:bg-muted/50"
-      } ${isSelected ? "ring-2 ring-primary" : isToday ? "ring-1 ring-primary/50" : ""} ${pressing ? "scale-90 opacity-75" : ""}`}
+          : isToday
+            ? "bg-primary/15 hover:bg-primary/20"
+            : "hover:bg-muted/50"
+      } ${isSelected ? "ring-2 ring-primary" : ""} ${pressing ? "scale-90 opacity-75" : ""}`}
     >
       <span className="font-medium">{day}</span>
       {calDay?.type === "rest" && (

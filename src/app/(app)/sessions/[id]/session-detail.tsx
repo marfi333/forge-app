@@ -357,24 +357,28 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <Link href="/calendar">
-          <Button variant="ghost" size="icon-sm">
-            <ArrowLeft />
-          </Button>
+      <div className="space-y-1">
+        <Link
+          href="/calendar"
+          className="inline-flex h-11 items-center gap-1 -ml-1 px-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" />
+          Back
         </Link>
-        <div className="flex-1">
-          <h1 className="text-xl font-bold tracking-tight">Workout</h1>
-          <p className="text-sm text-muted-foreground">
-            {new Date(`${session.date}T12:00:00`).toLocaleDateString()}
-          </p>
+        <div className="flex items-center gap-3">
+          <div className="flex-1">
+            <h1 className="text-xl font-bold tracking-tight">Workout</h1>
+            <p className="text-sm text-muted-foreground">
+              {new Date(`${session.date}T12:00:00`).toLocaleDateString()}
+            </p>
+          </div>
+          {isCompleted && (
+            <span className="flex items-center gap-1 text-sm text-primary">
+              <CheckCircle2 className="size-4" />
+              Done
+            </span>
+          )}
         </div>
-        {isCompleted && (
-          <span className="flex items-center gap-1 text-sm text-primary">
-            <CheckCircle2 className="size-4" />
-            Done
-          </span>
-        )}
       </div>
 
       <div className="space-y-4">
