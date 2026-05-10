@@ -5,8 +5,12 @@ export default function SignInPage() {
     <div className="flex min-h-svh flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-card p-8 backdrop-blur-xl">
         <div className="space-y-8 text-center">
-          <div className="space-y-2">
-            <h1 className="text-4xl font-bold tracking-tight">FORGE</h1>
+          <div className="space-y-4">
+            <img
+              src="/app_logo_with_text.png"
+              alt="FORGE"
+              className="mx-auto h-16"
+            />
             <p className="text-sm text-muted-foreground">
               Track. Progress. Build.
             </p>
