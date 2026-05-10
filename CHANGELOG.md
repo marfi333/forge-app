@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/marfi333/forge-app/compare/v1.0.2...v1.0.3) (2026-05-10)
+
+
+### Bug Fixes
+
+* logo style change ([ef30c7e](https://github.com/marfi333/forge-app/commit/ef30c7e2933682efd539434155eef82c206ae71e))
+
 ## [1.0.2](https://github.com/marfi333/forge-app/compare/v1.0.1...v1.0.2) (2026-05-10)
 
 
