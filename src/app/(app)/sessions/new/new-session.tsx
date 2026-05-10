@@ -1,11 +1,12 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, FileText, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { invalidateWorkoutDependentQueries } from "@/lib/query-invalidation";
 
 interface Template {
   id: string;
@@ -14,6 +15,7 @@ interface Template {
 
 export function NewSession() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const date =
     searchParams.get("date") ?? new Date().toISOString().split("T")[0];
@@ -38,6 +40,7 @@ export function NewSession() {
       return res.json() as Promise<{ id: string }>;
     },
     onSuccess: (data) => {
+      invalidateWorkoutDependentQueries(queryClient);
       router.push(`/sessions/${data.id}`);
     },
   });

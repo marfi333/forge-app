@@ -2,10 +2,21 @@ import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import * as schema from "@/db/schema";
 import { getAuthedDb, notFound, unauthorized } from "@/lib/api";
+import { MUSCLE_GROUPS, WEEKDAYS } from "@/lib/constants";
 
-const updateTemplateSchema = z.object({
-  name: z.string().min(1, "Name is required").trim(),
-});
+const updateTemplateSchema = z
+  .object({
+    name: z.string().min(1).trim().optional(),
+    weekday: z.enum(WEEKDAYS).nullable().optional(),
+    muscleGroup: z.enum(MUSCLE_GROUPS).nullable().optional(),
+  })
+  .refine(
+    (data) =>
+      data.name !== undefined ||
+      data.weekday !== undefined ||
+      data.muscleGroup !== undefined,
+    { message: "At least one field is required" },
+  );
 
 async function getOwnedTemplate(
   db: NonNullable<Awaited<ReturnType<typeof getAuthedDb>>["db"]>,
@@ -64,9 +75,19 @@ export async function PATCH(
     );
   }
 
+  const updates: Partial<{
+    name: string;
+    weekday: string | null;
+    muscleGroup: string | null;
+  }> = {};
+  if (result.data.name !== undefined) updates.name = result.data.name;
+  if (result.data.weekday !== undefined) updates.weekday = result.data.weekday;
+  if (result.data.muscleGroup !== undefined)
+    updates.muscleGroup = result.data.muscleGroup;
+
   const [updated] = await db
     .update(schema.workoutTemplates)
-    .set({ name: result.data.name })
+    .set(updates)
     .where(eq(schema.workoutTemplates.id, id))
     .returning();
 

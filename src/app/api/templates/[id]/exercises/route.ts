@@ -5,6 +5,9 @@ import { getAuthedDb, notFound, unauthorized } from "@/lib/api";
 
 const createExerciseSchema = z.object({
   name: z.string().min(1, "Name is required").trim(),
+  description: z.string().trim().nullable().optional(),
+  imageUrl: z.string().url().nullable().optional(),
+  youtubeUrl: z.string().url().nullable().optional(),
   order: z.number().int().min(0).default(0),
 });
 
@@ -71,6 +74,9 @@ export async function POST(
     .values({
       templateId: id,
       name: result.data.name,
+      description: result.data.description ?? null,
+      imageUrl: result.data.imageUrl ?? null,
+      youtubeUrl: result.data.youtubeUrl ?? null,
       order: result.data.order,
     })
     .returning();

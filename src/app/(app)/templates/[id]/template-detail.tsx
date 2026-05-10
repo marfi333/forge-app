@@ -4,7 +4,17 @@ import { move } from "@dnd-kit/helpers";
 import { DragDropProvider } from "@dnd-kit/react";
 import { useSortable } from "@dnd-kit/react/sortable";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, GripVertical, Plus, Trash2 } from "lucide-react";
+import {
+  ArrowLeft,
+  GripVertical,
+  Image as ImageIcon,
+  Info,
+  Pencil,
+  Plus,
+  Trash2,
+  Upload,
+  Video,
+} from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -18,29 +28,218 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { YouTubePlayer } from "@/components/youtube-player";
 
 interface Exercise {
   id: string;
   templateId: string;
   name: string;
+  description: string | null;
+  imageUrl: string | null;
+  youtubeUrl: string | null;
   order: number;
 }
 
 interface TemplateWithExercises {
   id: string;
   name: string;
+  weekday: string | null;
+  muscleGroup: string | null;
   createdAt: string;
   exercises: Exercise[];
+}
+
+interface ExerciseFormData {
+  name: string;
+  description: string;
+  imageUrl: string;
+  youtubeUrl: string;
+}
+
+const EMPTY_FORM: ExerciseFormData = {
+  name: "",
+  description: "",
+  imageUrl: "",
+  youtubeUrl: "",
+};
+
+function ExerciseFormDialog({
+  open,
+  onOpenChange,
+  title,
+  initial,
+  onSubmit,
+  isPending,
+  templateId,
+  trigger,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  initial: ExerciseFormData;
+  onSubmit: (data: ExerciseFormData) => void;
+  isPending: boolean;
+  templateId: string;
+  trigger?: React.ReactElement;
+}) {
+  const [form, setForm] = useState<ExerciseFormData>(initial);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handleOpenChange(next: boolean) {
+    if (next) setForm(initial);
+    onOpenChange(next);
+  }
+
+  async function handleImageUpload(file: File) {
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/uploads/image", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      const data = (await res.json()) as { url: string };
+      setForm((prev) => ({ ...prev, imageUrl: data.url }));
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={handleOpenChange}>
+      {trigger && <DialogTrigger render={trigger} />}
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
+        <form
+          className="space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (form.name.trim()) onSubmit({ ...form, name: form.name.trim() });
+          }}
+        >
+          <div>
+            <label
+              htmlFor={`exercise-name-${templateId}`}
+              className="mb-2 block text-sm font-medium text-muted-foreground"
+            >
+              Name
+            </label>
+            <Input
+              id={`exercise-name-${templateId}`}
+              placeholder="e.g. Bench Press, Squat, Deadlift..."
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              autoFocus
+            />
+          </div>
+
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-muted-foreground">
+              Description
+            </span>
+            <textarea
+              placeholder="Exercise instructions or notes..."
+              value={form.description}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
+              rows={3}
+              className="w-full min-w-0 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-base text-foreground outline-none backdrop-blur-sm transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
+            />
+          </label>
+
+          <div>
+            <span className="mb-2 block text-sm font-medium text-muted-foreground">
+              Image
+            </span>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Image URL or upload a file"
+                value={form.imageUrl}
+                onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+                className="flex-1"
+              />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleImageUpload(file);
+                  e.target.value = "";
+                }}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+              >
+                <Upload />
+              </Button>
+            </div>
+            {uploading && (
+              <p className="text-xs text-muted-foreground">Uploading…</p>
+            )}
+            {form.imageUrl && !uploading && (
+              /* biome-ignore lint/performance/noImgElement: user-provided dynamic URLs */
+              <img
+                src={form.imageUrl}
+                alt="Exercise preview"
+                className="h-32 w-full rounded-xl object-cover"
+              />
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor={`exercise-youtube-${templateId}`}
+              className="mb-2 block text-sm font-medium text-muted-foreground"
+            >
+              YouTube URL
+            </label>
+            <Input
+              id={`exercise-youtube-${templateId}`}
+              placeholder="https://youtube.com/watch?v=..."
+              value={form.youtubeUrl}
+              onChange={(e) => setForm({ ...form, youtubeUrl: e.target.value })}
+            />
+            {form.youtubeUrl && <YouTubePlayer url={form.youtubeUrl} />}
+          </div>
+
+          <DialogFooter>
+            <Button
+              type="submit"
+              disabled={!form.name.trim() || isPending || uploading}
+            >
+              {isPending ? "Saving..." : "Save"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
 }
 
 function SortableExercise({
   exercise,
   index,
+  templateId,
+  onEdit,
   onDelete,
   isDeleting,
 }: {
   exercise: Exercise;
   index: number;
+  templateId: string;
+  onEdit: () => void;
   onDelete: (id: string) => void;
   isDeleting: boolean;
 }) {
@@ -57,15 +256,48 @@ function SortableExercise({
     >
       <CardContent className="flex items-center gap-3 py-0">
         <GripVertical className="size-4 shrink-0 cursor-grab text-muted-foreground active:cursor-grabbing" />
-        <span className="flex-1 font-medium">{exercise.name}</span>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          onClick={() => onDelete(exercise.id)}
-          disabled={isDeleting}
-        >
-          <Trash2 className="text-muted-foreground" />
-        </Button>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span className="truncate font-medium">{exercise.name}</span>
+            {exercise.imageUrl && (
+              <ImageIcon className="size-3.5 shrink-0 text-muted-foreground" />
+            )}
+            {exercise.youtubeUrl && (
+              <Video className="size-3.5 shrink-0 text-muted-foreground" />
+            )}
+          </div>
+          {exercise.description && (
+            <p className="mt-0.5 truncate text-xs text-muted-foreground">
+              {exercise.description}
+            </p>
+          )}
+        </div>
+        {exercise.imageUrl && (
+          /* biome-ignore lint/performance/noImgElement: user-provided dynamic URLs */
+          <img
+            src={exercise.imageUrl}
+            alt={exercise.name}
+            className="size-10 shrink-0 rounded-lg object-cover"
+          />
+        )}
+        <div className="flex shrink-0 items-center gap-1">
+          <Link href={`/templates/${templateId}/exercises/${exercise.id}`}>
+            <Button variant="ghost" size="icon-sm">
+              <Info className="text-muted-foreground" />
+            </Button>
+          </Link>
+          <Button variant="ghost" size="icon-sm" onClick={onEdit}>
+            <Pencil className="text-muted-foreground" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => onDelete(exercise.id)}
+            disabled={isDeleting}
+          >
+            <Trash2 className="text-muted-foreground" />
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );
@@ -74,7 +306,7 @@ function SortableExercise({
 export function TemplateDetail({ templateId }: { templateId: string }) {
   const queryClient = useQueryClient();
   const [addOpen, setAddOpen] = useState(false);
-  const [exerciseName, setExerciseName] = useState("");
+  const [editingExercise, setEditingExercise] = useState<Exercise | null>(null);
   const [editingName, setEditingName] = useState(false);
   const [nameValue, setNameValue] = useState("");
   const [localExercises, setLocalExercises] = useState<Exercise[] | null>(null);
@@ -109,12 +341,18 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
   });
 
   const addExerciseMutation = useMutation({
-    mutationFn: async (name: string) => {
+    mutationFn: async (data: ExerciseFormData) => {
       const order = exercises.length;
       const res = await fetch(`/api/templates/${templateId}/exercises`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, order }),
+        body: JSON.stringify({
+          name: data.name,
+          description: data.description || null,
+          imageUrl: data.imageUrl || null,
+          youtubeUrl: data.youtubeUrl || null,
+          order,
+        }),
       });
       if (!res.ok) throw new Error("Failed to add exercise");
       return res.json();
@@ -122,7 +360,33 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["templates", templateId] });
       setAddOpen(false);
-      setExerciseName("");
+    },
+  });
+
+  const updateExerciseMutation = useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: ExerciseFormData;
+    }) => {
+      const res = await fetch(`/api/templates/${templateId}/exercises/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: data.name,
+          description: data.description || null,
+          imageUrl: data.imageUrl || null,
+          youtubeUrl: data.youtubeUrl || null,
+        }),
+      });
+      if (!res.ok) throw new Error("Failed to update exercise");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["templates", templateId] });
+      setEditingExercise(null);
     },
   });
 
@@ -167,10 +431,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
         <div className="h-8 w-32 animate-pulse rounded bg-muted" />
         <div className="h-10 w-48 animate-pulse rounded bg-muted" />
         {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="h-14 animate-pulse rounded-2xl bg-muted"
-          />
+          <div key={i} className="h-14 animate-pulse rounded-2xl bg-muted" />
         ))}
       </div>
     );
@@ -194,14 +455,14 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
       <div className="space-y-1">
         <Link
           href="/templates"
-          className="inline-flex h-11 items-center gap-1 -ml-1 px-1 text-sm text-muted-foreground hover:text-foreground"
+          className="-ml-1 inline-flex h-11 items-center gap-1 px-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
           Back
         </Link>
         {editingName ? (
           <form
-            className="flex gap-2"
+            className="flex items-center gap-2"
             onSubmit={(e) => {
               e.preventDefault();
               if (nameValue.trim()) renameMutation.mutate(nameValue.trim());
@@ -226,16 +487,30 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
             </Button>
           </form>
         ) : (
-          <button
-            type="button"
-            className="block text-left text-xl font-bold tracking-tight"
-            onClick={() => {
-              setNameValue(template.name);
-              setEditingName(true);
-            }}
-          >
-            {template.name}
-          </button>
+          <div>
+            <button
+              type="button"
+              className="block text-left text-xl font-bold tracking-tight"
+              onClick={() => {
+                setNameValue(template.name);
+                setEditingName(true);
+              }}
+            >
+              {template.name}
+            </button>
+            <div className="mt-1 flex items-center gap-2">
+              {template.weekday && (
+                <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                  {template.weekday}
+                </span>
+              )}
+              {template.muscleGroup && (
+                <span className="rounded-md bg-white/10 px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                  {template.muscleGroup}
+                </span>
+              )}
+            </div>
+          </div>
         )}
       </div>
 
@@ -243,45 +518,21 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
         <h2 className="text-sm font-medium text-muted-foreground">
           {exercises.length} {exercises.length === 1 ? "exercise" : "exercises"}
         </h2>
-        <Dialog open={addOpen} onOpenChange={setAddOpen}>
-          <DialogTrigger
-            render={
-              <Button size="sm" variant="outline">
-                <Plus data-icon="inline-start" />
-                Add Exercise
-              </Button>
-            }
-          />
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add Exercise</DialogTitle>
-            </DialogHeader>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (exerciseName.trim())
-                  addExerciseMutation.mutate(exerciseName.trim());
-              }}
-            >
-              <Input
-                placeholder="e.g. Bench Press, Squat, Deadlift..."
-                value={exerciseName}
-                onChange={(e) => setExerciseName(e.target.value)}
-                autoFocus
-              />
-              <DialogFooter className="mt-4">
-                <Button
-                  type="submit"
-                  disabled={
-                    !exerciseName.trim() || addExerciseMutation.isPending
-                  }
-                >
-                  {addExerciseMutation.isPending ? "Adding..." : "Add"}
-                </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <ExerciseFormDialog
+          open={addOpen}
+          onOpenChange={setAddOpen}
+          title="Add Exercise"
+          initial={EMPTY_FORM}
+          onSubmit={(data) => addExerciseMutation.mutate(data)}
+          isPending={addExerciseMutation.isPending}
+          templateId={templateId}
+          trigger={
+            <Button size="sm" variant="outline">
+              <Plus data-icon="inline-start" />
+              Add Exercise
+            </Button>
+          }
+        />
       </div>
 
       {exercises.length === 0 && (
@@ -322,12 +573,35 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
               key={exercise.id}
               exercise={exercise}
               index={index}
+              templateId={templateId}
+              onEdit={() => setEditingExercise(exercise)}
               onDelete={(id) => deleteExerciseMutation.mutate(id)}
               isDeleting={deleteExerciseMutation.isPending}
             />
           ))}
         </div>
       </DragDropProvider>
+
+      {editingExercise && (
+        <ExerciseFormDialog
+          open={!!editingExercise}
+          onOpenChange={(open) => {
+            if (!open) setEditingExercise(null);
+          }}
+          title="Edit Exercise"
+          initial={{
+            name: editingExercise.name,
+            description: editingExercise.description ?? "",
+            imageUrl: editingExercise.imageUrl ?? "",
+            youtubeUrl: editingExercise.youtubeUrl ?? "",
+          }}
+          onSubmit={(data) =>
+            updateExerciseMutation.mutate({ id: editingExercise.id, data })
+          }
+          isPending={updateExerciseMutation.isPending}
+          templateId={templateId}
+        />
+      )}
     </div>
   );
 }

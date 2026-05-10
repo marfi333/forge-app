@@ -66,6 +66,8 @@ export const workoutTemplates = sqliteTable("workout_templates", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
+  weekday: text("weekday"),
+  muscleGroup: text("muscle_group"),
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
@@ -79,6 +81,9 @@ export const templateExercises = sqliteTable("template_exercises", {
     .notNull()
     .references(() => workoutTemplates.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
+  description: text("description"),
+  imageUrl: text("image_url"),
+  youtubeUrl: text("youtube_url"),
   order: integer("order").notNull(),
 });
 

@@ -139,6 +139,24 @@ describe("PATCH /api/templates/[id]", () => {
     expect(res.status).toBe(400);
   });
 
+  it("returns 400 with no fields provided", async () => {
+    const template = {
+      id: "t1",
+      userId: "user1",
+      name: "Push",
+      createdAt: new Date(),
+    };
+    mockDb.where.mockResolvedValueOnce([template]);
+    mockGetAuthedDb.mockResolvedValue({ db: mockDb as never, userId: "user1" });
+    const { PATCH } = await import("./route");
+    const req = new Request("http://localhost", {
+      method: "PATCH",
+      body: JSON.stringify({}),
+    });
+    const res = await PATCH(req, makeParams("t1"));
+    expect(res.status).toBe(400);
+  });
+
   it("updates template name", async () => {
     const template = {
       id: "t1",
@@ -160,6 +178,78 @@ describe("PATCH /api/templates/[id]", () => {
     expect(res.status).toBe(200);
     const data = (await res.json()) as { name: string };
     expect(data.name).toBe("Pull");
+  });
+
+  it("updates template weekday and muscleGroup", async () => {
+    const template = {
+      id: "t1",
+      userId: "user1",
+      name: "Push",
+      weekday: null,
+      muscleGroup: null,
+      createdAt: new Date(),
+    };
+    const updated = { ...template, weekday: "Monday", muscleGroup: "Chest" };
+    mockDb.where.mockResolvedValueOnce([template]);
+    mockDb.returning.mockResolvedValueOnce([updated]);
+    mockGetAuthedDb.mockResolvedValue({ db: mockDb as never, userId: "user1" });
+
+    const { PATCH } = await import("./route");
+    const req = new Request("http://localhost", {
+      method: "PATCH",
+      body: JSON.stringify({ weekday: "Monday", muscleGroup: "Chest" }),
+    });
+    const res = await PATCH(req, makeParams("t1"));
+    expect(res.status).toBe(200);
+    const data = (await res.json()) as {
+      weekday: string;
+      muscleGroup: string;
+    };
+    expect(data.weekday).toBe("Monday");
+    expect(data.muscleGroup).toBe("Chest");
+  });
+
+  it("returns 400 with invalid weekday value", async () => {
+    const template = {
+      id: "t1",
+      userId: "user1",
+      name: "Push",
+      createdAt: new Date(),
+    };
+    mockDb.where.mockResolvedValueOnce([template]);
+    mockGetAuthedDb.mockResolvedValue({ db: mockDb as never, userId: "user1" });
+    const { PATCH } = await import("./route");
+    const req = new Request("http://localhost", {
+      method: "PATCH",
+      body: JSON.stringify({ weekday: "NotADay" }),
+    });
+    const res = await PATCH(req, makeParams("t1"));
+    expect(res.status).toBe(400);
+  });
+
+  it("clears weekday by setting null", async () => {
+    const template = {
+      id: "t1",
+      userId: "user1",
+      name: "Push",
+      weekday: "Monday",
+      muscleGroup: "Chest",
+      createdAt: new Date(),
+    };
+    const updated = { ...template, weekday: null };
+    mockDb.where.mockResolvedValueOnce([template]);
+    mockDb.returning.mockResolvedValueOnce([updated]);
+    mockGetAuthedDb.mockResolvedValue({ db: mockDb as never, userId: "user1" });
+
+    const { PATCH } = await import("./route");
+    const req = new Request("http://localhost", {
+      method: "PATCH",
+      body: JSON.stringify({ weekday: null }),
+    });
+    const res = await PATCH(req, makeParams("t1"));
+    expect(res.status).toBe(200);
+    const data = (await res.json()) as { weekday: string | null };
+    expect(data.weekday).toBeNull();
   });
 });
 

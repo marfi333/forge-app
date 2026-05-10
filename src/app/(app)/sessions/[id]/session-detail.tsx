@@ -22,6 +22,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { invalidateWorkoutDependentQueries } from "@/lib/query-invalidation";
 
 interface ExerciseSet {
   id: string;
@@ -110,6 +111,7 @@ function SetRow({
       queryClient.invalidateQueries({
         queryKey: ["sessions", sessionId],
       });
+      invalidateWorkoutDependentQueries(queryClient);
     },
   });
 
@@ -125,6 +127,7 @@ function SetRow({
       queryClient.invalidateQueries({
         queryKey: ["sessions", sessionId],
       });
+      invalidateWorkoutDependentQueries(queryClient);
     },
   });
 
@@ -207,6 +210,7 @@ function ExerciseCard({
       queryClient.invalidateQueries({
         queryKey: ["sessions", sessionId],
       });
+      invalidateWorkoutDependentQueries(queryClient);
     },
   });
 
@@ -222,6 +226,7 @@ function ExerciseCard({
       queryClient.invalidateQueries({
         queryKey: ["sessions", sessionId],
       });
+      invalidateWorkoutDependentQueries(queryClient);
     },
   });
 
@@ -304,6 +309,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
       queryClient.invalidateQueries({
         queryKey: ["sessions", sessionId],
       });
+      invalidateWorkoutDependentQueries(queryClient);
       setAddExOpen(false);
       setExerciseName("");
     },
@@ -323,6 +329,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
       queryClient.invalidateQueries({
         queryKey: ["sessions", sessionId],
       });
+      invalidateWorkoutDependentQueries(queryClient);
     },
   });
 
@@ -331,10 +338,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
       <div className="space-y-4">
         <div className="h-8 w-32 animate-pulse rounded bg-muted" />
         {[1, 2].map((i) => (
-          <div
-            key={i}
-            className="h-32 animate-pulse rounded-2xl bg-muted"
-          />
+          <div key={i} className="h-32 animate-pulse rounded-2xl bg-muted" />
         ))}
       </div>
     );

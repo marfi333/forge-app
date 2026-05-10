@@ -129,4 +129,58 @@ describe("POST /api/templates", () => {
     const data = (await res.json()) as { name: string };
     expect(data.name).toBe("Push Day");
   });
+
+  it("creates a template with weekday and muscleGroup", async () => {
+    const created = {
+      id: "new-id",
+      userId: "user1",
+      name: "Push Day",
+      weekday: "Monday",
+      muscleGroup: "Chest",
+      createdAt: new Date(),
+    };
+    mockDb.returning.mockResolvedValue([created]);
+    mockGetAuthedDb.mockResolvedValue({ db: mockDb as never, userId: "user1" });
+
+    const { POST } = await import("./route");
+    const req = new Request("http://localhost/api/templates", {
+      method: "POST",
+      body: JSON.stringify({
+        name: "Push Day",
+        weekday: "Monday",
+        muscleGroup: "Chest",
+      }),
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(201);
+    const data = (await res.json()) as {
+      name: string;
+      weekday: string;
+      muscleGroup: string;
+    };
+    expect(data.weekday).toBe("Monday");
+    expect(data.muscleGroup).toBe("Chest");
+  });
+
+  it("returns 400 with invalid weekday", async () => {
+    mockGetAuthedDb.mockResolvedValue({ db: mockDb as never, userId: "user1" });
+    const { POST } = await import("./route");
+    const req = new Request("http://localhost/api/templates", {
+      method: "POST",
+      body: JSON.stringify({ name: "Push Day", weekday: "InvalidDay" }),
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 with invalid muscleGroup", async () => {
+    mockGetAuthedDb.mockResolvedValue({ db: mockDb as never, userId: "user1" });
+    const { POST } = await import("./route");
+    const req = new Request("http://localhost/api/templates", {
+      method: "POST",
+      body: JSON.stringify({ name: "Push Day", muscleGroup: "InvalidGroup" }),
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(400);
+  });
 });

@@ -6,11 +6,20 @@ import { getAuthedDb, notFound, unauthorized } from "@/lib/api";
 const updateExerciseSchema = z
   .object({
     name: z.string().min(1).trim().optional(),
+    description: z.string().trim().nullable().optional(),
+    imageUrl: z.string().url().nullable().optional(),
+    youtubeUrl: z.string().url().nullable().optional(),
     order: z.number().int().min(0).optional(),
   })
-  .refine((data) => data.name || data.order !== undefined, {
-    message: "At least one field (name or order) is required",
-  });
+  .refine(
+    (data) =>
+      data.name !== undefined ||
+      data.description !== undefined ||
+      data.imageUrl !== undefined ||
+      data.youtubeUrl !== undefined ||
+      data.order !== undefined,
+    { message: "At least one field is required" },
+  );
 
 async function getOwnedExercise(
   db: NonNullable<Awaited<ReturnType<typeof getAuthedDb>>["db"]>,
@@ -41,6 +50,20 @@ async function getOwnedExercise(
   return exercise ?? null;
 }
 
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ id: string; exerciseId: string }> },
+) {
+  const { db, userId } = await getAuthedDb();
+  if (!db) return unauthorized();
+
+  const { id, exerciseId } = await params;
+  const exercise = await getOwnedExercise(db, userId, id, exerciseId);
+  if (!exercise) return notFound();
+
+  return Response.json(exercise);
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string; exerciseId: string }> },
@@ -61,8 +84,20 @@ export async function PATCH(
     );
   }
 
-  const updates: Partial<{ name: string; order: number }> = {};
-  if (result.data.name) updates.name = result.data.name;
+  const updates: Partial<{
+    name: string;
+    description: string | null;
+    imageUrl: string | null;
+    youtubeUrl: string | null;
+    order: number;
+  }> = {};
+  if (result.data.name !== undefined) updates.name = result.data.name;
+  if (result.data.description !== undefined)
+    updates.description = result.data.description;
+  if (result.data.imageUrl !== undefined)
+    updates.imageUrl = result.data.imageUrl;
+  if (result.data.youtubeUrl !== undefined)
+    updates.youtubeUrl = result.data.youtubeUrl;
   if (result.data.order !== undefined) updates.order = result.data.order;
 
   const [updated] = await db

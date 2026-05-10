@@ -2,9 +2,12 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import * as schema from "@/db/schema";
 import { getAuthedDb, unauthorized } from "@/lib/api";
+import { MUSCLE_GROUPS, WEEKDAYS } from "@/lib/constants";
 
 const createTemplateSchema = z.object({
   name: z.string().min(1, "Name is required").trim(),
+  weekday: z.enum(WEEKDAYS).nullable().optional(),
+  muscleGroup: z.enum(MUSCLE_GROUPS).nullable().optional(),
 });
 
 export async function GET() {
@@ -34,7 +37,12 @@ export async function POST(request: Request) {
 
   const [template] = await db
     .insert(schema.workoutTemplates)
-    .values({ userId, name: result.data.name })
+    .values({
+      userId,
+      name: result.data.name,
+      weekday: result.data.weekday ?? null,
+      muscleGroup: result.data.muscleGroup ?? null,
+    })
     .returning();
 
   return Response.json(template, { status: 201 });

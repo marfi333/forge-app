@@ -36,6 +36,12 @@
 		"enabled": true
 	},
 	"upload_source_maps": true,
+	"r2_buckets": [
+		{
+			"binding": "UPLOADS",
+			"bucket_name": "forge-app"
+		}
+	],
 	"d1_databases": [
 		{
 			"binding": "DB",
