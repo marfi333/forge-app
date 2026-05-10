@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, like } from "drizzle-orm";
 import { z } from "zod";
 import * as schema from "@/db/schema";
 import { getAuthedDb, unauthorized } from "@/lib/api";
@@ -15,15 +15,31 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const date = searchParams.get("date");
+  const month = searchParams.get("month");
 
   const conditions = [eq(schema.workoutSessions.userId, userId)];
   if (date) {
     conditions.push(eq(schema.workoutSessions.date, date));
+  } else if (month) {
+    conditions.push(like(schema.workoutSessions.date, `${month}%`));
   }
 
   const sessions = await db
-    .select()
+    .select({
+      id: schema.workoutSessions.id,
+      userId: schema.workoutSessions.userId,
+      date: schema.workoutSessions.date,
+      templateId: schema.workoutSessions.templateId,
+      status: schema.workoutSessions.status,
+      notes: schema.workoutSessions.notes,
+      createdAt: schema.workoutSessions.createdAt,
+      templateName: schema.workoutTemplates.name,
+    })
     .from(schema.workoutSessions)
+    .leftJoin(
+      schema.workoutTemplates,
+      eq(schema.workoutSessions.templateId, schema.workoutTemplates.id),
+    )
     .where(and(...conditions));
 
   return Response.json(sessions);

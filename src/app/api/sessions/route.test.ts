@@ -4,6 +4,7 @@ const mockDb = {
   select: vi.fn(),
   insert: vi.fn(),
   from: vi.fn(),
+  leftJoin: vi.fn(),
   where: vi.fn(),
   values: vi.fn(),
   returning: vi.fn(),
@@ -14,6 +15,7 @@ function chainMock() {
   mockDb.select.mockReturnValue(mockDb);
   mockDb.insert.mockReturnValue(mockDb);
   mockDb.from.mockReturnValue(mockDb);
+  mockDb.leftJoin.mockReturnValue(mockDb);
   mockDb.where.mockReturnValue(mockDb);
   mockDb.values.mockReturnValue(mockDb);
   mockDb.returning.mockReturnValue(mockDb);
@@ -28,10 +30,20 @@ vi.mock("@/lib/api", () => ({
 vi.mock("drizzle-orm", () => ({
   eq: (col: unknown, val: unknown) => ({ col, val }),
   and: (...args: unknown[]) => args,
+  like: (col: unknown, val: unknown) => ({ col, val, op: "like" }),
 }));
 
 vi.mock("@/db/schema", () => ({
-  workoutSessions: { userId: "userId", id: "id", date: "date" },
+  workoutSessions: {
+    userId: "userId",
+    id: "id",
+    date: "date",
+    templateId: "templateId",
+    status: "status",
+    notes: "notes",
+    createdAt: "createdAt",
+  },
+  workoutTemplates: { id: "id", name: "name" },
   templateExercises: {
     templateId: "templateId",
     id: "id",

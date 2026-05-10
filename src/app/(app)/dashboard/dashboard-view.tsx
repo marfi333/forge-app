@@ -1,28 +1,45 @@
 "use client";
 
-import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/ui/card";
+import { Dumbbell, Footprints, Moon, Waves } from "lucide-react";
+import Link from "next/link";
+
+interface WeeklyPlanDay {
+  weekday: string;
+  date: string;
+  dayType: "workout" | "rest";
+  template: { id: string; name: string; muscleGroup: string | null } | null;
+  hasSession: boolean;
+  isCompleted: boolean;
+}
 
 interface DashboardData {
   today: string;
   weekStart: string;
   weekEnd: string;
-  sessionsToday: number;
-  workoutsThisWeek: number;
-  totalVolume: number;
-  workoutDates: string[];
+  weeklyPlan: WeeklyPlanDay[];
+  completedCount: number;
+  workoutDays: number;
+  restDays: number;
 }
 
 const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-function getWeekDates(weekStart: string): string[] {
-  const start = new Date(`${weekStart}T12:00:00`);
-  return Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(start);
-    d.setDate(start.getDate() + i);
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-  });
+function getMuscleGroupIcon(muscleGroup: string | null) {
+  switch (muscleGroup?.toLowerCase()) {
+    case "legs":
+    case "quads":
+    case "hamstrings":
+    case "glutes":
+    case "calves":
+      return <Footprints className="size-5" />;
+    case "back":
+    case "upper back":
+    case "lower back":
+      return <Waves className="size-5" />;
+    default:
+      return <Dumbbell className="size-5" />;
+  }
 }
 
 export function DashboardView() {
@@ -39,95 +56,114 @@ export function DashboardView() {
     return (
       <div className="space-y-6">
         <div className="h-8 w-40 animate-pulse rounded-lg bg-muted" />
-        <div className="grid grid-cols-3 gap-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />
+        <div className="h-32 animate-pulse rounded-xl bg-muted" />
+        <div className="grid grid-cols-2 gap-3">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="h-28 animate-pulse rounded-xl bg-muted" />
           ))}
         </div>
-        <div className="h-20 animate-pulse rounded-2xl bg-muted" />
       </div>
     );
   }
 
   if (!data) return null;
 
-  const weekDates = getWeekDates(data.weekStart);
-  const workoutSet = new Set(data.workoutDates);
+  const progressPercent =
+    data.workoutDays > 0
+      ? Math.min(
+          100,
+          Math.round((data.completedCount / data.workoutDays) * 100),
+        )
+      : 0;
+
+  const circumference = 2 * Math.PI * 40;
+  const strokeDashoffset =
+    circumference - (progressPercent / 100) * circumference;
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <h2 className="text-xl font-bold">Weekly Plan</h2>
 
-      <div className="grid grid-cols-3 gap-3">
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-4">
-            <p className="text-3xl font-extrabold text-primary">
-              {data.sessionsToday}
-            </p>
-            <p className="text-[11px] text-muted-foreground">Today</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-4">
-            <p className="text-3xl font-extrabold text-primary">
-              {data.workoutsThisWeek}
-            </p>
-            <p className="text-[11px] text-muted-foreground">This Week</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-4">
-            <p className="text-3xl font-extrabold text-primary">
-              {data.totalVolume > 0
-                ? data.totalVolume >= 1000
-                  ? `${(data.totalVolume / 1000).toFixed(1)}k`
-                  : data.totalVolume
-                : "0"}
-            </p>
-            <p className="text-[11px] text-muted-foreground">Volume (kg)</p>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Summary Card */}
+      <section className="relative overflow-hidden rounded-xl border border-white/10 bg-card/80 backdrop-blur-xl p-5">
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full pointer-events-none" />
+        <div className="flex justify-between items-center relative z-10">
+          <div className="flex flex-col">
+            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-1">
+              Completion
+            </span>
+            <div className="flex items-baseline gap-2">
+              <span className="text-4xl font-extrabold text-primary">
+                {data.completedCount}
+              </span>
+              <span className="text-base text-muted-foreground">
+                / {data.workoutDays || 7} Workouts
+              </span>
+            </div>
+            {data.restDays > 0 && (
+              <span className="text-sm text-muted-foreground mt-1.5">
+                {data.restDays} Rest Days Planned
+              </span>
+            )}
+          </div>
 
-      <Card>
-        <CardContent className="py-4">
-          <div className="mb-3 flex items-center justify-between">
-            <p className="text-sm font-semibold">This Week</p>
-            <Link
-              href="/calendar"
-              className="text-xs text-muted-foreground hover:text-primary transition-colors"
+          {/* Progress Ring */}
+          <div className="relative w-16 h-16 flex items-center justify-center">
+            <svg
+              className="w-full h-full -rotate-90"
+              viewBox="0 0 100 100"
+              role="img"
+              aria-label="Weekly completion progress"
             >
-              Full Calendar →
-            </Link>
+              <circle
+                cx="50"
+                cy="50"
+                r="40"
+                fill="none"
+                stroke="rgba(255,255,255,0.05)"
+                strokeWidth="8"
+              />
+              <circle
+                cx="50"
+                cy="50"
+                r="40"
+                fill="none"
+                className="text-primary drop-shadow-[0_0_8px_hsl(var(--primary)/0.5)]"
+                stroke="currentColor"
+                strokeWidth="8"
+                strokeDasharray={circumference}
+                strokeDashoffset={strokeDashoffset}
+                strokeLinecap="round"
+              />
+            </svg>
+            <span className="absolute text-xs font-semibold text-foreground">
+              {progressPercent}%
+            </span>
           </div>
-          <div className="flex justify-between">
-            {DAY_LABELS.map((label, i) => {
-              const date = weekDates[i];
-              const hasWorkout = workoutSet.has(date);
-              const isToday = date === data.today;
-              return (
-                <div key={label} className="flex flex-col items-center gap-1.5">
-                  <span className="text-[10px] text-muted-foreground">
-                    {label}
-                  </span>
-                  <div
-                    className={`h-8 w-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
-                      hasWorkout
-                        ? "bg-primary text-primary-foreground"
-                        : isToday
-                          ? "ring-1 ring-primary text-foreground"
-                          : "bg-white/5 text-muted-foreground"
-                    }`}
-                  >
-                    {new Date(`${date}T12:00:00`).getDate()}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
+      {/* Days Grid (Bento Style) */}
+      <section className="grid grid-cols-2 gap-3">
+        {data.weeklyPlan.map((day, i) => (
+          <DayCard
+            key={day.date}
+            day={day}
+            label={DAY_LABELS[i]}
+            isLast={i === 6}
+          />
+        ))}
+      </section>
+
+      {/* Calendar Link */}
+      <Link
+        href="/calendar"
+        className="flex h-12 w-full items-center justify-center rounded-xl border border-white/10 bg-card/60 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+      >
+        View Full Calendar
+      </Link>
+
+      {/* Start Workout CTA */}
       <Link
         href="/sessions/new"
         className="flex h-14 w-full items-center justify-center rounded-xl bg-primary font-semibold text-primary-foreground text-base transition-opacity hover:opacity-90 active:opacity-80"
@@ -136,4 +172,95 @@ export function DashboardView() {
       </Link>
     </div>
   );
+}
+
+function DayCard({
+  day,
+  label,
+  isLast,
+}: {
+  day: WeeklyPlanDay;
+  label: string;
+  isLast: boolean;
+}) {
+  const isWorkout = day.dayType === "workout";
+  const cardClasses = isLast ? "col-span-2" : "";
+
+  const content = (
+    <div
+      className={`
+        relative overflow-hidden rounded-xl p-4 flex flex-col justify-between items-start text-left transition-all
+        ${isLast ? "flex-row items-center" : "h-28"}
+        ${
+          isWorkout
+            ? "bg-card/90 backdrop-blur-md border border-primary/40 shadow-[inset_0_0_20px_hsl(var(--primary)/0.05)]"
+            : "bg-card/40 backdrop-blur-md border border-white/5 opacity-80"
+        }
+        ${cardClasses}
+      `}
+    >
+      {isWorkout && (
+        <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
+      )}
+
+      {isLast ? (
+        <div className="flex w-full justify-between items-center">
+          <div className="flex flex-col">
+            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">
+              {label}
+            </span>
+            <span
+              className={`text-lg font-bold mt-1 ${isWorkout ? "text-primary" : "text-muted-foreground"}`}
+            >
+              {isWorkout ? day.template?.name || "Workout" : "Rest"}
+            </span>
+          </div>
+          <span
+            className={`${isWorkout ? "text-primary" : "text-muted-foreground"} opacity-60`}
+          >
+            {isWorkout ? (
+              getMuscleGroupIcon(day.template?.muscleGroup ?? null)
+            ) : (
+              <Moon className="size-6" />
+            )}
+          </span>
+        </div>
+      ) : (
+        <>
+          <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest">
+            {label}
+          </span>
+          <div className="flex w-full justify-between items-end mt-auto">
+            <span
+              className={`text-lg font-bold ${isWorkout ? "text-primary" : "text-muted-foreground"}`}
+            >
+              {isWorkout ? day.template?.name || "Workout" : "Rest"}
+            </span>
+            <span
+              className={`${isWorkout ? "text-primary" : "text-muted-foreground"}`}
+            >
+              {isWorkout ? (
+                getMuscleGroupIcon(day.template?.muscleGroup ?? null)
+              ) : (
+                <Moon className="size-5" />
+              )}
+            </span>
+          </div>
+        </>
+      )}
+    </div>
+  );
+
+  if (isWorkout && day.template) {
+    return (
+      <Link
+        href={`/sessions/new?templateId=${day.template.id}`}
+        className={cardClasses}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className={cardClasses}>{content}</div>;
 }

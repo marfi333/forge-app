@@ -2,17 +2,17 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  ArrowLeft,
   Check,
-  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   Minus,
   Plus,
+  Timer,
   Trash2,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -48,10 +48,61 @@ interface WorkoutSession {
   templateId: string | null;
   status: string;
   notes: string | null;
+  createdAt: string;
   exercises: SessionExercise[];
 }
 
-function SetRow({
+function ElapsedTimer({ startedAt }: { startedAt: string }) {
+  const [elapsed, setElapsed] = useState(() =>
+    Math.max(
+      0,
+      Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000),
+    ),
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setElapsed(
+        Math.max(
+          0,
+          Math.floor((Date.now() - new Date(startedAt).getTime()) / 1000),
+        ),
+      );
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [startedAt]);
+
+  const minutes = String(Math.floor(elapsed / 60)).padStart(2, "0");
+  const seconds = String(elapsed % 60).padStart(2, "0");
+
+  return (
+    <div className="flex items-center gap-2 text-muted-foreground">
+      <Timer className="size-4" />
+      <span className="text-lg font-mono font-semibold tabular-nums">
+        {minutes}:{seconds}
+      </span>
+    </div>
+  );
+}
+
+function ExerciseVolume({ sets }: { sets: ExerciseSet[] }) {
+  const volume = sets
+    .filter((s) => s.completed)
+    .reduce((sum, s) => sum + (s.weight || 0) * (s.reps || 0), 0);
+
+  const completedSets = sets.filter((s) => s.completed).length;
+
+  return (
+    <p className="text-sm text-muted-foreground">
+      {completedSets} set{completedSets !== 1 ? "s" : ""} totaling{" "}
+      <span className="text-foreground font-medium">
+        {volume.toLocaleString()} kg
+      </span>
+    </p>
+  );
+}
+
+function CompactSetRow({
   set,
   sessionId,
   exerciseId,
@@ -63,6 +114,12 @@ function SetRow({
   const queryClient = useQueryClient();
   const [reps, setReps] = useState(String(set.reps ?? ""));
   const [weight, setWeight] = useState(String(set.weight ?? ""));
+  const [editing, setEditing] = useState(false);
+
+  useEffect(() => {
+    setReps(String(set.reps ?? ""));
+    setWeight(String(set.weight ?? ""));
+  }, [set.reps, set.weight]);
 
   const updateSet = useMutation({
     mutationFn: async (data: Partial<ExerciseSet>) => {
@@ -131,157 +188,97 @@ function SetRow({
     },
   });
 
-  function handleBlur(field: "reps" | "weight", value: string) {
-    const num = value === "" ? undefined : Number(value);
-    if (num !== undefined && Number.isNaN(num)) return;
+  function commitEdits() {
+    const newWeight = weight === "" ? undefined : Number(weight);
+    const newReps = reps === "" ? undefined : Number(reps);
+    const updates: Partial<ExerciseSet> = {};
+
     if (
-      (field === "reps" && num === set.reps) ||
-      (field === "weight" && num === set.weight)
-    )
-      return;
-    updateSet.mutate({ [field]: num });
+      newWeight !== undefined &&
+      !Number.isNaN(newWeight) &&
+      newWeight !== set.weight
+    ) {
+      updates.weight = newWeight;
+    }
+    if (
+      newReps !== undefined &&
+      !Number.isNaN(newReps) &&
+      newReps !== set.reps
+    ) {
+      updates.reps = newReps;
+    }
+    if (Object.keys(updates).length > 0) {
+      updateSet.mutate(updates);
+    }
+    setEditing(false);
+  }
+
+  if (editing) {
+    return (
+      <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-card/60 backdrop-blur-md px-4 py-3">
+        <span className="w-6 shrink-0 text-center text-sm font-medium text-muted-foreground">
+          {set.setNumber}
+        </span>
+        <Input
+          className="h-8 w-16 text-center text-sm"
+          placeholder="kg"
+          inputMode="decimal"
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+          autoFocus
+        />
+        <span className="text-sm text-muted-foreground">×</span>
+        <Input
+          className="h-8 w-16 text-center text-sm"
+          placeholder="reps"
+          inputMode="numeric"
+          value={reps}
+          onChange={(e) => setReps(e.target.value)}
+        />
+        <Button variant="default" size="icon-sm" onClick={commitEdits}>
+          <Check className="size-3.5" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={() => deleteSet.mutate()}
+          disabled={deleteSet.isPending}
+        >
+          <Minus className="size-3.5 text-muted-foreground" />
+        </Button>
+      </div>
+    );
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="w-6 shrink-0 text-center text-xs text-muted-foreground">
-        {set.setNumber}
-      </span>
-      <Input
-        className="h-8 w-16 text-center text-sm"
-        placeholder="kg"
-        inputMode="decimal"
-        value={weight}
-        onChange={(e) => setWeight(e.target.value)}
-        onBlur={() => handleBlur("weight", weight)}
-      />
-      <span className="text-xs text-muted-foreground">x</span>
-      <Input
-        className="h-8 w-16 text-center text-sm"
-        placeholder="reps"
-        inputMode="numeric"
-        value={reps}
-        onChange={(e) => setReps(e.target.value)}
-        onBlur={() => handleBlur("reps", reps)}
-      />
+    <div className="flex w-full items-center gap-3 rounded-xl border border-white/10 bg-card/60 backdrop-blur-md px-4 py-3 min-h-[48px]">
+      <button
+        type="button"
+        className="flex flex-1 items-center gap-3 cursor-pointer bg-transparent border-none p-0 text-left"
+        onClick={() => setEditing(true)}
+      >
+        <span className="w-6 shrink-0 text-center text-sm font-medium text-muted-foreground">
+          {set.setNumber}
+        </span>
+        <span className="flex-1 text-sm font-medium">
+          {set.weight ?? "—"} kg × {set.reps ?? "—"}
+        </span>
+      </button>
       <Button
         variant={set.completed ? "default" : "outline"}
         size="icon-sm"
+        className="shrink-0"
         onClick={() => updateSet.mutate({ completed: !set.completed })}
       >
         <Check className="size-3.5" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        onClick={() => deleteSet.mutate()}
-        disabled={deleteSet.isPending}
-      >
-        <Minus className="size-3.5 text-muted-foreground" />
       </Button>
     </div>
   );
 }
 
-function ExerciseCard({
-  exercise,
-  sessionId,
-}: {
-  exercise: SessionExercise;
-  sessionId: string;
-}) {
-  const queryClient = useQueryClient();
-
-  const addSet = useMutation({
-    mutationFn: async () => {
-      const nextSetNumber = exercise.sets.length + 1;
-      const res = await fetch(
-        `/api/sessions/${sessionId}/exercises/${exercise.id}/sets`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ setNumber: nextSetNumber }),
-        },
-      );
-      if (!res.ok) throw new Error("Failed to add set");
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["sessions", sessionId],
-      });
-      invalidateWorkoutDependentQueries(queryClient);
-    },
-  });
-
-  const deleteExercise = useMutation({
-    mutationFn: async () => {
-      const res = await fetch(
-        `/api/sessions/${sessionId}/exercises/${exercise.id}`,
-        { method: "DELETE" },
-      );
-      if (!res.ok) throw new Error("Failed to delete exercise");
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["sessions", sessionId],
-      });
-      invalidateWorkoutDependentQueries(queryClient);
-    },
-  });
-
-  return (
-    <Card>
-      <CardContent className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold">{exercise.name}</h3>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => deleteExercise.mutate()}
-            disabled={deleteExercise.isPending}
-          >
-            <Trash2 className="text-muted-foreground" />
-          </Button>
-        </div>
-
-        {exercise.sets.length > 0 && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="w-6 text-center">Set</span>
-            <span className="w-16 text-center">Weight</span>
-            <span />
-            <span className="w-16 text-center">Reps</span>
-          </div>
-        )}
-
-        <div className="space-y-1.5">
-          {exercise.sets.map((set) => (
-            <SetRow
-              key={set.id}
-              set={set}
-              sessionId={sessionId}
-              exerciseId={exercise.id}
-            />
-          ))}
-        </div>
-
-        <Button
-          variant="outline"
-          size="sm"
-          className="w-full"
-          onClick={() => addSet.mutate()}
-          disabled={addSet.isPending}
-        >
-          <Plus data-icon="inline-start" />
-          Add Set
-        </Button>
-      </CardContent>
-    </Card>
-  );
-}
-
 export function SessionDetail({ sessionId }: { sessionId: string }) {
   const queryClient = useQueryClient();
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [addExOpen, setAddExOpen] = useState(false);
   const [exerciseName, setExerciseName] = useState("");
 
@@ -312,6 +309,55 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
       invalidateWorkoutDependentQueries(queryClient);
       setAddExOpen(false);
       setExerciseName("");
+      if (session) {
+        setCurrentExerciseIndex(session.exercises.length);
+      }
+    },
+  });
+
+  const deleteExercise = useMutation({
+    mutationFn: async (exerciseId: string) => {
+      const res = await fetch(
+        `/api/sessions/${sessionId}/exercises/${exerciseId}`,
+        { method: "DELETE" },
+      );
+      if (!res.ok) throw new Error("Failed to delete exercise");
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["sessions", sessionId],
+      });
+      invalidateWorkoutDependentQueries(queryClient);
+      if (
+        session &&
+        currentExerciseIndex >= session.exercises.length - 1 &&
+        currentExerciseIndex > 0
+      ) {
+        setCurrentExerciseIndex(currentExerciseIndex - 1);
+      }
+    },
+  });
+
+  const addSet = useMutation({
+    mutationFn: async (exerciseId: string) => {
+      const exercise = session?.exercises.find((e) => e.id === exerciseId);
+      const nextSetNumber = (exercise?.sets.length ?? 0) + 1;
+      const res = await fetch(
+        `/api/sessions/${sessionId}/exercises/${exerciseId}/sets`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ setNumber: nextSetNumber }),
+        },
+      );
+      if (!res.ok) throw new Error("Failed to add set");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["sessions", sessionId],
+      });
+      invalidateWorkoutDependentQueries(queryClient);
     },
   });
 
@@ -337,9 +383,12 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
     return (
       <div className="space-y-4">
         <div className="h-8 w-32 animate-pulse rounded bg-muted" />
-        {[1, 2].map((i) => (
-          <div key={i} className="h-32 animate-pulse rounded-2xl bg-muted" />
-        ))}
+        <div className="h-48 animate-pulse rounded-2xl bg-muted" />
+        <div className="space-y-2">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-12 animate-pulse rounded-xl bg-muted" />
+          ))}
+        </div>
       </div>
     );
   }
@@ -358,57 +407,114 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
   }
 
   const isCompleted = session.status === "completed";
+  const exercises = session.exercises;
+  const safeIndex = Math.min(currentExerciseIndex, exercises.length - 1);
+  const currentExercise = exercises[safeIndex];
+  const hasExercises = exercises.length > 0;
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1">
+    <div className="flex flex-col gap-5">
+      {/* Header: Back + Timer */}
+      <div className="flex items-center justify-between">
         <Link
           href="/calendar"
           className="inline-flex h-11 items-center gap-1 -ml-1 px-1 text-sm text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="size-4" />
+          <ChevronLeft className="size-4" />
           Back
         </Link>
-        <div className="flex items-center gap-3">
-          <div className="flex-1">
-            <h1 className="text-xl font-bold tracking-tight">Workout</h1>
-            <p className="text-sm text-muted-foreground">
-              {new Date(`${session.date}T12:00:00`).toLocaleDateString()}
-            </p>
+        {!isCompleted && <ElapsedTimer startedAt={session.createdAt} />}
+        {isCompleted && (
+          <span className="flex items-center gap-1.5 text-sm font-medium text-primary">
+            <Check className="size-4" />
+            Completed
+          </span>
+        )}
+      </div>
+
+      {hasExercises && currentExercise ? (
+        <>
+          {/* Exercise Navigation */}
+          <div className="flex items-center justify-between">
+            <Button
+              variant="ghost"
+              size="icon"
+              disabled={safeIndex === 0}
+              onClick={() => setCurrentExerciseIndex(safeIndex - 1)}
+            >
+              <ChevronLeft className="size-5" />
+            </Button>
+
+            <div className="flex flex-col items-center text-center">
+              <h1 className="text-xl font-bold tracking-tight">
+                {currentExercise.name}
+              </h1>
+              <span className="text-sm text-muted-foreground">
+                {safeIndex + 1} / {exercises.length}
+              </span>
+            </div>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              disabled={safeIndex === exercises.length - 1}
+              onClick={() => setCurrentExerciseIndex(safeIndex + 1)}
+            >
+              <ChevronRight className="size-5" />
+            </Button>
           </div>
-          {isCompleted && (
-            <span className="flex items-center gap-1 text-sm text-primary">
-              <CheckCircle2 className="size-4" />
-              Done
-            </span>
-          )}
-        </div>
-      </div>
 
-      <div className="space-y-4">
-        {session.exercises.map((exercise) => (
-          <ExerciseCard
-            key={exercise.id}
-            exercise={exercise}
-            sessionId={sessionId}
-          />
-        ))}
-      </div>
+          {/* Volume */}
+          <div className="flex items-center justify-between">
+            <ExerciseVolume sets={currentExercise.sets} />
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => deleteExercise.mutate(currentExercise.id)}
+              disabled={deleteExercise.isPending}
+            >
+              <Trash2 className="size-4 text-muted-foreground" />
+            </Button>
+          </div>
 
-      {session.exercises.length === 0 && (
+          {/* Set Rows */}
+          <div className="space-y-2">
+            {currentExercise.sets.map((set) => (
+              <CompactSetRow
+                key={set.id}
+                set={set}
+                sessionId={sessionId}
+                exerciseId={currentExercise.id}
+              />
+            ))}
+          </div>
+
+          {/* Add Set */}
+          <Button
+            variant="outline"
+            className="w-full rounded-xl border-dashed border-white/10"
+            onClick={() => addSet.mutate(currentExercise.id)}
+            disabled={addSet.isPending}
+          >
+            <Plus data-icon="inline-start" />
+            Add Set
+          </Button>
+        </>
+      ) : (
         <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
           <p className="text-muted-foreground">No exercises yet</p>
           <p className="text-sm text-muted-foreground">
-            Add exercises to start logging sets.
+            Add an exercise to start logging sets.
           </p>
         </div>
       )}
 
-      <div className="flex gap-2">
+      {/* Bottom Actions */}
+      <div className="flex gap-2 mt-auto pt-4">
         <Dialog open={addExOpen} onOpenChange={setAddExOpen}>
           <DialogTrigger
             render={
-              <Button variant="outline" className="flex-1">
+              <Button variant="outline" className="flex-1 rounded-xl">
                 <Plus data-icon="inline-start" />
                 Add Exercise
               </Button>
@@ -443,14 +549,13 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
           </DialogContent>
         </Dialog>
 
-        {!isCompleted && session.exercises.length > 0 && (
+        {!isCompleted && hasExercises && (
           <Button
-            className="flex-1"
+            className="flex-1 rounded-xl"
             onClick={() => completeSession.mutate()}
             disabled={completeSession.isPending}
           >
-            <CheckCircle2 data-icon="inline-start" />
-            {completeSession.isPending ? "Completing..." : "Complete"}
+            {completeSession.isPending ? "Completing..." : "Complete Workout"}
           </Button>
         )}
       </div>

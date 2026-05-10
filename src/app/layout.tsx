@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 import { BottomNav } from "@/components/bottom-nav";
 import { ServiceWorkerRegister } from "@/components/sw-register";
 import { TopHeader } from "@/components/top-header";
@@ -46,14 +47,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body
-        className={`${inter.variable} font-sans antialiased`}
-      >
+      <body className={`${inter.variable} font-sans antialiased`}>
         <Providers>
           <TopHeader />
           {children}
           <BottomNav />
           <ServiceWorkerRegister />
+          <Toaster theme="dark" position="bottom-center" />
         </Providers>
       </body>
     </html>

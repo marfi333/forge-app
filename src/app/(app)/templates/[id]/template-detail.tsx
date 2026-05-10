@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -310,7 +311,6 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
   const [editingName, setEditingName] = useState(false);
   const [nameValue, setNameValue] = useState("");
   const [localExercises, setLocalExercises] = useState<Exercise[] | null>(null);
-  const previousExercises = useRef<Exercise[]>([]);
 
   const { data: template, isLoading } = useQuery<TemplateWithExercises>({
     queryKey: ["templates", templateId],
@@ -416,12 +416,56 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
       if (!res.ok) throw new Error("Failed to reorder exercises");
       return res.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["templates", templateId] });
+    onMutate: async (orderedIds) => {
+      await queryClient.cancelQueries({
+        queryKey: ["templates", templateId],
+      });
+      const previous = queryClient.getQueryData<TemplateWithExercises>([
+        "templates",
+        templateId,
+      ]);
+      if (previous) {
+        const reordered = orderedIds
+          .map((id, idx) => {
+            const ex = previous.exercises.find((e) => e.id === id);
+            return ex ? { ...ex, order: idx } : null;
+          })
+          .filter((e): e is Exercise => e !== null);
+        queryClient.setQueryData<TemplateWithExercises>(
+          ["templates", templateId],
+          { ...previous, exercises: reordered },
+        );
+      }
+      return { previous };
+    },
+    onSuccess: (_data, orderedIds) => {
+      const current = queryClient.getQueryData<TemplateWithExercises>([
+        "templates",
+        templateId,
+      ]);
+      if (current) {
+        const reordered = orderedIds
+          .map((id, idx) => {
+            const ex = current.exercises.find((e) => e.id === id);
+            return ex ? { ...ex, order: idx } : null;
+          })
+          .filter((e): e is Exercise => e !== null);
+        queryClient.setQueryData<TemplateWithExercises>(
+          ["templates", templateId],
+          { ...current, exercises: reordered },
+        );
+      }
       setLocalExercises(null);
     },
-    onError: () => {
+    onError: (_err, _orderedIds, context) => {
+      if (context?.previous) {
+        queryClient.setQueryData(["templates", templateId], context.previous);
+      }
       setLocalExercises(null);
+      toast.error("Failed to reorder exercises");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["templates", templateId] });
     },
   });
 
@@ -545,9 +589,6 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
       )}
 
       <DragDropProvider
-        onDragStart={() => {
-          previousExercises.current = exercises;
-        }}
         onDragOver={(event) => {
           setLocalExercises((current) => move(current ?? exercises, event));
         }}
@@ -562,6 +603,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
           const changed = ids.some((id, i) => id !== originalIds[i]);
           if (changed) {
             reorderMutation.mutate(ids);
+            setLocalExercises(null);
           } else {
             setLocalExercises(null);
           }

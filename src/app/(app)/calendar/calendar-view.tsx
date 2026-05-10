@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useDrag } from "@use-gesture/react";
-import { ChevronLeft, ChevronRight, Dumbbell, Moon } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, Dumbbell, Moon } from "lucide-react";
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ interface Session {
   id: string;
   date: string;
   status: string;
+  templateName: string | null;
 }
 
 function getMonthString(date: Date) {
@@ -328,7 +329,7 @@ export function CalendarView() {
         </span>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         <h2 className="text-sm font-medium text-muted-foreground">
           {selectedDate === todayStr
             ? "Today’s Sessions"
@@ -339,22 +340,66 @@ export function CalendarView() {
             No sessions for this day.
           </p>
         ) : (
-          sessions
-            .filter((s) => s.date === selectedDate)
-            .map((s) => (
-              <Link key={s.id} href={`/sessions/${s.id}`}>
-                <div className="rounded-2xl border border-white/10 bg-card p-3 backdrop-blur-xl">
-                  <span className="text-sm font-medium">
-                    Workout — {s.status}
-                  </span>
-                </div>
-              </Link>
-            ))
+          <div className="space-y-2">
+            {sessions
+              .filter((s) => s.date === selectedDate)
+              .map((s) => {
+                const isCompleted = s.status === "completed";
+                const isInProgress = s.status === "in_progress";
+                return (
+                  <Link key={s.id} href={`/sessions/${s.id}`} className="block">
+                    <div
+                      className={`flex items-center gap-3 rounded-xl border p-3.5 backdrop-blur-xl transition-colors ${
+                        isCompleted
+                          ? "border-primary/30 bg-primary/5"
+                          : isInProgress
+                            ? "border-yellow-500/30 bg-yellow-500/5"
+                            : "border-white/10 bg-card"
+                      }`}
+                    >
+                      <div
+                        className={`flex size-8 items-center justify-center rounded-lg ${
+                          isCompleted
+                            ? "bg-primary/15 text-primary"
+                            : isInProgress
+                              ? "bg-yellow-500/15 text-yellow-500"
+                              : "bg-muted text-muted-foreground"
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <Check className="size-4" />
+                        ) : (
+                          <Dumbbell className="size-4" />
+                        )}
+                      </div>
+                      <div className="flex flex-col flex-1 min-w-0">
+                        <span className="text-sm font-medium truncate">
+                          {s.templateName || "Workout"}
+                        </span>
+                        <span
+                          className={`text-xs ${
+                            isCompleted
+                              ? "text-primary"
+                              : isInProgress
+                                ? "text-yellow-500"
+                                : "text-muted-foreground"
+                          }`}
+                        >
+                          {isCompleted
+                            ? "Completed"
+                            : isInProgress
+                              ? "In Progress"
+                              : s.status}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+          </div>
         )}
         <Link href={`/sessions/new?date=${selectedDate}`}>
-          <Button className="mt-2 h-10 w-full">
-            Start Workout
-          </Button>
+          <Button className="h-10 w-full">Start Workout</Button>
         </Link>
       </div>
     </div>
