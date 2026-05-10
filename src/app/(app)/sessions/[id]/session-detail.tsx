@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import ConfettiBoom from "react-confetti-boom";
 import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -283,6 +284,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
   const [addExOpen, setAddExOpen] = useState(false);
   const [exerciseName, setExerciseName] = useState("");
   const [deleteExConfirmOpen, setDeleteExConfirmOpen] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const { data: session, isLoading } = useQuery<WorkoutSession>({
     queryKey: ["sessions", sessionId],
@@ -417,6 +419,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
 
   return (
     <div className="flex flex-col gap-5">
+      {showConfetti && <ConfettiBoom />}
       {/* Header: Back + Timer */}
       <div className="flex items-center justify-between">
         <Link
@@ -562,7 +565,10 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
         {!isCompleted && hasExercises && (
           <Button
             className="flex-1 rounded-xl"
-            onClick={() => completeSession.mutate()}
+            onClick={() => {
+              setShowConfetti(true);
+              completeSession.mutate();
+            }}
             disabled={completeSession.isPending}
           >
             {completeSession.isPending ? "Completing..." : "Complete Workout"}
