@@ -64,6 +64,13 @@
       "when": 1778485691427,
       "tag": "0008_confused_sauron",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1778506487436,
+      "tag": "0009_last_jamie_braddock",
+      "breakpoints": true
     }
   ]
 }

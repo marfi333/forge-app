@@ -24,7 +24,68 @@
   },
   "signIn": {
     "tagline": "Track. Progress. Build.",
-    "continueWithGoogle": "Continue with Google"
+    "continueWithGoogle": "Continue with Google",
+    "email": "Email Address",
+    "password": "Password",
+    "forgot": "Forgot?",
+    "submit": "Sign In",
+    "signingIn": "Signing in...",
+    "noAccount": "Don't have an account?",
+    "register": "Register",
+    "verified": "Email verified! You can now sign in.",
+    "resetSuccess": "Password reset successful! Sign in with your new password.",
+    "or": "or",
+    "errors": {
+      "invalid_credentials": "Invalid email or password.",
+      "email_not_verified": "Please verify your email first."
+    }
+  },
+  "register": {
+    "title": "Create Account",
+    "subtitle": "Join the elite. Start tracking your progress.",
+    "name": "Full Name",
+    "email": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "submit": "Register",
+    "registering": "Registering...",
+    "hasAccount": "Already have an account?",
+    "login": "Login",
+    "checkEmail": "Check your email",
+    "checkEmailDescription": "We sent a verification link to your email. Click it to activate your account.",
+    "backToLogin": "Back to Login",
+    "errors": {
+      "name_required": "Name is required.",
+      "invalid_email": "Please enter a valid email.",
+      "password_min": "Password must be at least 8 characters.",
+      "passwords_mismatch": "Passwords do not match.",
+      "email_exists": "An account with this email already exists.",
+      "disposable_email": "Disposable email addresses are not allowed."
+    }
+  },
+  "forgotPassword": {
+    "title": "Reset Password",
+    "subtitle": "Enter your email to receive a reset link.",
+    "email": "Email Address",
+    "submit": "Send Reset Link",
+    "sending": "Sending...",
+    "backToLogin": "Back to Login",
+    "checkEmail": "Check your email",
+    "checkEmailDescription": "If an account exists with that email, we sent a password reset link."
+  },
+  "resetPassword": {
+    "title": "Set New Password",
+    "subtitle": "Enter your new password below.",
+    "password": "New Password",
+    "confirmPassword": "Confirm Password",
+    "submit": "Reset Password",
+    "resetting": "Resetting...",
+    "errors": {
+      "password_min": "Password must be at least 8 characters.",
+      "passwords_mismatch": "Passwords do not match.",
+      "invalid_token": "This reset link is invalid or has expired.",
+      "token_expired": "This reset link has expired. Please request a new one."
+    }
   },
   "error": {
     "title": "Something went wrong",
