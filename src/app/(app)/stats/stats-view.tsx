@@ -46,7 +46,7 @@ export function StatsView() {
 
       <StatsSummaryCards period={period.toLowerCase() as "week" | "month"} />
 
-      <section className="space-y-2">
+      <section data-tour="stats-charts" className="space-y-2">
         <h2 className="text-sm font-medium text-muted-foreground">
           Exercise Progression
         </h2>

@@ -146,7 +146,7 @@ export function DashboardView() {
       </section>
 
       {/* Days Grid (Bento Style) */}
-      <section className="grid grid-cols-2 gap-3">
+      <section data-tour="weekly-plan" className="grid grid-cols-2 gap-3">
         {data.weeklyPlan.map((day, i) => (
           <DayCard
             key={day.date}
@@ -168,6 +168,7 @@ export function DashboardView() {
       {/* Start Workout CTA */}
       <Link
         href="/sessions/new"
+        data-tour="start-workout"
         className="flex h-14 w-full items-center justify-center rounded-xl bg-primary font-semibold text-primary-foreground text-base transition-opacity hover:opacity-90 active:opacity-80"
       >
         Start Workout

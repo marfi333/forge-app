@@ -225,7 +225,7 @@ export function CalendarView() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-7 gap-1">
+      <div data-tour="calendar-grid" className="grid grid-cols-7 gap-1">
         {DAY_LABELS.map((label) => (
           <div
             key={label}
