@@ -58,6 +58,11 @@
       "sun": "Sun"
     },
     "motivation": {
+      "labelPR": "New record",
+      "labelToday": "Today",
+      "labelStreak": "On a roll",
+      "labelNudge": "Time to move",
+      "labelGreeting": "Hello",
       "pr": "New PR on {exercise}!",
       "todayWorkout": "Workout day — let's crush it!",
       "todayRest": "Rest day — enjoy the recovery",

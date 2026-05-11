@@ -23,6 +23,15 @@ interface SelectedMessage {
   kind: MessageKind;
   emoji: string;
   values?: Record<string, string | number>;
+  /** Micro-label key shown above the message in uppercase tracking-widest. */
+  labelKey:
+    | "labelPR"
+    | "labelToday"
+    | "labelStreak"
+    | "labelNudge"
+    | "labelGreeting";
+  /** Whether to highlight with the neon primary glow (PR / streak). */
+  accent: boolean;
 }
 
 function getTimeOfDayKind(
@@ -41,14 +50,19 @@ export function selectMessage(
     return {
       kind: "pr",
       emoji: "🏆",
-      values: {
-        exercise: motivation.recentPR.exercise,
-      },
+      values: { exercise: motivation.recentPR.exercise },
+      labelKey: "labelPR",
+      accent: true,
     };
   }
 
   if (motivation.todayIsWorkout) {
-    return { kind: "todayWorkout", emoji: "🔥" };
+    return {
+      kind: "todayWorkout",
+      emoji: "🔥",
+      labelKey: "labelToday",
+      accent: true,
+    };
   }
 
   if (motivation.streak >= 2) {
@@ -56,6 +70,8 @@ export function selectMessage(
       kind: "streak",
       emoji: "💪",
       values: { count: motivation.streak },
+      labelKey: "labelStreak",
+      accent: true,
     };
   }
 
@@ -67,11 +83,18 @@ export function selectMessage(
       kind: "nudge",
       emoji: "👋",
       values: { count: motivation.daysSinceLastWorkout },
+      labelKey: "labelNudge",
+      accent: false,
     };
   }
 
   if (!motivation.todayIsWorkout && motivation.daysSinceLastWorkout !== null) {
-    return { kind: "todayRest", emoji: "😌" };
+    return {
+      kind: "todayRest",
+      emoji: "😌",
+      labelKey: "labelToday",
+      accent: false,
+    };
   }
 
   const timeKind = getTimeOfDayKind(hour);
@@ -81,7 +104,7 @@ export function selectMessage(
       : timeKind === "greetingAfternoon"
         ? "🌤️"
         : "🌙";
-  return { kind: timeKind, emoji };
+  return { kind: timeKind, emoji, labelKey: "labelGreeting", accent: false };
 }
 
 export function MotivationalBanner({
@@ -96,14 +119,31 @@ export function MotivationalBanner({
   return (
     <section
       aria-live="polite"
-      className="flex items-center gap-3 rounded-xl border border-white/10 bg-card/60 backdrop-blur-md px-4 py-3"
+      className="relative overflow-hidden rounded-xl border border-white/10 bg-card/80 backdrop-blur-xl p-3"
     >
-      <span className="text-2xl motivation-emoji-bounce" aria-hidden="true">
-        {message.emoji}
-      </span>
-      <p className="text-sm font-medium text-foreground/90">
-        {t(message.kind, message.values)}
-      </p>
+      {message.accent && (
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full pointer-events-none" />
+      )}
+      <div className="flex items-center gap-4 relative z-10">
+        <span
+          className="text-3xl motivation-emoji-bounce shrink-0"
+          aria-hidden="true"
+        >
+          {message.emoji}
+        </span>
+        <div className="flex flex-col min-w-0">
+          <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-widest mb-0">
+            {t(message.labelKey)}
+          </span>
+          <p
+            className={`text-base font-bold leading-tight ${
+              message.accent ? "text-primary" : "text-foreground"
+            }`}
+          >
+            {t(message.kind, message.values)}
+          </p>
+        </div>
+      </div>
     </section>
   );
 }
@@ -112,7 +152,7 @@ export function MotivationalBannerSkeleton() {
   return (
     <div
       aria-hidden="true"
-      className="h-14 w-full animate-pulse rounded-xl bg-muted"
+      className="h-[88px] w-full animate-pulse rounded-xl bg-muted"
     />
   );
 }

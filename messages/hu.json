@@ -58,6 +58,11 @@
       "sun": "Vas"
     },
     "motivation": {
+      "labelPR": "Új csúcs",
+      "labelToday": "Ma",
+      "labelStreak": "Sorozatban",
+      "labelNudge": "Itt az idő",
+      "labelGreeting": "Üdv",
       "pr": "Új csúcs a következőben: {exercise}!",
       "todayWorkout": "Edzésnap — gyerünk, nyomjuk!",
       "todayRest": "Pihenőnap — élvezd a regenerációt",
