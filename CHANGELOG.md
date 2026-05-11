@@ -1,3 +1,12 @@
+## [1.11.2](https://github.com/marfi333/forge-app/compare/v1.11.1...v1.11.2) (2026-05-11)
+
+
+### Bug Fixes
+
+* react doctor landing fixes ([985b913](https://github.com/marfi333/forge-app/commit/985b9135bd8b1a981b22e099ce14c94e0df96b20))
+* react doctor recommendations ([79d32df](https://github.com/marfi333/forge-app/commit/79d32df6357e7ad7409beef240cae3eb24616f0e))
+* react doctor recommendations v2 ([84591da](https://github.com/marfi333/forge-app/commit/84591da69e55779c4fa3d142868db32af90f07f8))
+
 ## [1.11.1](https://github.com/marfi333/forge-app/compare/v1.11.0...v1.11.1) (2026-05-11)
 
 
