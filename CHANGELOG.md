@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/marfi333/forge-app/compare/v1.9.0...v1.9.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* exercise view layout ([88ddd32](https://github.com/marfi333/forge-app/commit/88ddd32b78e7d2db7538cc3cd94770ddb25eec67))
+
 # [1.9.0](https://github.com/marfi333/forge-app/compare/v1.8.2...v1.9.0) (2026-05-11)
 
 
