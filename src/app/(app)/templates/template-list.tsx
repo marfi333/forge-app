@@ -262,24 +262,26 @@ export function TemplateList() {
       <div data-tour="template-list" className="space-y-3">
         {templates?.map((template) => (
           <Card key={template.id} size="sm">
-            <CardHeader className="flex flex-row items-center justify-between gap-2">
+            <CardHeader className="flex flex-row items-center justify-between gap-2 pl-5!">
               <Link
                 href={`/templates/${template.id}`}
                 className="min-w-0 flex-1"
               >
                 <CardTitle className="truncate">{template.name}</CardTitle>
-                <div className="mt-1 flex items-center gap-2">
-                  {template.weekday && (
-                    <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                      {template.weekday}
-                    </span>
-                  )}
-                  {template.muscleGroup && (
-                    <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                      {tm(template.muscleGroup)}
-                    </span>
-                  )}
-                </div>
+                {(template.weekday || template.muscleGroup) && (
+                  <div className="mt-1 flex items-center gap-2">
+                    {template.weekday && (
+                      <span className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                        {template.weekday}
+                      </span>
+                    )}
+                    {template.muscleGroup && (
+                      <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                        {tm(template.muscleGroup)}
+                      </span>
+                    )}
+                  </div>
+                )}
               </Link>
               <div className="flex shrink-0 items-center gap-1">
                 <Button
