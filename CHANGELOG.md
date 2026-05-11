@@ -1,3 +1,11 @@
+# [1.5.0](https://github.com/marfi333/forge-app/compare/v1.4.0...v1.5.0) (2026-05-11)
+
+
+### Features
+
+* dashboard motivation banner style changes ([45bec02](https://github.com/marfi333/forge-app/commit/45bec02e634128029354219d7e9bb823109f1c85))
+* dashboard motivational banner ([5330a73](https://github.com/marfi333/forge-app/commit/5330a73501da9814b9b5568a900f8de0abbfdf14))
+
 # [1.4.0](https://github.com/marfi333/forge-app/compare/v1.3.1...v1.4.0) (2026-05-11)
 
 
