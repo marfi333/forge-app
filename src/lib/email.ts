@@ -1,6 +1,5 @@
+import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { Resend } from "resend";
-
-const FROM_EMAIL = "FORGE <noreply@erkely.tech>";
 
 export function createResendClient(apiKey: string) {
   return new Resend(apiKey);
@@ -11,9 +10,13 @@ export async function sendVerificationEmail(
   email: string,
   token: string,
   locale: string,
+  fromMailUrl: string,
 ) {
+  const { env } = getCloudflareContext();
+
   const resend = createResendClient(apiKey);
-  const verifyUrl = `https://forge.erkely.tech/api/auth/verify-email?token=${token}`;
+  const fromEmail = `FORGE <noreply@${fromMailUrl}>`;
+  const verifyUrl = `${env.APP_URL}/api/auth/verify-email?token=${token}`;
 
   const subject =
     locale === "hu"
@@ -36,7 +39,7 @@ export async function sendVerificationEmail(
   `;
 
   await resend.emails.send({
-    from: FROM_EMAIL,
+    from: fromEmail,
     to: email,
     subject,
     html,
@@ -48,9 +51,13 @@ export async function sendPasswordResetEmail(
   email: string,
   token: string,
   locale: string,
+  fromMailUrl: string,
 ) {
+  const { env } = getCloudflareContext();
+
   const resend = createResendClient(apiKey);
-  const resetUrl = `https://forge.erkely.tech/reset-password?token=${token}`;
+  const fromEmail = `FORGE <noreply@${fromMailUrl}>`;
+  const resetUrl = `${env.APP_URL}/reset-password?token=${token}`;
 
   const subject =
     locale === "hu"
@@ -73,7 +80,7 @@ export async function sendPasswordResetEmail(
   `;
 
   await resend.emails.send({
-    from: FROM_EMAIL,
+    from: fromEmail,
     to: email,
     subject,
     html,

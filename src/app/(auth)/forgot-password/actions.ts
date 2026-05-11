@@ -42,13 +42,13 @@ export async function forgotPassword(
     const token = crypto.randomUUID();
     const expires = new Date(Date.now() + 60 * 60 * 1000);
 
+    await sendPasswordResetEmail(env.RESEND_API_KEY, email, token, "en", env.FROM_MAIL_URL);
+
     await db.insert(schema.verificationTokens).values({
       identifier: email,
       token,
       expires,
     });
-
-    await sendPasswordResetEmail(env.RESEND_API_KEY, email, token, "en");
   }
 
   return { success: true };
