@@ -40,12 +40,12 @@ export function TopHeader() {
         ) : (
           <div className="size-8 rounded-full bg-muted" />
         )}
-        <span className="text-base font-bold tracking-tight">FORGE</span>
+        <span className="text-3xl font-black tracking-tight">FORGE</span>
         <button
           type="button"
           className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
         >
-          <Bell className="size-4" />
+          <Bell className="size-5" />
         </button>
       </div>
     </header>
