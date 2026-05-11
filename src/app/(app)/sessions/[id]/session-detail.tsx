@@ -113,10 +113,12 @@ function CompactSetRow({
   set,
   sessionId,
   exerciseId,
+  readOnly,
 }: {
   set: ExerciseSet;
   sessionId: string;
   exerciseId: string;
+  readOnly?: boolean;
 }) {
   const tc = useTranslations("common");
   const queryClient = useQueryClient();
@@ -222,7 +224,7 @@ function CompactSetRow({
     setEditing(false);
   }
 
-  if (editing) {
+  if (editing && !readOnly) {
     return (
       <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-card/60 backdrop-blur-md px-4 py-3">
         <span className="w-6 shrink-0 text-center text-sm font-medium text-muted-foreground">
@@ -263,13 +265,16 @@ function CompactSetRow({
     <div className="flex w-full items-center gap-3 rounded-xl border border-white/10 bg-card/60 backdrop-blur-md px-4 py-3 min-h-[48px]">
       <button
         type="button"
-        className="flex flex-1 items-center gap-3 cursor-pointer bg-transparent border-none p-0 text-left"
-        onClick={() => setEditing(true)}
+        className={`flex flex-1 items-center gap-3 bg-transparent border-none p-0 text-left ${readOnly ? "cursor-default" : "cursor-pointer"}`}
+        onClick={() => !readOnly && setEditing(true)}
+        disabled={readOnly}
       >
         <span className="w-6 shrink-0 text-center text-sm font-medium text-muted-foreground">
           {set.setNumber}
         </span>
-        <span className="flex-1 text-sm font-medium">
+        <span
+          className={`flex-1 text-sm font-medium ${readOnly ? "text-muted-foreground" : ""}`}
+        >
           {set.weight ?? "—"} {tc("kg")} × {set.reps ?? "—"}
         </span>
       </button>
@@ -520,20 +525,23 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
                 set={set}
                 sessionId={sessionId}
                 exerciseId={currentExercise.id}
+                readOnly={isCompleted}
               />
             ))}
           </div>
 
           {/* Add Set */}
-          <Button
-            variant="outline"
-            className="w-full rounded-xl border-dashed border-white/10"
-            onClick={() => addSet.mutate(currentExercise.id)}
-            disabled={addSet.isPending}
-          >
-            <Plus data-icon="inline-start" />
-            {t("addSet")}
-          </Button>
+          {!isCompleted && (
+            <Button
+              variant="outline"
+              className="w-full rounded-xl border-dashed border-white/10"
+              onClick={() => addSet.mutate(currentExercise.id)}
+              disabled={addSet.isPending}
+            >
+              <Plus data-icon="inline-start" />
+              {t("addSet")}
+            </Button>
+          )}
         </>
       ) : (
         <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
@@ -545,58 +553,62 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
       )}
 
       {/* Bottom Actions */}
-      <div className="flex gap-2 mt-auto pt-4">
-        <Dialog open={addExOpen} onOpenChange={setAddExOpen}>
-          <DialogTrigger
-            render={
-              <Button variant="outline" className="flex-1 rounded-xl">
-                <Plus data-icon="inline-start" />
-                {t("addExercise")}
-              </Button>
-            }
-          />
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t("addExercise")}</DialogTitle>
-            </DialogHeader>
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (exerciseName.trim())
-                  addExercise.mutate(exerciseName.trim());
-              }}
-            >
-              <Input
-                placeholder={t("exercisePlaceholder")}
-                value={exerciseName}
-                onChange={(e) => setExerciseName(e.target.value)}
-                autoFocus
-              />
-              <DialogFooter className="mt-4">
-                <Button
-                  type="submit"
-                  disabled={!exerciseName.trim() || addExercise.isPending}
-                >
-                  {addExercise.isPending ? tc("adding") : tc("add")}
+      {!isCompleted && (
+        <div className="flex gap-2 mt-auto pt-4">
+          <Dialog open={addExOpen} onOpenChange={setAddExOpen}>
+            <DialogTrigger
+              render={
+                <Button variant="outline" className="flex-1 rounded-xl">
+                  <Plus data-icon="inline-start" />
+                  {t("addExercise")}
                 </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+              }
+            />
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{t("addExercise")}</DialogTitle>
+              </DialogHeader>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (exerciseName.trim())
+                    addExercise.mutate(exerciseName.trim());
+                }}
+              >
+                <Input
+                  placeholder={t("exercisePlaceholder")}
+                  value={exerciseName}
+                  onChange={(e) => setExerciseName(e.target.value)}
+                  autoFocus
+                />
+                <DialogFooter className="mt-4">
+                  <Button
+                    type="submit"
+                    disabled={!exerciseName.trim() || addExercise.isPending}
+                  >
+                    {addExercise.isPending ? tc("adding") : tc("add")}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
 
-        {!isCompleted && hasExercises && (
-          <Button
-            className="flex-1 rounded-xl"
-            onClick={() => {
-              setShowConfetti(true);
-              completeSession.mutate();
-            }}
-            disabled={completeSession.isPending}
-          >
-            {completeSession.isPending ? t("completing") : t("completeWorkout")}
-          </Button>
-        )}
-      </div>
+          {hasExercises && (
+            <Button
+              className="flex-1 rounded-xl"
+              onClick={() => {
+                setShowConfetti(true);
+                completeSession.mutate();
+              }}
+              disabled={completeSession.isPending}
+            >
+              {completeSession.isPending
+                ? t("completing")
+                : t("completeWorkout")}
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
