@@ -1,3 +1,27 @@
+# [1.2.0](https://github.com/marfi333/forge-app/compare/v1.1.0...v1.2.0) (2026-05-11)
+
+
+### Bug Fixes
+
+* drawer padding style ([0be8b29](https://github.com/marfi333/forge-app/commit/0be8b29a2f2a74c79ed74c0322d6f18ebeffacc3))
+* **onboard:** fix biome lint issues in tour overlay ([a129b9c](https://github.com/marfi333/forge-app/commit/a129b9c3f1bc39d313dd24d73fd8d913d081d34e))
+* prevent onboarding tour tooltip from overflowing viewport ([b1b8beb](https://github.com/marfi333/forge-app/commit/b1b8beb368ed7b8b5490ccad7c4c94ecfd2ac00a))
+
+
+### Features
+
+* add English/Hungarian localization with next-intl ([813372d](https://github.com/marfi333/forge-app/commit/813372debcff0e4d9288b574a0a04aeb787601d3))
+* add GET and PATCH /api/onboarding routes ([583de08](https://github.com/marfi333/forge-app/commit/583de085d6cef8a6479c06514788382ac95a7226))
+* add onboardingCompletedAt column to users table ([cdb09ba](https://github.com/marfi333/forge-app/commit/cdb09ba9be036321c492150bbcbebdee016030ec))
+* **onboard:** add data-tour attributes to target UI elements ([ff390eb](https://github.com/marfi333/forge-app/commit/ff390ebfb44c5beb64794372453734975cea986c))
+* **onboard:** add localization to onboarding and haptics ([881b0b1](https://github.com/marfi333/forge-app/commit/881b0b11bfc6322e1001c82a18091daa02a0525f))
+* **onboard:** add Replay Tour button to Settings page ([cbbed54](https://github.com/marfi333/forge-app/commit/cbbed54cc2280f1c2fede00ae6c4ce1517bc59ce))
+* **onboard:** auto-trigger tour for new users on dashboard load ([0c06016](https://github.com/marfi333/forge-app/commit/0c060165f7228865046a64a13e5cd0bb376bd2e4))
+* **onboard:** build tooltip overlay component ([bdbbdb2](https://github.com/marfi333/forge-app/commit/bdbbdb239e8fa20aba9f87801c06ed87fed654d4))
+* **onboard:** build tour controller and mount in layout ([e32a9ac](https://github.com/marfi333/forge-app/commit/e32a9ac542a4c573509391a3350e15aa7d0573c2))
+* **onboard:** build Zustand onboarding store ([ebf317a](https://github.com/marfi333/forge-app/commit/ebf317aad245159c0a65c6b32a72a0075218f9f8))
+* **onboard:** define tour step configuration ([059ea0d](https://github.com/marfi333/forge-app/commit/059ea0d7261b3eec46a366ca36c0e0712d005348))
+
 # [1.1.0](https://github.com/marfi333/forge-app/compare/v1.0.3...v1.1.0) (2026-05-11)
 
 
