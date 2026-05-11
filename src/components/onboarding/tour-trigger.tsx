@@ -10,7 +10,7 @@ interface OnboardingStatus {
 }
 
 export function TourTrigger() {
-  const { startTour, isActive } = useOnboardingStore();
+  const { startTour, isActive, hasCompleted } = useOnboardingStore();
   const hasTriggered = useRef(false);
 
   const { data } = useQuery<OnboardingStatus>({
@@ -23,11 +23,17 @@ export function TourTrigger() {
   });
 
   useEffect(() => {
-    if (data && !data.completed && !isActive && !hasTriggered.current) {
+    if (
+      data &&
+      !data.completed &&
+      !isActive &&
+      !hasCompleted &&
+      !hasTriggered.current
+    ) {
       hasTriggered.current = true;
       startTour();
     }
-  }, [data, isActive, startTour]);
+  }, [data, isActive, hasCompleted, startTour]);
 
   return null;
 }

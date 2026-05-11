@@ -9,7 +9,7 @@ export function ReplayTourButton() {
   const t = useTranslations("settings");
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { startTour } = useOnboardingStore();
+  const { startTour, resetTour } = useOnboardingStore();
 
   const resetMutation = useMutation({
     mutationFn: async () => {
@@ -23,6 +23,7 @@ export function ReplayTourButton() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["onboarding"] });
+      resetTour();
       router.push("/dashboard");
       setTimeout(() => startTour(), 500);
     },
