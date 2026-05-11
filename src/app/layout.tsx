@@ -5,6 +5,7 @@ import { getLocale, getMessages } from "next-intl/server";
 import { Toaster } from "sonner";
 import { BottomNav } from "@/components/bottom-nav";
 import { TourController } from "@/components/onboarding/tour-controller";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { ServiceWorkerRegister } from "@/components/sw-register";
 import { TopHeader } from "@/components/top-header";
 import { Providers } from "./providers";
@@ -57,6 +58,7 @@ export default async function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>
+            <ScrollToTop />
             <TopHeader />
             {children}
             <BottomNav />
