@@ -4,6 +4,7 @@ import { auth, signOut } from "@/auth";
 import { HapticsToggle } from "@/components/haptics-toggle";
 import { NavbarStyleToggle } from "@/components/navbar-style-toggle";
 import { ReplayTourButton } from "@/components/onboarding/replay-tour-button";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 import { LanguageSwitcher } from "./language-switcher";
 
 export default async function SettingsPage() {
@@ -40,6 +41,7 @@ export default async function SettingsPage() {
       </div>
 
       <LanguageSwitcher />
+      <ThemeSwitcher />
 
       <div className="rounded-2xl border border-white/10 bg-card backdrop-blur-xl divide-y divide-white/5">
         <HapticsToggle />
