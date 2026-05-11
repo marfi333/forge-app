@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 import appLogo from "@/../public/app_logo.png";
 import { type SignInState, signInWithCredentials } from "./actions";
 import { GoogleSignInButton } from "./google-button";
@@ -20,6 +21,12 @@ export default function SignInPage() {
     signInWithCredentials,
     {},
   );
+
+  useEffect(() => {
+    if (state.error) {
+      toast.error(t(`errors.${state.error}`));
+    }
+  }, [state, t]);
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center px-6">
@@ -50,12 +57,6 @@ export default function SignInPage() {
           {reset && (
             <p className="rounded-lg bg-primary/10 px-3 py-2 text-center text-sm text-primary">
               {t("resetSuccess")}
-            </p>
-          )}
-
-          {state.error && (
-            <p className="rounded-lg bg-destructive/10 px-3 py-2 text-center text-sm text-destructive">
-              {t(`errors.${state.error}`)}
             </p>
           )}
 
