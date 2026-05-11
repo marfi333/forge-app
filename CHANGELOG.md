@@ -1,3 +1,11 @@
+## [1.8.2](https://github.com/marfi333/forge-app/compare/v1.8.1...v1.8.2) (2026-05-11)
+
+
+### Bug Fixes
+
+* **onboard:** fix animation timing and scroll feedback loop ([3dce8c5](https://github.com/marfi333/forge-app/commit/3dce8c55cec0617b32c11bca2940896b95a4fced))
+* **onboarding:** prevent tour from restarting after completion ([8cf4164](https://github.com/marfi333/forge-app/commit/8cf41641b8caca5a90bfc231235d9677f3d11a14))
+
 ## [1.8.1](https://github.com/marfi333/forge-app/compare/v1.8.0...v1.8.1) (2026-05-11)
 
 
