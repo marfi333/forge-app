@@ -3,7 +3,8 @@
 import { Lock, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 import { type RegisterState, register } from "./actions";
 
 export default function RegisterPage() {
@@ -12,6 +13,26 @@ export default function RegisterPage() {
     register,
     {},
   );
+
+  useEffect(() => {
+    if (state.error) {
+      toast.error(t(`errors.${state.error}`));
+    }
+    if (state.fieldErrors) {
+      const firstKey = Object.keys(state.fieldErrors)[0];
+      if (firstKey) {
+        const errorKey =
+          firstKey === "name"
+            ? "name_required"
+            : firstKey === "email"
+              ? "invalid_email"
+              : firstKey === "password"
+                ? "password_min"
+                : "passwords_mismatch";
+        toast.error(t(`errors.${errorKey}`));
+      }
+    }
+  }, [state, t]);
 
   if (state.success) {
     return (
@@ -46,84 +67,50 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          {state.error && (
-            <p className="rounded-lg bg-destructive/10 px-3 py-2 text-center text-sm text-destructive">
-              {t(`errors.${state.error}`)}
-            </p>
-          )}
-
           <form action={action} className="space-y-4">
-            <div className="space-y-1">
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="text"
-                  name="name"
-                  placeholder={t("name")}
-                  required
-                  className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm outline-none focus:border-primary"
-                />
-              </div>
-              {state.fieldErrors?.name && (
-                <p className="text-xs text-destructive">
-                  {t("errors.name_required")}
-                </p>
-              )}
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                name="name"
+                placeholder={t("name")}
+                required
+                className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm outline-none focus:border-primary"
+              />
             </div>
 
-            <div className="space-y-1">
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder={t("email")}
-                  required
-                  className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm outline-none focus:border-primary"
-                />
-              </div>
-              {state.fieldErrors?.email && (
-                <p className="text-xs text-destructive">
-                  {t("errors.invalid_email")}
-                </p>
-              )}
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="email"
+                name="email"
+                placeholder={t("email")}
+                required
+                className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm outline-none focus:border-primary"
+              />
             </div>
 
-            <div className="space-y-1">
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="password"
-                  name="password"
-                  placeholder={t("password")}
-                  required
-                  minLength={8}
-                  className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm outline-none focus:border-primary"
-                />
-              </div>
-              {state.fieldErrors?.password && (
-                <p className="text-xs text-destructive">
-                  {t("errors.password_min")}
-                </p>
-              )}
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="password"
+                name="password"
+                placeholder={t("password")}
+                required
+                minLength={8}
+                className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm outline-none focus:border-primary"
+              />
             </div>
 
-            <div className="space-y-1">
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  placeholder={t("confirmPassword")}
-                  required
-                  className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm outline-none focus:border-primary"
-                />
-              </div>
-              {state.fieldErrors?.confirmPassword && (
-                <p className="text-xs text-destructive">
-                  {t("errors.passwords_mismatch")}
-                </p>
-              )}
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder={t("confirmPassword")}
+                required
+                className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm outline-none focus:border-primary"
+              />
             </div>
 
             <button
