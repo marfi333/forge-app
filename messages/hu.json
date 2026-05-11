@@ -24,7 +24,68 @@
   },
   "signIn": {
     "tagline": "Kövesd. Fejlődj. Építs.",
-    "continueWithGoogle": "Folytatás Google-lel"
+    "continueWithGoogle": "Folytatás Google-lel",
+    "email": "Email cím",
+    "password": "Jelszó",
+    "forgot": "Elfelejtett?",
+    "submit": "Bejelentkezés",
+    "signingIn": "Bejelentkezés...",
+    "noAccount": "Nincs még fiókod?",
+    "register": "Regisztráció",
+    "verified": "Email megerősítve! Most már bejelentkezhetsz.",
+    "resetSuccess": "Jelszó sikeresen visszaállítva! Jelentkezz be az új jelszavaddal.",
+    "or": "vagy",
+    "errors": {
+      "invalid_credentials": "Hibás email vagy jelszó.",
+      "email_not_verified": "Kérjük, előbb erősítsd meg az email címed."
+    }
+  },
+  "register": {
+    "title": "Fiók létrehozása",
+    "subtitle": "Csatlakozz az elithez. Kezdd el követni a fejlődésed.",
+    "name": "Teljes név",
+    "email": "Email cím",
+    "password": "Jelszó",
+    "confirmPassword": "Jelszó megerősítése",
+    "submit": "Regisztráció",
+    "registering": "Regisztráció...",
+    "hasAccount": "Már van fiókod?",
+    "login": "Bejelentkezés",
+    "checkEmail": "Nézd meg az emailed",
+    "checkEmailDescription": "Küldtünk egy megerősítő linket az email címedre. Kattints rá a fiókod aktiválásához.",
+    "backToLogin": "Vissza a bejelentkezéshez",
+    "errors": {
+      "name_required": "A név megadása kötelező.",
+      "invalid_email": "Kérjük, adj meg egy érvényes email címet.",
+      "password_min": "A jelszónak legalább 8 karakter hosszúnak kell lennie.",
+      "passwords_mismatch": "A jelszavak nem egyeznek.",
+      "email_exists": "Ezzel az email címmel már létezik fiók.",
+      "disposable_email": "Eldobható email címek nem engedélyezettek."
+    }
+  },
+  "forgotPassword": {
+    "title": "Jelszó visszaállítása",
+    "subtitle": "Add meg az email címed a visszaállító link küldéséhez.",
+    "email": "Email cím",
+    "submit": "Visszaállító link küldése",
+    "sending": "Küldés...",
+    "backToLogin": "Vissza a bejelentkezéshez",
+    "checkEmail": "Nézd meg az emailed",
+    "checkEmailDescription": "Ha létezik fiók ezzel az email címmel, küldtünk egy jelszó-visszaállító linket."
+  },
+  "resetPassword": {
+    "title": "Új jelszó beállítása",
+    "subtitle": "Add meg az új jelszavad.",
+    "password": "Új jelszó",
+    "confirmPassword": "Jelszó megerősítése",
+    "submit": "Jelszó visszaállítása",
+    "resetting": "Visszaállítás...",
+    "errors": {
+      "password_min": "A jelszónak legalább 8 karakter hosszúnak kell lennie.",
+      "passwords_mismatch": "A jelszavak nem egyeznek.",
+      "invalid_token": "Ez a visszaállító link érvénytelen vagy lejárt.",
+      "token_expired": "Ez a visszaállító link lejárt. Kérj egy újat."
+    }
   },
   "error": {
     "title": "Hiba történt",

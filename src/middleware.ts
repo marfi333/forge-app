@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { Locale } from "@/i18n/config";
 import { defaultLocale, locales } from "@/i18n/config";
 
-const publicPaths = ["/sign-in", "/api/auth", "/offline"];
+const publicPaths = ["/sign-in", "/register", "/forgot-password", "/reset-password", "/api/auth", "/offline"];
 
 function resolveLocale(req: NextRequest): Locale {
   const cookie = req.cookies.get("NEXT_LOCALE")?.value;
