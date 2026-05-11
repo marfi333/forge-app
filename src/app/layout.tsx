@@ -7,6 +7,7 @@ import { BottomNav } from "@/components/bottom-nav";
 import { TourController } from "@/components/onboarding/tour-controller";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { ServiceWorkerRegister } from "@/components/sw-register";
+import { ThemeColorMeta } from "@/components/theme-color-meta";
 import { TopHeader } from "@/components/top-header";
 import { Providers } from "./providers";
 import "./globals.css";
@@ -64,6 +65,7 @@ export default async function RootLayout({
             <BottomNav />
             <TourController />
             <ServiceWorkerRegister />
+            <ThemeColorMeta />
             <Toaster theme="system" position="bottom-center" />
           </Providers>
         </NextIntlClientProvider>
