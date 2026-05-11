@@ -105,34 +105,35 @@ export async function GET() {
     return fmtDate(d);
   })();
 
-  const recentCompletedDates = await db
-    .select({ date: schema.workoutSessions.date })
-    .from(schema.workoutSessions)
-    .where(
-      and(
-        eq(schema.workoutSessions.userId, userId),
-        eq(schema.workoutSessions.status, "completed"),
-        lte(schema.workoutSessions.date, today),
-        gte(schema.workoutSessions.date, streakCutoff),
-      ),
-    )
-    .orderBy(desc(schema.workoutSessions.date));
-
-  const lastCompletedSession = await db
-    .select({
-      id: schema.workoutSessions.id,
-      date: schema.workoutSessions.date,
-    })
-    .from(schema.workoutSessions)
-    .where(
-      and(
-        eq(schema.workoutSessions.userId, userId),
-        eq(schema.workoutSessions.status, "completed"),
-        lte(schema.workoutSessions.date, today),
-      ),
-    )
-    .orderBy(desc(schema.workoutSessions.date))
-    .limit(1);
+  const [recentCompletedDates, lastCompletedSession] = await Promise.all([
+    db
+      .select({ date: schema.workoutSessions.date })
+      .from(schema.workoutSessions)
+      .where(
+        and(
+          eq(schema.workoutSessions.userId, userId),
+          eq(schema.workoutSessions.status, "completed"),
+          lte(schema.workoutSessions.date, today),
+          gte(schema.workoutSessions.date, streakCutoff),
+        ),
+      )
+      .orderBy(desc(schema.workoutSessions.date)),
+    db
+      .select({
+        id: schema.workoutSessions.id,
+        date: schema.workoutSessions.date,
+      })
+      .from(schema.workoutSessions)
+      .where(
+        and(
+          eq(schema.workoutSessions.userId, userId),
+          eq(schema.workoutSessions.status, "completed"),
+          lte(schema.workoutSessions.date, today),
+        ),
+      )
+      .orderBy(desc(schema.workoutSessions.date))
+      .limit(1),
+  ]);
 
   const templatesByWeekday = new Map<
     string,

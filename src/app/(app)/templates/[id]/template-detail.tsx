@@ -151,7 +151,7 @@ function ExerciseFormDrawer({
                 id={`exercise-name-${templateId}`}
                 placeholder={t("exerciseNamePlaceholder")}
                 value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
               />
             </div>
 
@@ -170,7 +170,7 @@ function ExerciseFormDrawer({
                   min="1"
                   placeholder="—"
                   value={form.sets}
-                  onChange={(e) => setForm({ ...form, sets: e.target.value })}
+                  onChange={(e) => setForm(prev => ({ ...prev, sets: e.target.value }))}
                 />
               </div>
               <div>
@@ -187,7 +187,7 @@ function ExerciseFormDrawer({
                   min="1"
                   placeholder="—"
                   value={form.reps}
-                  onChange={(e) => setForm({ ...form, reps: e.target.value })}
+                  onChange={(e) => setForm(prev => ({ ...prev, reps: e.target.value }))}
                 />
               </div>
             </div>
@@ -200,7 +200,7 @@ function ExerciseFormDrawer({
                 placeholder={t("descriptionPlaceholder")}
                 value={form.description}
                 onChange={(e) =>
-                  setForm({ ...form, description: e.target.value })
+                  setForm(prev => ({ ...prev, description: e.target.value }))
                 }
                 rows={3}
                 className="w-full min-w-0 rounded-xl border border-border bg-muted/50 px-3 py-2 text-base text-foreground outline-none backdrop-blur-sm transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
@@ -216,7 +216,7 @@ function ExerciseFormDrawer({
                   placeholder={t("imagePlaceholder")}
                   value={form.imageUrl}
                   onChange={(e) =>
-                    setForm({ ...form, imageUrl: e.target.value })
+                    setForm(prev => ({ ...prev, imageUrl: e.target.value }))
                   }
                   className="flex-1"
                 />
@@ -268,7 +268,7 @@ function ExerciseFormDrawer({
                 placeholder="https://youtube.com/watch?v=..."
                 value={form.youtubeUrl}
                 onChange={(e) =>
-                  setForm({ ...form, youtubeUrl: e.target.value })
+                  setForm(prev => ({ ...prev, youtubeUrl: e.target.value }))
                 }
               />
               {form.youtubeUrl && <YouTubePlayer url={form.youtubeUrl} />}
@@ -283,7 +283,7 @@ function ExerciseFormDrawer({
                   exerciseId={exerciseId}
                   selectedIds={form.muscleGroupIds}
                   onSelectionChange={(ids) =>
-                    setForm({ ...form, muscleGroupIds: ids })
+                    setForm(prev => ({ ...prev, muscleGroupIds: ids }))
                   }
                 />
               </div>

@@ -3,8 +3,8 @@
 import {
   createContext,
   type ReactNode,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from "react";
@@ -43,7 +43,7 @@ export function NavbarStyleProvider({ children }: { children: ReactNode }) {
 }
 
 export function useNavbarStyle() {
-  const ctx = useContext(NavbarStyleContext);
+  const ctx = use(NavbarStyleContext);
   if (!ctx)
     throw new Error("useNavbarStyle must be used within NavbarStyleProvider");
   return ctx;

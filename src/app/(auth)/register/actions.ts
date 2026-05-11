@@ -69,20 +69,20 @@ export async function register(
   const token = crypto.randomUUID();
   const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-  await sendVerificationEmail(env.RESEND_API_KEY, email, token, "en", env.FROM_MAIL_URL);
-
-  await db.insert(schema.users).values({
-    id: userId,
-    name,
-    email,
-    password: hashed,
-  });
-
-  await db.insert(schema.verificationTokens).values({
-    identifier: email,
-    token,
-    expires,
-  });
+  await Promise.all([
+    sendVerificationEmail(env.RESEND_API_KEY, email, token, "en", env.FROM_MAIL_URL),
+    db.insert(schema.users).values({
+      id: userId,
+      name,
+      email,
+      password: hashed,
+    }),
+    db.insert(schema.verificationTokens).values({
+      identifier: email,
+      token,
+      expires,
+    }),
+  ]);
 
   return { success: true };
 }

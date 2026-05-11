@@ -73,6 +73,15 @@
     "checkEmail": "Check your email",
     "checkEmailDescription": "If an account exists with that email, we sent a password reset link."
   },
+  "verifyEmail": {
+    "verifying": "Verifying your email...",
+    "pleaseWait": "Please wait a moment.",
+    "backToLogin": "Back to Login",
+    "errors": {
+      "invalid_token": "This verification link is invalid.",
+      "token_expired": "This verification link has expired. Please register again."
+    }
+  },
   "resetPassword": {
     "title": "Set New Password",
     "subtitle": "Enter your new password below.",

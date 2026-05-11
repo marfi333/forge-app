@@ -75,25 +75,29 @@ export async function POST(request: Request) {
       .where(eq(schema.templateExercises.templateId, result.data.templateId))
       .orderBy(schema.templateExercises.order);
 
-    for (const exercise of templateExercises) {
-      const [sessionExercise] = await db
-        .insert(schema.sessionExercises)
-        .values({
-          sessionId: session.id,
-          name: exercise.name,
-          order: exercise.order,
-        })
-        .returning();
+    await Promise.all(
+      templateExercises.map(async (exercise) => {
+        const [sessionExercise] = await db
+          .insert(schema.sessionExercises)
+          .values({
+            sessionId: session.id,
+            name: exercise.name,
+            order: exercise.order,
+          })
+          .returning();
 
-      if (exercise.sets) {
-        for (let i = 1; i <= exercise.sets; i++) {
-          await db.insert(schema.exerciseSets).values({
-            sessionExerciseId: sessionExercise.id,
-            setNumber: i,
-          });
+        if (exercise.sets) {
+          await Promise.all(
+            Array.from({ length: exercise.sets }, (_, i) =>
+              db.insert(schema.exerciseSets).values({
+                sessionExerciseId: sessionExercise.id,
+                setNumber: i + 1,
+              }),
+            ),
+          );
         }
-      }
-    }
+      }),
+    );
   }
 
   return Response.json(session, { status: 201 });

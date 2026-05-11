@@ -73,6 +73,15 @@
     "checkEmail": "Nézd meg az emailed",
     "checkEmailDescription": "Ha létezik fiók ezzel az email címmel, küldtünk egy jelszó-visszaállító linket."
   },
+  "verifyEmail": {
+    "verifying": "Email cím megerősítése...",
+    "pleaseWait": "Kérjük, várj egy pillanatot.",
+    "backToLogin": "Vissza a bejelentkezéshez",
+    "errors": {
+      "invalid_token": "Ez a megerősítő link érvénytelen.",
+      "token_expired": "Ez a megerősítő link lejárt. Kérjük, regisztrálj újra."
+    }
+  },
   "resetPassword": {
     "title": "Új jelszó beállítása",
     "subtitle": "Add meg az új jelszavad.",

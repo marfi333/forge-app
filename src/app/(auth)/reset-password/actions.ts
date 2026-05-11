@@ -66,19 +66,20 @@ export async function resetPassword(
 
   const hashed = await hashPassword(password);
 
-  await db
-    .update(schema.users)
-    .set({ password: hashed })
-    .where(eq(schema.users.email, record.identifier));
-
-  await db
-    .delete(schema.verificationTokens)
-    .where(
-      and(
-        eq(schema.verificationTokens.identifier, record.identifier),
-        eq(schema.verificationTokens.token, token),
+  await Promise.all([
+    db
+      .update(schema.users)
+      .set({ password: hashed })
+      .where(eq(schema.users.email, record.identifier)),
+    db
+      .delete(schema.verificationTokens)
+      .where(
+        and(
+          eq(schema.verificationTokens.identifier, record.identifier),
+          eq(schema.verificationTokens.token, token),
+        ),
       ),
-    );
+  ]);
 
   redirect("/sign-in?reset=true");
 }

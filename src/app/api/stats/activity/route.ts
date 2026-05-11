@@ -56,20 +56,24 @@ export async function GET(request: Request) {
       s.weight !== null,
   );
 
+  const sessionDateMap = new Map(
+    recentSessions.map((s) => [s.sessionId, s.date]),
+  );
+
   const dayMap = new Map<string, { sets: number; volume: number }>();
 
   for (const set of matchingSets) {
     const sessionId = exerciseSessionMap.get(set.sessionExerciseId);
     if (!sessionId) continue;
-    const session = recentSessions.find((s) => s.sessionId === sessionId);
-    if (!session) continue;
+    const date = sessionDateMap.get(sessionId);
+    if (!date) continue;
 
-    const entry = dayMap.get(session.date) ?? { sets: 0, volume: 0 };
+    const entry = dayMap.get(date) ?? { sets: 0, volume: 0 };
     entry.sets++;
     if (set.weight !== null && set.reps !== null) {
       entry.volume += set.weight * set.reps;
     }
-    dayMap.set(session.date, entry);
+    dayMap.set(date, entry);
   }
 
   const days = [...dayMap.entries()]

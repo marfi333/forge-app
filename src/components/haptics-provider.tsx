@@ -3,8 +3,8 @@
 import {
   createContext,
   type ReactNode,
+  use,
   useCallback,
-  useContext,
   useEffect,
   useState,
 } from "react";
@@ -65,7 +65,7 @@ export function HapticsProvider({ children }: { children: ReactNode }) {
 }
 
 export function useHaptics() {
-  const ctx = useContext(HapticsContext);
+  const ctx = use(HapticsContext);
   if (!ctx) throw new Error("useHaptics must be used within HapticsProvider");
   return ctx;
 }

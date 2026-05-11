@@ -49,7 +49,15 @@ export async function POST(
   const { db, userId } = await getAuthedDb();
   if (!db) return unauthorized();
 
-  const { id } = await params;
+  const [{ id }, body] = await Promise.all([params, request.json()]);
+
+  const result = createExerciseSchema.safeParse(body);
+  if (!result.success) {
+    return Response.json(
+      { error: result.error.issues[0].message },
+      { status: 400 },
+    );
+  }
 
   const [template] = await db
     .select()
@@ -61,15 +69,6 @@ export async function POST(
       ),
     );
   if (!template) return notFound();
-
-  const body = await request.json();
-  const result = createExerciseSchema.safeParse(body);
-  if (!result.success) {
-    return Response.json(
-      { error: result.error.issues[0].message },
-      { status: 400 },
-    );
-  }
 
   const [exercise] = await db
     .insert(schema.templateExercises)

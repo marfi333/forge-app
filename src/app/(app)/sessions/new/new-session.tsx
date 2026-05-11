@@ -5,6 +5,7 @@ import { ArrowLeft, FileText, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
+import { useState } from "react";
 import { useHaptics } from "@/components/haptics-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,8 +21,8 @@ export function NewSession() {
   const queryClient = useQueryClient();
   const { trigger } = useHaptics();
   const searchParams = useSearchParams();
-  const date =
-    searchParams.get("date") ?? new Date().toISOString().split("T")[0];
+  const [today] = useState(() => new Date().toISOString().split("T")[0]);
+  const date = searchParams.get("date") ?? today;
 
   const { data: templates = [], isLoading } = useQuery<Template[]>({
     queryKey: ["templates"],

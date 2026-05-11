@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { Locale } from "@/i18n/config";
 import { defaultLocale, locales } from "@/i18n/config";
 
-const publicPrefixes = ["/sign-in", "/register", "/forgot-password", "/reset-password", "/api/auth", "/api/landing-stats", "/offline"];
+const publicPrefixes = ["/sign-in", "/register", "/forgot-password", "/reset-password", "/verify-email", "/api/auth", "/api/landing-stats", "/offline"];
 const publicExact = ["/"];
 const authPages = ["/sign-in", "/register"];
 

@@ -1,14 +1,13 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { and, eq } from "drizzle-orm";
-import { redirect } from "next/navigation";
-import type { NextRequest } from "next/server";
 import { createDb } from "@/db";
 import * as schema from "@/db/schema";
 
-export async function GET(request: NextRequest) {
-  const token = request.nextUrl.searchParams.get("token");
-  if (!token) {
-    return redirect("/sign-in?error=invalid_token");
+export async function POST(request: Request) {
+  const body = (await request.json().catch(() => null)) as { token?: string } | null;
+  const token = body?.token;
+  if (!token || typeof token !== "string") {
+    return Response.json({ error: "invalid_token" }, { status: 400 });
   }
 
   const { env } = getCloudflareContext();
@@ -21,7 +20,7 @@ export async function GET(request: NextRequest) {
     .limit(1);
 
   if (!record) {
-    return redirect("/sign-in?error=invalid_token");
+    return Response.json({ error: "invalid_token" }, { status: 400 });
   }
 
   if (record.expires < new Date()) {
@@ -33,22 +32,23 @@ export async function GET(request: NextRequest) {
           eq(schema.verificationTokens.token, token),
         ),
       );
-    return redirect("/sign-in?error=token_expired");
+    return Response.json({ error: "token_expired" }, { status: 400 });
   }
 
-  await db
-    .update(schema.users)
-    .set({ emailVerified: new Date() })
-    .where(eq(schema.users.email, record.identifier));
-
-  await db
-    .delete(schema.verificationTokens)
-    .where(
-      and(
-        eq(schema.verificationTokens.identifier, record.identifier),
-        eq(schema.verificationTokens.token, token),
+  await Promise.all([
+    db
+      .update(schema.users)
+      .set({ emailVerified: new Date() })
+      .where(eq(schema.users.email, record.identifier)),
+    db
+      .delete(schema.verificationTokens)
+      .where(
+        and(
+          eq(schema.verificationTokens.identifier, record.identifier),
+          eq(schema.verificationTokens.token, token),
+        ),
       ),
-    );
+  ]);
 
-  return redirect("/sign-in?verified=true");
+  return Response.json({ success: true });
 }

@@ -75,11 +75,11 @@ export async function PATCH(
   const { db, userId } = await getAuthedDb();
   if (!db) return unauthorized();
 
-  const { id, exerciseId } = await params;
-  const exercise = await getOwnedExercise(db, userId, id, exerciseId);
-  if (!exercise) return notFound();
+  const [{ id, exerciseId }, body] = await Promise.all([
+    params,
+    request.json(),
+  ]);
 
-  const body = await request.json();
   const result = updateExerciseSchema.safeParse(body);
   if (!result.success) {
     return Response.json(
@@ -87,6 +87,9 @@ export async function PATCH(
       { status: 400 },
     );
   }
+
+  const exercise = await getOwnedExercise(db, userId, id, exerciseId);
+  if (!exercise) return notFound();
 
   const updates: Partial<{
     name: string;

@@ -14,7 +14,14 @@ export async function PUT(
   const { db, userId } = await getAuthedDb();
   if (!db) return unauthorized();
 
-  const { id } = await params;
+  const [{ id }, body] = await Promise.all([params, request.json()]);
+  const result = reorderSchema.safeParse(body);
+  if (!result.success) {
+    return Response.json(
+      { error: result.error.issues[0].message },
+      { status: 400 },
+    );
+  }
 
   const [template] = await db
     .select()
@@ -27,26 +34,19 @@ export async function PUT(
     );
   if (!template) return notFound();
 
-  const body = await request.json();
-  const result = reorderSchema.safeParse(body);
-  if (!result.success) {
-    return Response.json(
-      { error: result.error.issues[0].message },
-      { status: 400 },
-    );
-  }
-
-  for (let i = 0; i < result.data.orderedIds.length; i++) {
-    await db
-      .update(schema.templateExercises)
-      .set({ order: i })
-      .where(
-        and(
-          eq(schema.templateExercises.id, result.data.orderedIds[i]),
-          eq(schema.templateExercises.templateId, id),
+  await Promise.all(
+    result.data.orderedIds.map((orderedId, i) =>
+      db
+        .update(schema.templateExercises)
+        .set({ order: i })
+        .where(
+          and(
+            eq(schema.templateExercises.id, orderedId),
+            eq(schema.templateExercises.templateId, id),
+          ),
         ),
-      );
-  }
+    ),
+  );
 
   const exercises = await db
     .select()

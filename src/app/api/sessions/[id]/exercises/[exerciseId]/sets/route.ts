@@ -16,7 +16,18 @@ export async function POST(
   const { db, userId } = await getAuthedDb();
   if (!db) return unauthorized();
 
-  const { id, exerciseId } = await params;
+  const [{ id, exerciseId }, body] = await Promise.all([
+    params,
+    request.json(),
+  ]);
+
+  const result = addSetSchema.safeParse(body);
+  if (!result.success) {
+    return Response.json(
+      { error: result.error.issues[0].message },
+      { status: 400 },
+    );
+  }
 
   const [session] = await db
     .select()
@@ -39,15 +50,6 @@ export async function POST(
       ),
     );
   if (!exercise) return notFound();
-
-  const body = await request.json();
-  const result = addSetSchema.safeParse(body);
-  if (!result.success) {
-    return Response.json(
-      { error: result.error.issues[0].message },
-      { status: 400 },
-    );
-  }
 
   const [set] = await db
     .insert(schema.exerciseSets)

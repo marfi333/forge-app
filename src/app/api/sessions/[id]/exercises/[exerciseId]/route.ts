@@ -11,26 +11,27 @@ export async function DELETE(
 
   const { id, exerciseId } = await params;
 
-  const [session] = await db
-    .select()
-    .from(schema.workoutSessions)
-    .where(
-      and(
-        eq(schema.workoutSessions.id, id),
-        eq(schema.workoutSessions.userId, userId),
+  const [[session], [exercise]] = await Promise.all([
+    db
+      .select()
+      .from(schema.workoutSessions)
+      .where(
+        and(
+          eq(schema.workoutSessions.id, id),
+          eq(schema.workoutSessions.userId, userId),
+        ),
       ),
-    );
+    db
+      .select()
+      .from(schema.sessionExercises)
+      .where(
+        and(
+          eq(schema.sessionExercises.id, exerciseId),
+          eq(schema.sessionExercises.sessionId, id),
+        ),
+      ),
+  ]);
   if (!session) return notFound();
-
-  const [exercise] = await db
-    .select()
-    .from(schema.sessionExercises)
-    .where(
-      and(
-        eq(schema.sessionExercises.id, exerciseId),
-        eq(schema.sessionExercises.sessionId, id),
-      ),
-    );
   if (!exercise) return notFound();
 
   await db

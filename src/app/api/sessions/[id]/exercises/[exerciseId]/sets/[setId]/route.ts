@@ -18,7 +18,18 @@ export async function PATCH(
   const { db, userId } = await getAuthedDb();
   if (!db) return unauthorized();
 
-  const { id, exerciseId, setId } = await params;
+  const [{ id, exerciseId, setId }, body] = await Promise.all([
+    params,
+    request.json(),
+  ]);
+
+  const result = updateSetSchema.safeParse(body);
+  if (!result.success) {
+    return Response.json(
+      { error: result.error.issues[0].message },
+      { status: 400 },
+    );
+  }
 
   const [session] = await db
     .select()
@@ -53,15 +64,6 @@ export async function PATCH(
     );
   if (!existingSet) return notFound();
 
-  const body = await request.json();
-  const result = updateSetSchema.safeParse(body);
-  if (!result.success) {
-    return Response.json(
-      { error: result.error.issues[0].message },
-      { status: 400 },
-    );
-  }
-
   const [updated] = await db
     .update(schema.exerciseSets)
     .set(result.data)
@@ -82,26 +84,27 @@ export async function DELETE(
 
   const { id, exerciseId, setId } = await params;
 
-  const [session] = await db
-    .select()
-    .from(schema.workoutSessions)
-    .where(
-      and(
-        eq(schema.workoutSessions.id, id),
-        eq(schema.workoutSessions.userId, userId),
+  const [[session], [set]] = await Promise.all([
+    db
+      .select()
+      .from(schema.workoutSessions)
+      .where(
+        and(
+          eq(schema.workoutSessions.id, id),
+          eq(schema.workoutSessions.userId, userId),
+        ),
       ),
-    );
+    db
+      .select()
+      .from(schema.exerciseSets)
+      .where(
+        and(
+          eq(schema.exerciseSets.id, setId),
+          eq(schema.exerciseSets.sessionExerciseId, exerciseId),
+        ),
+      ),
+  ]);
   if (!session) return notFound();
-
-  const [set] = await db
-    .select()
-    .from(schema.exerciseSets)
-    .where(
-      and(
-        eq(schema.exerciseSets.id, setId),
-        eq(schema.exerciseSets.sessionExerciseId, exerciseId),
-      ),
-    );
   if (!set) return notFound();
 
   await db.delete(schema.exerciseSets).where(eq(schema.exerciseSets.id, setId));

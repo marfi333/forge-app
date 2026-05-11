@@ -88,7 +88,7 @@ function TemplateFormDrawer({
                 id="template-name"
                 placeholder={t("namePlaceholder")}
                 value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                onChange={(e) => setForm(prev => ({ ...prev, name: e.target.value }))}
               />
             </div>
 
@@ -99,10 +99,10 @@ function TemplateFormDrawer({
               <select
                 value={form.weekday ?? ""}
                 onChange={(e) =>
-                  setForm({
-                    ...form,
+                  setForm(prev => ({
+                    ...prev,
                     weekday: (e.target.value || null) as Weekday | null,
-                  })
+                  }))
                 }
                 className="h-10 w-full appearance-none rounded-xl border border-border bg-muted/50 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-size-[16px] bg-position-[right_12px_center] bg-no-repeat px-3 py-2 pr-9 text-base text-foreground backdrop-blur-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
               >
@@ -122,10 +122,10 @@ function TemplateFormDrawer({
               <select
                 value={form.muscleGroup ?? ""}
                 onChange={(e) =>
-                  setForm({
-                    ...form,
+                  setForm(prev => ({
+                    ...prev,
                     muscleGroup: (e.target.value || null) as MuscleGroup | null,
-                  })
+                  }))
                 }
                 className="h-10 w-full appearance-none rounded-xl border border-border bg-muted/50 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-size-[16px] bg-position-[right_12px_center] bg-no-repeat px-3 py-2 pr-9 text-base text-foreground backdrop-blur-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
               >

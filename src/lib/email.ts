@@ -16,7 +16,7 @@ export async function sendVerificationEmail(
 
   const resend = createResendClient(apiKey);
   const fromEmail = `FORGE <noreply@${fromMailUrl}>`;
-  const verifyUrl = `${env.APP_URL}/api/auth/verify-email?token=${token}`;
+  const verifyUrl = `${env.APP_URL}/verify-email?token=${token}`;
 
   const subject =
     locale === "hu"
