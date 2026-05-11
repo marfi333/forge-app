@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "sonner";
 import { BottomNav } from "@/components/bottom-nav";
+import { TourController } from "@/components/onboarding/tour-controller";
 import { ServiceWorkerRegister } from "@/components/sw-register";
 import { TopHeader } from "@/components/top-header";
 import { Providers } from "./providers";
@@ -52,6 +53,7 @@ export default function RootLayout({
           <TopHeader />
           {children}
           <BottomNav />
+          <TourController />
           <ServiceWorkerRegister />
           <Toaster theme="dark" position="bottom-center" />
         </Providers>
