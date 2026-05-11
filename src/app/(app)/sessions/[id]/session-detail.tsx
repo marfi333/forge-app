@@ -14,18 +14,18 @@ import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import ConfettiBoom from "react-confetti-boom";
-import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
+import { ConfirmDeleteDrawer } from "@/components/confirm-delete-drawer";
 import { useHaptics } from "@/components/haptics-provider";
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { invalidateWorkoutDependentQueries } from "@/lib/query-invalidation";
 
@@ -506,7 +506,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
             >
               <Trash2 className="size-4 text-muted-foreground" />
             </Button>
-            <ConfirmDeleteDialog
+            <ConfirmDeleteDrawer
               open={deleteExConfirmOpen}
               onOpenChange={setDeleteExConfirmOpen}
               title={t("deleteExercise")}
@@ -556,19 +556,17 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
       {/* Bottom Actions */}
       {!isCompleted && (
         <div className="flex gap-2 mt-auto pt-4">
-          <Dialog open={addExOpen} onOpenChange={setAddExOpen}>
-            <DialogTrigger
-              render={
-                <Button variant="outline" className="flex-1 rounded-xl">
-                  <Plus data-icon="inline-start" />
-                  {t("addExercise")}
-                </Button>
-              }
-            />
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{t("addExercise")}</DialogTitle>
-              </DialogHeader>
+          <Drawer open={addExOpen} onOpenChange={setAddExOpen}>
+            <DrawerTrigger asChild>
+              <Button variant="outline" className="flex-1 rounded-xl">
+                <Plus data-icon="inline-start" />
+                {t("addExercise")}
+              </Button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>{t("addExercise")}</DrawerTitle>
+              </DrawerHeader>
               <form
                 className="contents"
                 onSubmit={(e) => {
@@ -577,25 +575,26 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
                     addExercise.mutate(exerciseName.trim());
                 }}
               >
-                <DialogBody>
+                <DrawerBody>
                   <Input
                     placeholder={t("exercisePlaceholder")}
                     value={exerciseName}
                     onChange={(e) => setExerciseName(e.target.value)}
                     autoFocus
                   />
-                </DialogBody>
-                <DialogFooter>
+                </DrawerBody>
+                <DrawerFooter>
                   <Button
                     type="submit"
+                    className="w-full h-12"
                     disabled={!exerciseName.trim() || addExercise.isPending}
                   >
                     {addExercise.isPending ? tc("adding") : tc("add")}
                   </Button>
-                </DialogFooter>
+                </DrawerFooter>
               </form>
-            </DialogContent>
-          </Dialog>
+            </DrawerContent>
+          </Drawer>
 
           {hasExercises && (
             <Button

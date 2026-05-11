@@ -5,18 +5,18 @@ import { Dumbbell, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
+import { ConfirmDeleteDrawer } from "@/components/confirm-delete-drawer";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import type { MuscleGroup, Weekday } from "@/lib/constants";
 import { MUSCLE_GROUPS, WEEKDAYS } from "@/lib/constants";
@@ -35,7 +35,7 @@ interface TemplateFormData {
   muscleGroup: MuscleGroup | null;
 }
 
-function TemplateFormDialog({
+function TemplateFormDrawer({
   open,
   onOpenChange,
   title,
@@ -63,12 +63,12 @@ function TemplateFormDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      {trigger && <DialogTrigger render={trigger} />}
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-        </DialogHeader>
+    <Drawer open={open} onOpenChange={handleOpenChange}>
+      {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>{title}</DrawerTitle>
+        </DrawerHeader>
         <form
           className="contents"
           onSubmit={(e) => {
@@ -76,78 +76,77 @@ function TemplateFormDialog({
             if (form.name.trim()) onSubmit({ ...form, name: form.name.trim() });
           }}
         >
-          <DialogBody className="space-y-4">
-          <div>
-            <label
-              htmlFor="template-name"
-              className="mb-2 block text-sm font-medium text-muted-foreground"
-            >
-              {t("name")}
+          <DrawerBody className="space-y-4">
+            <div>
+              <label
+                htmlFor="template-name"
+                className="mb-2 block text-sm font-medium text-muted-foreground"
+              >
+                {t("name")}
+              </label>
+              <Input
+                id="template-name"
+                placeholder={t("namePlaceholder")}
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                autoFocus
+              />
+            </div>
+
+            <label className="block">
+              <span className="mb-2 block text-sm font-medium text-muted-foreground">
+                {t("weekday")}
+              </span>
+              <select
+                value={form.weekday ?? ""}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    weekday: (e.target.value || null) as Weekday | null,
+                  })
+                }
+                className="h-10 w-full appearance-none rounded-xl border border-white/10 bg-white/5 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-size-[16px] bg-position-[right_12px_center] bg-no-repeat px-3 py-2 pr-9 text-base text-foreground backdrop-blur-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
+              >
+                <option value="">{t("noWeekday")}</option>
+                {WEEKDAYS.map((day) => (
+                  <option key={day} value={day}>
+                    {day}
+                  </option>
+                ))}
+              </select>
             </label>
-            <Input
-              id="template-name"
-              placeholder={t("namePlaceholder")}
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              autoFocus
-            />
-          </div>
 
-          <label className="block">
-            <span className="mb-2 block text-sm font-medium text-muted-foreground">
-              {t("weekday")}
-            </span>
-            <select
-              value={form.weekday ?? ""}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  weekday: (e.target.value || null) as Weekday | null,
-                })
-              }
-              className="h-10 w-full appearance-none rounded-xl border border-white/10 bg-white/5 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-size-[16px] bg-position-[right_12px_center] bg-no-repeat px-3 py-2 pr-9 text-base text-foreground backdrop-blur-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
-            >
-              <option value="">{t("noWeekday")}</option>
-              {WEEKDAYS.map((day) => (
-                <option key={day} value={day}>
-                  {day}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="block">
-            <span className="mb-2 block text-sm font-medium text-muted-foreground">
-              {t("muscleGroup")}
-            </span>
-            <select
-              value={form.muscleGroup ?? ""}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  muscleGroup: (e.target.value || null) as MuscleGroup | null,
-                })
-              }
-              className="h-10 w-full appearance-none rounded-xl border border-white/10 bg-white/5 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-size-[16px] bg-position-[right_12px_center] bg-no-repeat px-3 py-2 pr-9 text-base text-foreground backdrop-blur-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
-            >
-              <option value="">{t("noMuscleGroup")}</option>
-              {MUSCLE_GROUPS.map((group) => (
-                <option key={group} value={group}>
-                  {tm(group)}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          </DialogBody>
-          <DialogFooter>
-            <Button type="submit" disabled={!form.name.trim() || isPending}>
+            <label className="block">
+              <span className="mb-2 block text-sm font-medium text-muted-foreground">
+                {t("muscleGroup")}
+              </span>
+              <select
+                value={form.muscleGroup ?? ""}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    muscleGroup: (e.target.value || null) as MuscleGroup | null,
+                  })
+                }
+                className="h-10 w-full appearance-none rounded-xl border border-white/10 bg-white/5 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-size-[16px] bg-position-[right_12px_center] bg-no-repeat px-3 py-2 pr-9 text-base text-foreground backdrop-blur-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
+              >
+                <option value="">{t("noMuscleGroup")}</option>
+                {MUSCLE_GROUPS.map((group) => (
+                  <option key={group} value={group}>
+                    {tm(group)}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </DrawerBody>
+          <DrawerFooter>
+            <Button type="submit" className="w-full h-12" disabled={!form.name.trim() || isPending}>
               {isPending ? tc("saving") : tc("save")}
             </Button>
-          </DialogFooter>
+          </DrawerFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </DrawerContent>
+    </Drawer>
   );
 }
 
@@ -234,7 +233,7 @@ export function TemplateList() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
-        <TemplateFormDialog
+        <TemplateFormDrawer
           open={createOpen}
           onOpenChange={setCreateOpen}
           title={t("newTemplate")}
@@ -303,7 +302,7 @@ export function TemplateList() {
         ))}
       </div>
 
-      <ConfirmDeleteDialog
+      <ConfirmDeleteDrawer
         open={!!deletingTemplateId}
         onOpenChange={(open) => {
           if (!open) setDeletingTemplateId(null);
@@ -317,7 +316,7 @@ export function TemplateList() {
       />
 
       {editingTemplate && (
-        <TemplateFormDialog
+        <TemplateFormDrawer
           open={!!editingTemplate}
           onOpenChange={(open) => {
             if (!open) setEditingTemplate(null);

@@ -4,7 +4,7 @@ import { Check, Dumbbell, Moon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
 import { useState } from "react";
-import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
+import { ConfirmDeleteDrawer } from "@/components/confirm-delete-drawer";
 import { useHaptics } from "@/components/haptics-provider";
 import { Button } from "@/components/ui/button";
 import {
@@ -106,7 +106,7 @@ export function DayActionSheet({
             </Button>
           </div>
 
-          <ConfirmDeleteDialog
+          <ConfirmDeleteDrawer
             open={confirmOpen}
             onOpenChange={setConfirmOpen}
             title={t("clearDay")}
@@ -120,58 +120,58 @@ export function DayActionSheet({
                 {t("sessions")}
               </p>
               {sessions.map((s) => {
-              const isCompleted = s.status === "completed";
-              const isInProgress = s.status === "in_progress";
-              return (
-                <Link key={s.id} href={`/sessions/${s.id}`} className="block">
-                  <div
-                    className={`flex items-center gap-3 rounded-xl border p-3 backdrop-blur-xl transition-colors ${
-                      isCompleted
-                        ? "border-primary/30 bg-primary/5"
-                        : isInProgress
-                          ? "border-yellow-500/30 bg-yellow-500/5"
-                          : "border-white/10 bg-card"
-                    }`}
-                  >
+                const isCompleted = s.status === "completed";
+                const isInProgress = s.status === "in_progress";
+                return (
+                  <Link key={s.id} href={`/sessions/${s.id}`} className="block">
                     <div
-                      className={`flex size-8 items-center justify-center rounded-lg ${
+                      className={`flex items-center gap-3 rounded-xl border p-3 backdrop-blur-xl transition-colors ${
                         isCompleted
-                          ? "bg-primary/15 text-primary"
+                          ? "border-primary/30 bg-primary/5"
                           : isInProgress
-                            ? "bg-yellow-500/15 text-yellow-500"
-                            : "bg-muted text-muted-foreground"
+                            ? "border-yellow-500/30 bg-yellow-500/5"
+                            : "border-white/10 bg-card"
                       }`}
                     >
-                      {isCompleted ? (
-                        <Check className="size-4" />
-                      ) : (
-                        <Dumbbell className="size-4" />
-                      )}
-                    </div>
-                    <div className="flex flex-col flex-1 min-w-0">
-                      <span className="text-sm font-medium truncate">
-                        {s.templateName || tc("workout")}
-                      </span>
-                      <span
-                        className={`text-xs ${
+                      <div
+                        className={`flex size-8 items-center justify-center rounded-lg ${
                           isCompleted
-                            ? "text-primary"
+                            ? "bg-primary/15 text-primary"
                             : isInProgress
-                              ? "text-yellow-500"
-                              : "text-muted-foreground"
+                              ? "bg-yellow-500/15 text-yellow-500"
+                              : "bg-muted text-muted-foreground"
                         }`}
                       >
-                        {isCompleted
-                          ? t("completed")
-                          : isInProgress
-                            ? t("inProgress")
-                            : s.status}
-                      </span>
+                        {isCompleted ? (
+                          <Check className="size-4" />
+                        ) : (
+                          <Dumbbell className="size-4" />
+                        )}
+                      </div>
+                      <div className="flex flex-col flex-1 min-w-0">
+                        <span className="text-sm font-medium truncate">
+                          {s.templateName || tc("workout")}
+                        </span>
+                        <span
+                          className={`text-xs ${
+                            isCompleted
+                              ? "text-primary"
+                              : isInProgress
+                                ? "text-yellow-500"
+                                : "text-muted-foreground"
+                          }`}
+                        >
+                          {isCompleted
+                            ? t("completed")
+                            : isInProgress
+                              ? t("inProgress")
+                              : s.status}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              );
-            })}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </DrawerBody>

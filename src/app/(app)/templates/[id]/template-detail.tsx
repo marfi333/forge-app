@@ -19,20 +19,20 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
+import { ConfirmDeleteDrawer } from "@/components/confirm-delete-drawer";
 import { useHaptics } from "@/components/haptics-provider";
 import { MuscleGroupChips } from "@/components/muscle-group-chips";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogBody,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { YouTubePlayer } from "@/components/youtube-player";
 
@@ -77,7 +77,7 @@ const EMPTY_FORM: ExerciseFormData = {
   reps: "",
 };
 
-function ExerciseFormDialog({
+function ExerciseFormDrawer({
   open,
   onOpenChange,
   title,
@@ -127,12 +127,12 @@ function ExerciseFormDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      {trigger && <DialogTrigger render={trigger} />}
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-        </DialogHeader>
+    <Drawer open={open} onOpenChange={handleOpenChange}>
+      {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>{title}</DrawerTitle>
+        </DrawerHeader>
         <form
           className="contents"
           onSubmit={(e) => {
@@ -140,163 +140,169 @@ function ExerciseFormDialog({
             if (form.name.trim()) onSubmit({ ...form, name: form.name.trim() });
           }}
         >
-          <DialogBody className="space-y-4">
-          <div>
-            <label
-              htmlFor={`exercise-name-${templateId}`}
-              className="mb-2 block text-sm font-medium text-muted-foreground"
-            >
-              {t("exerciseName")}
-            </label>
-            <Input
-              id={`exercise-name-${templateId}`}
-              placeholder={t("exerciseNamePlaceholder")}
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              autoFocus
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
+          <DrawerBody className="space-y-4">
             <div>
               <label
-                htmlFor={`exercise-sets-${templateId}`}
+                htmlFor={`exercise-name-${templateId}`}
                 className="mb-2 block text-sm font-medium text-muted-foreground"
               >
-                {t("sets")}
+                {t("exerciseName")}
               </label>
               <Input
-                id={`exercise-sets-${templateId}`}
-                type="number"
-                inputMode="numeric"
-                min="1"
-                placeholder="—"
-                value={form.sets}
-                onChange={(e) => setForm({ ...form, sets: e.target.value })}
+                id={`exercise-name-${templateId}`}
+                placeholder={t("exerciseNamePlaceholder")}
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                autoFocus
               />
             </div>
-            <div>
-              <label
-                htmlFor={`exercise-reps-${templateId}`}
-                className="mb-2 block text-sm font-medium text-muted-foreground"
-              >
-                {t("reps")}
-              </label>
-              <Input
-                id={`exercise-reps-${templateId}`}
-                type="number"
-                inputMode="numeric"
-                min="1"
-                placeholder="—"
-                value={form.reps}
-                onChange={(e) => setForm({ ...form, reps: e.target.value })}
-              />
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label
+                  htmlFor={`exercise-sets-${templateId}`}
+                  className="mb-2 block text-sm font-medium text-muted-foreground"
+                >
+                  {t("sets")}
+                </label>
+                <Input
+                  id={`exercise-sets-${templateId}`}
+                  type="number"
+                  inputMode="numeric"
+                  min="1"
+                  placeholder="—"
+                  value={form.sets}
+                  onChange={(e) => setForm({ ...form, sets: e.target.value })}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor={`exercise-reps-${templateId}`}
+                  className="mb-2 block text-sm font-medium text-muted-foreground"
+                >
+                  {t("reps")}
+                </label>
+                <Input
+                  id={`exercise-reps-${templateId}`}
+                  type="number"
+                  inputMode="numeric"
+                  min="1"
+                  placeholder="—"
+                  value={form.reps}
+                  onChange={(e) => setForm({ ...form, reps: e.target.value })}
+                />
+              </div>
             </div>
-          </div>
 
-          <label className="block">
-            <span className="mb-2 block text-sm font-medium text-muted-foreground">
-              {t("description")}
-            </span>
-            <textarea
-              placeholder={t("descriptionPlaceholder")}
-              value={form.description}
-              onChange={(e) =>
-                setForm({ ...form, description: e.target.value })
-              }
-              rows={3}
-              className="w-full min-w-0 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-base text-foreground outline-none backdrop-blur-sm transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
-            />
-          </label>
-
-          <div>
-            <span className="mb-2 block text-sm font-medium text-muted-foreground">
-              {t("image")}
-            </span>
-            <div className="flex gap-2">
-              <Input
-                placeholder={t("imagePlaceholder")}
-                value={form.imageUrl}
-                onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-                className="flex-1"
+            <label className="block">
+              <span className="mb-2 block text-sm font-medium text-muted-foreground">
+                {t("description")}
+              </span>
+              <textarea
+                placeholder={t("descriptionPlaceholder")}
+                value={form.description}
+                onChange={(e) =>
+                  setForm({ ...form, description: e.target.value })
+                }
+                rows={3}
+                className="w-full min-w-0 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-base text-foreground outline-none backdrop-blur-sm transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
               />
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handleImageUpload(file);
-                  e.target.value = "";
-                }}
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-              >
-                <Upload />
-              </Button>
-            </div>
-            {uploading && (
-              <p className="text-xs text-muted-foreground">{t("uploading")}</p>
-            )}
-            {form.imageUrl && !uploading && (
-              /* biome-ignore lint/performance/noImgElement: user-provided dynamic URLs */
-              <img
-                src={form.imageUrl}
-                alt="Exercise preview"
-                className="h-32 w-full rounded-xl object-cover"
-              />
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor={`exercise-youtube-${templateId}`}
-              className="mb-2 block text-sm font-medium text-muted-foreground"
-            >
-              {t("youtubeUrl")}
             </label>
-            <Input
-              id={`exercise-youtube-${templateId}`}
-              placeholder="https://youtube.com/watch?v=..."
-              value={form.youtubeUrl}
-              onChange={(e) => setForm({ ...form, youtubeUrl: e.target.value })}
-            />
-            {form.youtubeUrl && <YouTubePlayer url={form.youtubeUrl} />}
-          </div>
 
-          {exerciseId && (
             <div>
               <span className="mb-2 block text-sm font-medium text-muted-foreground">
-                {t("muscleGroups")}
+                {t("image")}
               </span>
-              <MuscleGroupChips
-                exerciseId={exerciseId}
-                selectedIds={form.muscleGroupIds}
-                onSelectionChange={(ids) =>
-                  setForm({ ...form, muscleGroupIds: ids })
+              <div className="flex gap-2">
+                <Input
+                  placeholder={t("imagePlaceholder")}
+                  value={form.imageUrl}
+                  onChange={(e) =>
+                    setForm({ ...form, imageUrl: e.target.value })
+                  }
+                  className="flex-1"
+                />
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleImageUpload(file);
+                    e.target.value = "";
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                >
+                  <Upload />
+                </Button>
+              </div>
+              {uploading && (
+                <p className="text-xs text-muted-foreground">
+                  {t("uploading")}
+                </p>
+              )}
+              {form.imageUrl && !uploading && (
+                /* biome-ignore lint/performance/noImgElement: user-provided dynamic URLs */
+                <img
+                  src={form.imageUrl}
+                  alt="Exercise preview"
+                  className="h-32 w-full rounded-xl object-cover"
+                />
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor={`exercise-youtube-${templateId}`}
+                className="mb-2 block text-sm font-medium text-muted-foreground"
+              >
+                {t("youtubeUrl")}
+              </label>
+              <Input
+                id={`exercise-youtube-${templateId}`}
+                placeholder="https://youtube.com/watch?v=..."
+                value={form.youtubeUrl}
+                onChange={(e) =>
+                  setForm({ ...form, youtubeUrl: e.target.value })
                 }
               />
+              {form.youtubeUrl && <YouTubePlayer url={form.youtubeUrl} />}
             </div>
-          )}
 
-          </DialogBody>
-          <DialogFooter>
+            {exerciseId && (
+              <div>
+                <span className="mb-2 block text-sm font-medium text-muted-foreground">
+                  {t("muscleGroups")}
+                </span>
+                <MuscleGroupChips
+                  exerciseId={exerciseId}
+                  selectedIds={form.muscleGroupIds}
+                  onSelectionChange={(ids) =>
+                    setForm({ ...form, muscleGroupIds: ids })
+                  }
+                />
+              </div>
+            )}
+          </DrawerBody>
+          <DrawerFooter>
             <Button
               type="submit"
+              className="w-full h-12"
               disabled={!form.name.trim() || isPending || uploading}
             >
               {isPending ? tc("saving") : tc("save")}
             </Button>
-          </DialogFooter>
+          </DrawerFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </DrawerContent>
+    </Drawer>
   );
 }
 
@@ -381,7 +387,7 @@ function SortableExercise({
           </Button>
         </div>
       </CardContent>
-      <ConfirmDeleteDialog
+      <ConfirmDeleteDrawer
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
         title={t("deleteExercise")}
@@ -396,7 +402,7 @@ function SortableExercise({
   );
 }
 
-function EditExerciseDialog({
+function EditExerciseDrawer({
   exercise,
   templateId,
   onClose,
@@ -426,7 +432,7 @@ function EditExerciseDialog({
   if (isLoading) return null;
 
   return (
-    <ExerciseFormDialog
+    <ExerciseFormDrawer
       open={true}
       onOpenChange={(open) => {
         if (!open) onClose();
@@ -729,7 +735,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
         <h2 className="text-sm font-medium text-muted-foreground">
           {t("exerciseCount", { count: exercises.length })}
         </h2>
-        <ExerciseFormDialog
+        <ExerciseFormDrawer
           open={addOpen}
           onOpenChange={setAddOpen}
           title={t("addExercise")}
@@ -793,7 +799,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
       </DragDropProvider>
 
       {editingExercise && (
-        <EditExerciseDialog
+        <EditExerciseDrawer
           exercise={editingExercise}
           templateId={templateId}
           onClose={() => setEditingExercise(null)}
