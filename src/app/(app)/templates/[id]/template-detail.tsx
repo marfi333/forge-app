@@ -152,7 +152,6 @@ function ExerciseFormDrawer({
                 placeholder={t("exerciseNamePlaceholder")}
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                autoFocus
               />
             </div>
 
@@ -684,7 +683,6 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
             <Input
               value={nameValue}
               onChange={(e) => setNameValue(e.target.value)}
-              autoFocus
               className="text-xl font-bold"
             />
             <Button size="sm" type="submit" disabled={!nameValue.trim()}>

@@ -581,7 +581,6 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
                     placeholder={t("exercisePlaceholder")}
                     value={exerciseName}
                     onChange={(e) => setExerciseName(e.target.value)}
-                    autoFocus
                   />
                 </DrawerBody>
                 <DrawerFooter>

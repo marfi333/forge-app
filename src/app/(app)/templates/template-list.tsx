@@ -89,7 +89,6 @@ function TemplateFormDrawer({
                 placeholder={t("namePlaceholder")}
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                autoFocus
               />
             </div>
 

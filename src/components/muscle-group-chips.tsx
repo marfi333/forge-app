@@ -108,7 +108,6 @@ export function MuscleGroupChips({
             placeholder={t("customPlaceholder")}
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
-            autoFocus
             onKeyDown={(e) => {
               if (e.key === "Enter" && newName.trim()) {
                 e.preventDefault();
