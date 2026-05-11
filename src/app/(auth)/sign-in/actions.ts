@@ -15,7 +15,7 @@ export type SignInState = {
 };
 
 export async function signInWithGoogle() {
-  await signIn("google", { redirectTo: "/" });
+  await signIn("google", { redirectTo: "/dashboard" });
 }
 
 export async function signInWithCredentials(
@@ -36,7 +36,7 @@ export async function signInWithCredentials(
     await signIn("credentials", {
       email: parsed.data.email,
       password: parsed.data.password,
-      redirectTo: "/",
+      redirectTo: "/dashboard",
     });
   } catch (error) {
     if (error instanceof AuthError) {

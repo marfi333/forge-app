@@ -5,6 +5,7 @@ import { defaultLocale, locales } from "@/i18n/config";
 
 const publicPrefixes = ["/sign-in", "/register", "/forgot-password", "/reset-password", "/api/auth", "/api/landing-stats", "/offline"];
 const publicExact = ["/"];
+const authPages = ["/sign-in", "/register"];
 
 function resolveLocale(req: NextRequest): Locale {
   const cookie = req.cookies.get("NEXT_LOCALE")?.value;
@@ -26,21 +27,24 @@ export function middleware(req: NextRequest) {
     publicExact.includes(pathname) ||
     publicPrefixes.some((path) => pathname.startsWith(path));
 
+  const sessionToken =
+    req.cookies.get("authjs.session-token") ??
+    req.cookies.get("__Secure-authjs.session-token");
+
+  const isAuthPage = authPages.some((path) => pathname.startsWith(path));
+
   const locale = resolveLocale(req);
-  const response = isPublic
-    ? NextResponse.next()
-    : (() => {
-        const sessionToken =
-          req.cookies.get("authjs.session-token") ??
-          req.cookies.get("__Secure-authjs.session-token");
+  const response = (() => {
+    if (isAuthPage && sessionToken) {
+      return NextResponse.redirect(new URL("/dashboard", req.nextUrl.origin));
+    }
 
-        if (!sessionToken) {
-          const signInUrl = new URL("/sign-in", req.nextUrl.origin);
-          return NextResponse.redirect(signInUrl);
-        }
+    if (!isPublic && !sessionToken) {
+      return NextResponse.redirect(new URL("/sign-in", req.nextUrl.origin));
+    }
 
-        return NextResponse.next();
-      })();
+    return NextResponse.next();
+  })();
 
   if (!req.cookies.get("NEXT_LOCALE")) {
     response.cookies.set("NEXT_LOCALE", locale, {
