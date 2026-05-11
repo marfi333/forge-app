@@ -1,3 +1,16 @@
+# [1.6.0](https://github.com/marfi333/forge-app/compare/v1.5.0...v1.6.0) (2026-05-11)
+
+
+### Bug Fixes
+
+* bottom padding on layout ([565ef15](https://github.com/marfi333/forge-app/commit/565ef153a1fb4bc766ff12c0f6d54332bfd6181a))
+
+
+### Features
+
+* create liquid glass style navbar ([8b6bc58](https://github.com/marfi333/forge-app/commit/8b6bc585028a2d7f9ba673410ed1ddb59eb812fc))
+* drag like behavior for new bottom navbar ([29c277b](https://github.com/marfi333/forge-app/commit/29c277b7638e4bdeb8ea56e0d9fbceabb21eea41))
+
 # [1.5.0](https://github.com/marfi333/forge-app/compare/v1.4.0...v1.5.0) (2026-05-11)
 
 
