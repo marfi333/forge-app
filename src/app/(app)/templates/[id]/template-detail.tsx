@@ -324,6 +324,7 @@ function SortableExercise({
 export function TemplateDetail({ templateId }: { templateId: string }) {
   const t = useTranslations("templates");
   const tc = useTranslations("common");
+  const tm = useTranslations("muscleGroups");
   const queryClient = useQueryClient();
   const { trigger } = useHaptics();
   const [addOpen, setAddOpen] = useState(false);
@@ -571,7 +572,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
               )}
               {template.muscleGroup && (
                 <span className="rounded-md bg-white/10 px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                  {template.muscleGroup}
+                  {tm(template.muscleGroup)}
                 </span>
               )}
             </div>

@@ -187,6 +187,44 @@
     "signOut": "Kijelentkezés",
     "version": "FORGE v{version}",
     "language": "Nyelv",
-    "languageDescription": "Válaszd ki a kívánt nyelvet"
+    "languageDescription": "Válaszd ki a kívánt nyelvet",
+    "hapticFeedback": "Haptikus visszajelzés",
+    "replayTour": "Bemutató újrajátszása",
+    "resetting": "Visszaállítás..."
+  },
+  "muscleGroups": {
+    "Chest": "Mellkas",
+    "Back": "Hát",
+    "Shoulders": "Váll",
+    "Legs": "Láb",
+    "Arms": "Kar",
+    "Core": "Törzs",
+    "Quads": "Combfeszítő",
+    "Hamstrings": "Combhajlító",
+    "Glutes": "Fenék",
+    "Biceps": "Bicepsz",
+    "Triceps": "Tricepsz",
+    "Calves": "Vádli",
+    "Forearms": "Alkar",
+    "Upper Back": "Felső hát",
+    "Lower Back": "Derék"
+  },
+  "onboarding": {
+    "stepOf": "{current} / {total}",
+    "skip": "Kihagyás",
+    "next": "Következő",
+    "done": "Kész",
+    "dashboardWeeklyPlanTitle": "Heti terved",
+    "dashboardWeeklyPlanDescription": "Tekintsd át az edzéstervedet egy pillantással. Minden kártya a tervezett edzésedet vagy pihenőnapodat mutatja.",
+    "dashboardStartWorkoutTitle": "Edzés indítása",
+    "dashboardStartWorkoutDescription": "Koppints ide egy új edzés naplózásához. Válassz sablont vagy kezdj üresen.",
+    "templatesListTitle": "Edzéssablonok",
+    "templatesListDescription": "A sablonok definiálják az edzésrutinjaidat. Minden sablon újrahasznosítható gyakorlatokat tartalmaz.",
+    "templatesCreateTitle": "Sablon létrehozása",
+    "templatesCreateDescription": "Koppints ide új edzéssablon létrehozásához. Adj hozzá gyakorlatokat, rendelj hozzá napot és izomcsoportot.",
+    "calendarGridTitle": "Naptár nézet",
+    "calendarGridDescription": "Kövesd az edzéseid rendszerességét. Koppints bármelyik napra edzés- vagy pihenőnapként való megjelöléshez.",
+    "statsChartsTitle": "Fejlődésed",
+    "statsChartsDescription": "A grafikonok és személyes rekordok itt találhatók. Kövesd az erőnléted fejlődését."
   }
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { TourStep } from "@/lib/onboarding-steps";
@@ -68,6 +69,8 @@ export function TourOverlay({
       document.body.style.overflow = "";
     };
   }, []);
+
+  const t = useTranslations("onboarding");
 
   if (!rect) return null;
 
@@ -143,13 +146,13 @@ export function TourOverlay({
         style={{ top: tooltipTop, transform: tooltipTransform }}
       >
         <p className="text-xs font-semibold text-primary mb-1">
-          {stepIndex + 1} of {totalSteps}
+          {t("stepOf", { current: stepIndex + 1, total: totalSteps })}
         </p>
         <h3 className="text-base font-bold text-foreground mb-2">
-          {step.title}
+          {t(step.titleKey)}
         </h3>
         <p className="text-sm text-muted-foreground leading-relaxed">
-          {step.description}
+          {t(step.descriptionKey)}
         </p>
 
         <div className="flex items-center justify-between mt-4">
@@ -158,14 +161,14 @@ export function TourOverlay({
             onClick={onSkip}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2"
           >
-            Skip
+            {t("skip")}
           </button>
           <button
             type="button"
             onClick={onNext}
             className="rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 active:opacity-80"
           >
-            {isLastStep ? "Done" : "Next"}
+            {isLastStep ? t("done") : t("next")}
           </button>
         </div>
       </div>

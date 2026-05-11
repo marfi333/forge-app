@@ -2,9 +2,11 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useOnboardingStore } from "@/stores/onboarding-store";
 
 export function ReplayTourButton() {
+  const t = useTranslations("settings");
   const router = useRouter();
   const queryClient = useQueryClient();
   const { startTour } = useOnboardingStore();
@@ -33,7 +35,7 @@ export function ReplayTourButton() {
       disabled={resetMutation.isPending}
       className="w-full rounded-xl px-4 py-3 text-sm font-medium text-primary transition-colors hover:bg-primary/10 active:bg-primary/20 disabled:opacity-50"
     >
-      {resetMutation.isPending ? "Resetting..." : "Replay Onboarding Tour"}
+      {resetMutation.isPending ? t("resetting") : t("replayTour")}
     </button>
   );
 }

@@ -187,6 +187,44 @@
     "signOut": "Sign Out",
     "version": "FORGE v{version}",
     "language": "Language",
-    "languageDescription": "Choose your preferred language"
+    "languageDescription": "Choose your preferred language",
+    "hapticFeedback": "Haptic Feedback",
+    "replayTour": "Replay Onboarding Tour",
+    "resetting": "Resetting..."
+  },
+  "muscleGroups": {
+    "Chest": "Chest",
+    "Back": "Back",
+    "Shoulders": "Shoulders",
+    "Legs": "Legs",
+    "Arms": "Arms",
+    "Core": "Core",
+    "Quads": "Quads",
+    "Hamstrings": "Hamstrings",
+    "Glutes": "Glutes",
+    "Biceps": "Biceps",
+    "Triceps": "Triceps",
+    "Calves": "Calves",
+    "Forearms": "Forearms",
+    "Upper Back": "Upper Back",
+    "Lower Back": "Lower Back"
+  },
+  "onboarding": {
+    "stepOf": "{current} of {total}",
+    "skip": "Skip",
+    "next": "Next",
+    "done": "Done",
+    "dashboardWeeklyPlanTitle": "Your Weekly Plan",
+    "dashboardWeeklyPlanDescription": "See your workout schedule at a glance. Each card shows your planned workout or rest day.",
+    "dashboardStartWorkoutTitle": "Start a Workout",
+    "dashboardStartWorkoutDescription": "Tap here to begin logging a new workout session. Pick a template or start from scratch.",
+    "templatesListTitle": "Workout Templates",
+    "templatesListDescription": "Templates define your workout routines. Each template holds a list of exercises you can reuse.",
+    "templatesCreateTitle": "Create a Template",
+    "templatesCreateDescription": "Tap here to create a new workout template. Add exercises, assign a weekday, and set a muscle group.",
+    "calendarGridTitle": "Calendar View",
+    "calendarGridDescription": "Track your training consistency. Tap any day to mark it as a workout or rest day.",
+    "statsChartsTitle": "Your Progress",
+    "statsChartsDescription": "Charts and personal records live here. Track your strength gains over time."
   }
 }

@@ -53,6 +53,7 @@ function TemplateFormDialog({
 }) {
   const t = useTranslations("templates");
   const tc = useTranslations("common");
+  const tm = useTranslations("muscleGroups");
   const [form, setForm] = useState<TemplateFormData>(initial);
 
   function handleOpenChange(next: boolean) {
@@ -130,7 +131,7 @@ function TemplateFormDialog({
               <option value="">{t("noMuscleGroup")}</option>
               {MUSCLE_GROUPS.map((group) => (
                 <option key={group} value={group}>
-                  {group}
+                  {tm(group)}
                 </option>
               ))}
             </select>
@@ -149,6 +150,7 @@ function TemplateFormDialog({
 
 export function TemplateList() {
   const t = useTranslations("templates");
+  const tm = useTranslations("muscleGroups");
   const queryClient = useQueryClient();
   const [createOpen, setCreateOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
@@ -272,7 +274,7 @@ export function TemplateList() {
                   )}
                   {template.muscleGroup && (
                     <span className="rounded-md bg-white/10 px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                      {template.muscleGroup}
+                      {tm(template.muscleGroup)}
                     </span>
                   )}
                 </div>

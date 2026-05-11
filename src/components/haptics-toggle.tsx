@@ -1,8 +1,10 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useHaptics } from "@/components/haptics-provider";
 
 export function HapticsToggle() {
+  const t = useTranslations("settings");
   const { enabled, setEnabled, trigger } = useHaptics();
 
   return (
@@ -17,7 +19,7 @@ export function HapticsToggle() {
       }}
       className="flex w-full items-center justify-between px-4 py-3 text-sm"
     >
-      <span className="font-medium">Haptic Feedback</span>
+      <span className="font-medium">{t("hapticFeedback")}</span>
       <span
         className={`relative inline-flex h-6 w-10 shrink-0 items-center rounded-full transition-colors ${enabled ? "bg-primary" : "bg-muted"}`}
       >
