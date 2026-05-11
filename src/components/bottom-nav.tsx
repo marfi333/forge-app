@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useHaptics } from "@/components/haptics-provider";
 
 const navItems = [
   {
@@ -30,6 +31,7 @@ const hiddenRoutes = ["/sign-in", "/offline"];
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { trigger } = useHaptics();
 
   if (hiddenRoutes.includes(pathname)) return null;
 
@@ -43,6 +45,7 @@ export function BottomNav() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => trigger("light")}
               className={`flex flex-col items-center gap-1 transition-colors ${
                 isActive
                   ? "text-primary"

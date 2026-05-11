@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, FileText, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useHaptics } from "@/components/haptics-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { invalidateWorkoutDependentQueries } from "@/lib/query-invalidation";
@@ -16,6 +17,7 @@ interface Template {
 export function NewSession() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { trigger } = useHaptics();
   const searchParams = useSearchParams();
   const date =
     searchParams.get("date") ?? new Date().toISOString().split("T")[0];
@@ -50,6 +52,7 @@ export function NewSession() {
       <div className="space-y-1">
         <Link
           href="/calendar"
+          onClick={() => trigger("light")}
           className="inline-flex h-11 items-center gap-1 -ml-1 px-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-4" />

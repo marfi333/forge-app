@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { auth, signOut } from "@/auth";
+import { HapticsToggle } from "@/components/haptics-toggle";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -31,6 +32,10 @@ export default async function SettingsPage() {
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-card backdrop-blur-xl">
+        <HapticsToggle />
       </div>
 
       <div className="rounded-2xl border border-white/10 bg-card p-4 backdrop-blur-xl">

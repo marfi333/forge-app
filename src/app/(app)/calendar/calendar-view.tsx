@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Dumbbell, Moon } from "lucide-react";
 import { useCallback, useState } from "react";
+import { useHaptics } from "@/components/haptics-provider";
 import { Button } from "@/components/ui/button";
 import { DayActionSheet } from "./day-action-sheet";
 
@@ -170,11 +171,16 @@ export function CalendarView() {
   const firstDay = getFirstDayOfWeek(year, month);
 
   const [sheetOpen, setSheetOpen] = useState(false);
+  const { trigger } = useHaptics();
 
-  const handleDayTap = useCallback((dateStr: string) => {
-    setSelectedDate(dateStr);
-    setSheetOpen(true);
-  }, []);
+  const handleDayTap = useCallback(
+    (dateStr: string) => {
+      trigger("selection");
+      setSelectedDate(dateStr);
+      setSheetOpen(true);
+    },
+    [trigger],
+  );
 
   function prevMonth() {
     setCurrentDate(new Date(year, month - 1, 1));
