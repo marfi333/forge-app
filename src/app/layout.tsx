@@ -64,7 +64,7 @@ export default async function RootLayout({
             <BottomNav />
             <TourController />
             <ServiceWorkerRegister />
-            <Toaster theme="dark" position="bottom-center" />
+            <Toaster theme="system" position="bottom-center" />
           </Providers>
         </NextIntlClientProvider>
       </body>
