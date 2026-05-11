@@ -1,3 +1,11 @@
+# [1.4.0](https://github.com/marfi333/forge-app/compare/v1.3.1...v1.4.0) (2026-05-11)
+
+
+### Features
+
+* display sets and reps on exercise detail page ([034a6d7](https://github.com/marfi333/forge-app/commit/034a6d77dbc45ea90c32ec9c47d874e54d3a0e0b))
+* template exercise sets and reps ([3338eab](https://github.com/marfi333/forge-app/commit/3338eab7ac915796a11bf2632446b4ea5a14a343))
+
 ## [1.3.1](https://github.com/marfi333/forge-app/compare/v1.3.0...v1.3.1) (2026-05-11)
 
 
