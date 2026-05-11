@@ -1,3 +1,15 @@
+# [1.10.0](https://github.com/marfi333/forge-app/compare/v1.9.1...v1.10.0) (2026-05-11)
+
+
+### Bug Fixes
+
+* accordion animation ([b93dbb8](https://github.com/marfi333/forge-app/commit/b93dbb80043103fa439d5c4e34dff669d011fd50))
+
+
+### Features
+
+* **landing:** add landing page for unauthenticated users ([cf0f1f4](https://github.com/marfi333/forge-app/commit/cf0f1f49a65a3b4aff957e9ef6648b4287fed026))
+
 ## [1.9.1](https://github.com/marfi333/forge-app/compare/v1.9.0...v1.9.1) (2026-05-11)
 
 
