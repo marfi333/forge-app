@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/marfi333/forge-app/compare/v1.0.3...v1.1.0) (2026-05-11)
+
+
+### Features
+
+* add confetti burst on workout completion ([79d6642](https://github.com/marfi333/forge-app/commit/79d66429bfbc6f267622bde13d63dcc91a7d26a1))
+* add haptic feedback throughout the app using web-haptics ([8b181b1](https://github.com/marfi333/forge-app/commit/8b181b1aab2a6c8f586b4ff348999508b99e2c41))
+
 ## [1.0.3](https://github.com/marfi333/forge-app/compare/v1.0.2...v1.0.3) (2026-05-10)
 
 
