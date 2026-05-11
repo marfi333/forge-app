@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Dumbbell, Footprints, Moon, Waves } from "lucide-react";
 import Link from "next/link";
+import { TourTrigger } from "@/components/onboarding/tour-trigger";
 
 interface WeeklyPlanDay {
   weekday: string;
@@ -82,6 +83,7 @@ export function DashboardView() {
 
   return (
     <div className="space-y-6">
+      <TourTrigger />
       <h2 className="text-xl font-bold">Weekly Plan</h2>
 
       {/* Summary Card */}
