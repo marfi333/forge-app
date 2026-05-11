@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/marfi333/forge-app/compare/v1.8.0...v1.8.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* remove autofocus from drawers ([f81f9c6](https://github.com/marfi333/forge-app/commit/f81f9c6cd9935dcf1e737ab16b6efe78c399a4a5))
+
 # [1.8.0](https://github.com/marfi333/forge-app/compare/v1.7.0...v1.8.0) (2026-05-11)
 
 
