@@ -399,11 +399,6 @@ function ExerciseAccordionItem({
             >
               {completedSets}/{totalSets}
             </span>
-            {isExpanded && (
-              <span className="text-xs text-muted-foreground">
-                <ExerciseVolume sets={exercise.sets} />
-              </span>
-            )}
           </div>
           {/* Progress bar */}
           {totalSets > 0 && (
@@ -412,6 +407,11 @@ function ExerciseAccordionItem({
                 className={`h-full rounded-full transition-all duration-300 ${allComplete ? "bg-primary" : "bg-primary/70"}`}
                 style={{ width: `${progress * 100}%` }}
               />
+            </div>
+          )}
+          {isExpanded && (
+            <div className="mt-1.5">
+              <ExerciseVolume sets={exercise.sets} />
             </div>
           )}
         </div>
