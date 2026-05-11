@@ -23,7 +23,7 @@ function getIntensity(sets: number): number {
 }
 
 const INTENSITY_CLASSES = [
-  "bg-white/5",
+  "bg-muted/50",
   "bg-chart-1/20",
   "bg-chart-1/40",
   "bg-chart-1/60",
@@ -44,7 +44,7 @@ export function ActivityGrid() {
   });
 
   if (isLoading) {
-    return <div className="h-28 animate-pulse rounded-xl bg-white/5" />;
+    return <div className="h-28 animate-pulse rounded-xl bg-muted/50" />;
   }
 
   const weeks = data?.weeks ?? 12;
@@ -77,7 +77,7 @@ export function ActivityGrid() {
   }
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+    <div className="rounded-xl border border-border bg-muted/50 p-4 backdrop-blur-sm">
       <p className="mb-3 text-sm font-medium text-muted-foreground">
         {t("trainingActivity")}
       </p>

@@ -58,7 +58,7 @@ export function ExerciseChart({ exerciseNames }: { exerciseNames: string[] }) {
   return (
     <div className="space-y-4">
       <select
-        className="w-full appearance-none rounded-xl border border-white/10 bg-white/5 px-3 pr-8 py-2 text-sm backdrop-blur-sm bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23a1a1a1%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-size-[16px] bg-position-[right_0.5rem_center] bg-no-repeat"
+        className="w-full appearance-none rounded-xl border border-border bg-muted/50 px-3 pr-8 py-2 text-sm backdrop-blur-sm bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23a1a1a1%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-size-[16px] bg-position-[right_0.5rem_center] bg-no-repeat"
         value={exercise}
         onChange={(e) => setSelectedExercise(e.target.value)}
       >
@@ -70,15 +70,15 @@ export function ExerciseChart({ exerciseNames }: { exerciseNames: string[] }) {
       </select>
 
       {isLoading ? (
-        <div className="h-48 animate-pulse rounded-xl bg-white/5" />
+        <div className="h-48 animate-pulse rounded-xl bg-muted/50" />
       ) : chartData.length === 0 ? (
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+        <div className="rounded-xl border border-border bg-muted/50 p-6 backdrop-blur-sm">
           <p className="text-center text-sm text-muted-foreground">
             {t("noSetsYet")}
           </p>
         </div>
       ) : (
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+        <div className="rounded-xl border border-border bg-muted/50 p-4 backdrop-blur-sm">
           <p className="mb-3 text-sm font-medium text-muted-foreground">
             {t("bestWeight")}
           </p>

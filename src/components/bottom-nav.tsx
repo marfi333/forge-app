@@ -39,7 +39,7 @@ function RegularNav({
   t: (key: "home" | "plan" | "stats" | "settings") => string;
 }) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-background/80 backdrop-blur-xl pb-[calc(env(safe-area-inset-bottom,0)-10px)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/80 backdrop-blur-xl pb-[calc(env(safe-area-inset-bottom,0)-10px)]">
       <div className="mx-auto flex h-16 max-w-md items-center justify-around px-6">
         {navItems.map((item) => {
           const isActive =
@@ -138,7 +138,7 @@ function GlassNav({
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-6 pb-[calc(env(safe-area-inset-bottom,0)-6px)]">
       <div
         ref={containerRef}
-        className="relative flex items-center rounded-full border border-white/12 bg-white/6 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] px-2 py-2"
+        className="relative flex items-center rounded-full border border-border bg-card/80 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] px-2 py-2"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -160,7 +160,7 @@ function GlassNav({
               key={item.href}
               href={item.href}
               onClick={() => trigger("light")}
-              className={`relative z-10 flex w-[68px] flex-col items-center gap-0.5 py-1.5 rounded-full transition-all duration-200 active:scale-90 ${isDragTarget ? "text-primary scale-110" : isActive ? "text-primary" : "text-white/50 hover:text-white/80"}`}
+              className={`relative z-10 flex w-[68px] flex-col items-center gap-0.5 py-1.5 rounded-full transition-all duration-200 active:scale-90 ${isDragTarget ? "text-primary scale-110" : isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"}`}
             >
               <item.icon className="h-5 w-5" />
               <span className="text-[10px] font-medium">

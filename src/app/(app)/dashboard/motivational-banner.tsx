@@ -119,7 +119,7 @@ export function MotivationalBanner({
   return (
     <section
       aria-live="polite"
-      className="relative overflow-hidden rounded-xl border border-white/10 bg-card/80 backdrop-blur-xl p-3"
+      className="relative overflow-hidden rounded-xl border border-border bg-card/80 backdrop-blur-xl p-3"
     >
       {message.accent && (
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full pointer-events-none" />

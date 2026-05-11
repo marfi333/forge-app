@@ -8,7 +8,7 @@ export default async function SignInPage() {
 
   return (
     <div className="flex min-h-svh flex-col items-center justify-center px-6">
-      <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-card p-8 backdrop-blur-xl">
+      <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-8 backdrop-blur-xl">
         <div className="space-y-8 text-center">
           <div className="space-y-4">
             <div className="flex items-center justify-center gap-0">

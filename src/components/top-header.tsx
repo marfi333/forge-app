@@ -29,7 +29,7 @@ export function TopHeader() {
   if (hiddenRoutes.includes(pathname)) return null;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-background/80 backdrop-blur-xl pt-[env(safe-area-inset-top,0px)]">
+    <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl pt-[env(safe-area-inset-top,0px)]">
       <div className="mx-auto flex h-14 max-w-md items-center justify-between px-5">
         {user?.image ? (
           <img

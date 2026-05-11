@@ -130,7 +130,7 @@ export function DayActionSheet({
                           ? "border-primary/30 bg-primary/5"
                           : isInProgress
                             ? "border-yellow-500/30 bg-yellow-500/5"
-                            : "border-white/10 bg-card"
+                            : "border-border bg-card"
                       }`}
                     >
                       <div

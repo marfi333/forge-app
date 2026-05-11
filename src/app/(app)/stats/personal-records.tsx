@@ -28,7 +28,7 @@ export function PersonalRecords() {
     return (
       <div className="space-y-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-16 animate-pulse rounded-xl bg-white/5" />
+          <div key={i} className="h-16 animate-pulse rounded-xl bg-muted/50" />
         ))}
       </div>
     );
@@ -51,7 +51,7 @@ export function PersonalRecords() {
       {records.map((record) => (
         <div
           key={record.exerciseName}
-          className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm"
+          className="flex items-center gap-3 rounded-xl border border-border bg-muted/50 p-4 backdrop-blur-sm"
         >
           <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-(--chart-1)/20">
             <Trophy className="size-5 text-chart-1" />

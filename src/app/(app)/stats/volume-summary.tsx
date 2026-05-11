@@ -49,7 +49,7 @@ export function VolumeSummary() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
+      <div className="flex gap-1 rounded-xl border border-border bg-muted/50 p-1">
         <button
           type="button"
           className={`flex-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
@@ -75,7 +75,7 @@ export function VolumeSummary() {
       </div>
 
       {isLoading ? (
-        <div className="h-48 animate-pulse rounded-xl bg-white/5" />
+        <div className="h-48 animate-pulse rounded-xl bg-muted/50" />
       ) : chartData.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
           <p className="text-muted-foreground">{t("noVolumeData")}</p>
@@ -84,7 +84,7 @@ export function VolumeSummary() {
           </p>
         </div>
       ) : (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
+        <div className="rounded-2xl border border-border bg-muted/50 p-5 backdrop-blur-sm">
           <div className="mb-4 flex items-start justify-between">
             <div>
               <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">

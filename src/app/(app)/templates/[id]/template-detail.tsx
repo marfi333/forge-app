@@ -204,7 +204,7 @@ function ExerciseFormDrawer({
                   setForm({ ...form, description: e.target.value })
                 }
                 rows={3}
-                className="w-full min-w-0 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-base text-foreground outline-none backdrop-blur-sm transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
+                className="w-full min-w-0 rounded-xl border border-border bg-muted/50 px-3 py-2 text-base text-foreground outline-none backdrop-blur-sm transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
               />
             </label>
 
@@ -718,7 +718,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
                 </span>
               )}
               {template.muscleGroup && (
-                <span className="rounded-md bg-white/10 px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                <span className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                   {tm(template.muscleGroup)}
                 </span>
               )}

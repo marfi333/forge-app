@@ -18,7 +18,7 @@ export function ThemeSwitcher() {
   if (!mounted) return null;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-card p-4 backdrop-blur-xl">
+    <div className="rounded-2xl border border-border bg-card p-4 backdrop-blur-xl">
       <p className="mb-3 text-sm font-medium text-muted-foreground">
         {t("theme")}
       </p>
@@ -31,7 +31,7 @@ export function ThemeSwitcher() {
             className={`flex-1 rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
               theme === value
                 ? "bg-primary text-primary-foreground"
-                : "bg-white/5 text-muted-foreground hover:text-foreground"
+                : "bg-muted text-muted-foreground hover:text-foreground"
             }`}
           >
             {t(`theme_${value}`)}

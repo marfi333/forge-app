@@ -84,7 +84,7 @@ export function MuscleGroupChips({
               className={`min-h-11 rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
                 selected
                   ? "bg-primary text-primary-foreground"
-                  : "bg-white/10 text-muted-foreground hover:bg-white/15"
+                  : "bg-muted text-muted-foreground hover:bg-accent"
               }`}
             >
               {displayName(group)}
@@ -95,7 +95,7 @@ export function MuscleGroupChips({
           <button
             type="button"
             onClick={() => setShowAdd(true)}
-            className="flex min-h-11 items-center gap-1 rounded-full bg-white/5 px-3 py-1.5 text-sm text-muted-foreground hover:bg-white/10"
+            className="flex min-h-11 items-center gap-1 rounded-full bg-muted/50 px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted"
           >
             <Plus className="size-3.5" />
             {tc("add")}
@@ -145,7 +145,7 @@ export function MuscleGroupBadges({
       {muscleGroups.map((group) => (
         <span
           key={group.id}
-          className="rounded-md bg-white/10 px-2 py-0.5 text-xs font-medium text-muted-foreground"
+          className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
         >
           {group.isSystem ? t(group.name) : group.name}
         </span>

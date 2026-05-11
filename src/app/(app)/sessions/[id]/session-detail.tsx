@@ -227,7 +227,7 @@ function CompactSetRow({
 
   if (editing && !readOnly) {
     return (
-      <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-card/60 backdrop-blur-md px-4 py-3">
+      <div className="flex items-center gap-2 rounded-xl border border-border bg-card/60 backdrop-blur-md px-4 py-3">
         <span className="w-6 shrink-0 text-center text-sm font-medium text-muted-foreground">
           {set.setNumber}
         </span>
@@ -263,7 +263,7 @@ function CompactSetRow({
   }
 
   return (
-    <div className="flex w-full items-center gap-3 rounded-xl border border-white/10 bg-card/60 backdrop-blur-md px-4 py-3 min-h-[48px]">
+    <div className="flex w-full items-center gap-3 rounded-xl border border-border bg-card/60 backdrop-blur-md px-4 py-3 min-h-[48px]">
       <button
         type="button"
         className={`flex flex-1 items-center gap-3 bg-transparent border-none p-0 text-left ${readOnly ? "cursor-default" : "cursor-pointer"}`}
@@ -535,7 +535,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
           {!isCompleted && (
             <Button
               variant="outline"
-              className="w-full rounded-xl border-dashed border-white/10"
+              className="w-full rounded-xl border-dashed border-border"
               onClick={() => addSet.mutate(currentExercise.id)}
               disabled={addSet.isPending}
             >

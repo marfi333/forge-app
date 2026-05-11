@@ -56,7 +56,7 @@ function StatCard({
   previous: number;
 }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
+    <div className="rounded-xl border border-border bg-muted/50 p-4 backdrop-blur-sm">
       <p className="text-xs text-muted-foreground">{label}</p>
       <div className="mt-1 flex items-baseline gap-2">
         <p className="text-3xl font-extrabold tracking-tight">{value}</p>
@@ -84,7 +84,7 @@ export function StatsSummaryCards({ period }: { period: "week" | "month" }) {
         {[...Array(4)].map((_, i) => (
           <div
             key={`skeleton-${i}`}
-            className="h-20 animate-pulse rounded-xl bg-white/5"
+            className="h-20 animate-pulse rounded-xl bg-muted/50"
           />
         ))}
       </div>

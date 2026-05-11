@@ -18,7 +18,7 @@ export default async function SettingsPage() {
     <>
       <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
 
-      <div className="rounded-2xl border border-white/10 bg-card p-6 backdrop-blur-xl">
+      <div className="rounded-2xl border border-border bg-card p-6 backdrop-blur-xl">
         <div className="flex items-center gap-4">
           {user.image ? (
             <img
@@ -43,12 +43,12 @@ export default async function SettingsPage() {
       <LanguageSwitcher />
       <ThemeSwitcher />
 
-      <div className="rounded-2xl border border-white/10 bg-card backdrop-blur-xl divide-y divide-white/5">
+      <div className="rounded-2xl border border-border bg-card backdrop-blur-xl divide-y divide-border">
         <HapticsToggle />
         <NavbarStyleToggle />
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-card p-4 backdrop-blur-xl space-y-1">
+      <div className="rounded-2xl border border-border bg-card p-4 backdrop-blur-xl space-y-1">
         <ReplayTourButton />
         <form
           action={async () => {

@@ -103,7 +103,7 @@ export function DashboardView() {
       <h2 className="text-xl font-bold">{t("weeklyPlan")}</h2>
 
       {/* Summary Card */}
-      <section className="relative overflow-hidden rounded-xl border border-white/10 bg-card/80 backdrop-blur-xl p-5">
+      <section className="relative overflow-hidden rounded-xl border border-border bg-card/80 backdrop-blur-xl p-5">
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 blur-3xl rounded-full pointer-events-none" />
         <div className="flex justify-between items-center relative z-10">
           <div className="flex flex-col">
@@ -178,7 +178,7 @@ export function DashboardView() {
       {/* Calendar Link */}
       <Link
         href="/calendar"
-        className="flex h-12 w-full items-center justify-center rounded-xl border border-white/10 bg-card/60 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+        className="flex h-12 w-full items-center justify-center rounded-xl border border-border bg-card/60 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
       >
         {t("viewFullCalendar")}
       </Link>
@@ -219,7 +219,7 @@ function DayCard({
         ${
           isWorkout
             ? "bg-card/90 backdrop-blur-md border border-primary/40 shadow-[inset_0_0_20px_hsl(var(--primary)/0.05)]"
-            : "bg-card/40 backdrop-blur-md border border-white/5 opacity-80"
+            : "bg-card/40 backdrop-blur-md border border-border opacity-80"
         }
         ${cardClasses}
       `}

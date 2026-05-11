@@ -29,7 +29,7 @@ export function StatsView() {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">{t("title")}</h1>
 
-      <div className="flex gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
+      <div className="flex gap-1 rounded-xl border border-border bg-muted/50 p-1">
         {PERIOD_KEYS.map((p) => (
           <button
             key={p}

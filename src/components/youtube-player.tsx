@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 const ReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
   loading: () => (
-    <div className="flex aspect-video w-full items-center justify-center rounded-xl bg-white/5">
+    <div className="flex aspect-video w-full items-center justify-center rounded-xl bg-muted/50">
       <span className="text-sm text-muted-foreground">Loading player…</span>
     </div>
   ),

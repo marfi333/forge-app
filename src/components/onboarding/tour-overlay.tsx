@@ -142,7 +142,7 @@ export function TourOverlay({
       {/* Tooltip */}
       <div
         ref={tooltipRef}
-        className="fixed left-4 right-4 max-w-sm mx-auto rounded-2xl border border-white/10 bg-card/95 backdrop-blur-xl p-5 shadow-xl transition-all duration-300"
+        className="fixed left-4 right-4 max-w-sm mx-auto rounded-2xl border border-border bg-card/95 backdrop-blur-xl p-5 shadow-xl transition-all duration-300"
         style={{ top: tooltipTop, transform: tooltipTransform }}
       >
         <p className="text-xs font-semibold text-primary mb-1">
