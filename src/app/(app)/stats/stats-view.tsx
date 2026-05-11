@@ -1,13 +1,15 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ActivityGrid } from "./activity-grid";
-import { ExerciseChart } from "./exercise-chart";
 import { PersonalRecords } from "./personal-records";
 import { StatsSummaryCards } from "./stats-summary-cards";
-import { VolumeSummary } from "./volume-summary";
+
+const ExerciseChart = dynamic(() => import("./exercise-chart").then(mod => ({ default: mod.ExerciseChart })), { ssr: false });
+const VolumeSummary = dynamic(() => import("./volume-summary").then(mod => ({ default: mod.VolumeSummary })), { ssr: false });
 
 const PERIOD_KEYS = ["week", "month"] as const;
 type PeriodKey = (typeof PERIOD_KEYS)[number];

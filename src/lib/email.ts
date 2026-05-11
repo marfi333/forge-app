@@ -1,7 +1,7 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { Resend } from "resend";
 
-export function createResendClient(apiKey: string) {
+function createResendClient(apiKey: string) {
   return new Resend(apiKey);
 }
 

@@ -155,7 +155,7 @@ export async function GET() {
   }
 
   const completedDates = new Set(
-    weekSessions.filter((s) => s.status === "completed").map((s) => s.date),
+    weekSessions.flatMap((s) => (s.status === "completed" ? [s.date] : [])),
   );
 
   const startDate = new Date(`${weekStart}T12:00:00`);

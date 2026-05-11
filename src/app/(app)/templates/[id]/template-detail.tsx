@@ -14,6 +14,7 @@ import {
   Upload,
   Video,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
@@ -247,12 +248,15 @@ function ExerciseFormDrawer({
                 </p>
               )}
               {form.imageUrl && !uploading && (
-                /* biome-ignore lint/performance/noImgElement: user-provided dynamic URLs */
-                <img
-                  src={form.imageUrl}
-                  alt="Exercise preview"
-                  className="h-32 w-full rounded-xl object-cover"
-                />
+                <div className="relative h-32 w-full overflow-hidden rounded-xl">
+                  <Image
+                    src={form.imageUrl}
+                    alt="Exercise preview"
+                    fill
+                    unoptimized
+                    className="object-cover"
+                  />
+                </div>
               )}
             </div>
 
@@ -361,10 +365,12 @@ function SortableExercise({
             )}
           </div>
           {exercise.imageUrl && (
-            /* biome-ignore lint/performance/noImgElement: user-provided dynamic URLs */
-            <img
+            <Image
               src={exercise.imageUrl}
               alt={exercise.name}
+              width={40}
+              height={40}
+              unoptimized
               className="size-10 shrink-0 rounded-lg object-cover"
             />
           )}
@@ -592,12 +598,10 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
         templateId,
       ]);
       if (previous) {
-        const reordered = orderedIds
-          .map((id, idx) => {
-            const ex = previous.exercises.find((e) => e.id === id);
-            return ex ? { ...ex, order: idx } : null;
-          })
-          .filter((e): e is Exercise => e !== null);
+        const reordered = orderedIds.flatMap((id, idx) => {
+          const ex = previous.exercises.find((e) => e.id === id);
+          return ex ? [{ ...ex, order: idx }] : [];
+        });
         queryClient.setQueryData<TemplateWithExercises>(
           ["templates", templateId],
           { ...previous, exercises: reordered },
@@ -611,12 +615,10 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
         templateId,
       ]);
       if (current) {
-        const reordered = orderedIds
-          .map((id, idx) => {
-            const ex = current.exercises.find((e) => e.id === id);
-            return ex ? { ...ex, order: idx } : null;
-          })
-          .filter((e): e is Exercise => e !== null);
+        const reordered = orderedIds.flatMap((id, idx) => {
+          const ex = current.exercises.find((e) => e.id === id);
+          return ex ? [{ ...ex, order: idx }] : [];
+        });
         queryClient.setQueryData<TemplateWithExercises>(
           ["templates", templateId],
           { ...current, exercises: reordered },

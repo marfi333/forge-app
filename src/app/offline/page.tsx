@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+
+export const metadata: Metadata = {
+  title: "Offline - FORGE",
+  description: "You are currently offline. Please reconnect to continue.",
+};
 
 export default async function OfflinePage() {
   const t = await getTranslations("offline");

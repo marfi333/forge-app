@@ -73,7 +73,7 @@ export async function GET(request: Request) {
     }
   }
 
-  const records = [...prMap.values()].sort((a, b) =>
+  const records = [...prMap.values()].toSorted((a, b) =>
     a.exerciseName.localeCompare(b.exerciseName),
   );
 

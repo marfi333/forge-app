@@ -81,12 +81,12 @@ export async function GET(request: Request) {
     });
   }
 
-  for (const [date, sets] of [...byDate.entries()].sort((a, b) =>
+  for (const [date, sets] of [...byDate.entries()].toSorted((a, b) =>
     a[0].localeCompare(b[0]),
   )) {
-    const weights = sets
-      .map((s) => s.weight)
-      .filter((w): w is number => w !== null);
+    const weights = sets.flatMap((s) =>
+      s.weight !== null ? [s.weight] : [],
+    );
     const bestWeight = weights.length > 0 ? Math.max(...weights) : null;
     const totalVolume = sets.reduce((sum, s) => {
       if (s.weight !== null && s.reps !== null) return sum + s.weight * s.reps;

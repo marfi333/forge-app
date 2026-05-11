@@ -137,8 +137,6 @@ export {
   DrawerDescription,
   DrawerFooter,
   DrawerHeader,
-  DrawerOverlay,
-  DrawerPortal,
   DrawerTitle,
   DrawerTrigger,
 };

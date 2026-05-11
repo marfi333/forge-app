@@ -213,7 +213,7 @@ describe("GET /api/stats/personal-records", () => {
     }[];
     expect(data.length).toBeGreaterThanOrEqual(1);
     const names = data.map((d) => d.exerciseName);
-    expect(names).toEqual([...names].sort());
+    expect(names).toEqual(names.toSorted());
   });
 });
 

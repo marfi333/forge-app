@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth, signOut } from "@/auth";
@@ -21,9 +22,12 @@ export default async function SettingsPage() {
       <div className="rounded-2xl border border-border bg-card p-6 backdrop-blur-xl">
         <div className="flex items-center gap-4">
           {user.image ? (
-            <img
+            <Image
               src={user.image}
               alt=""
+              width={56}
+              height={56}
+              unoptimized
               className="size-14 rounded-full ring-2 ring-primary/50"
             />
           ) : (

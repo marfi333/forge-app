@@ -29,19 +29,3 @@ export const MUSCLE_GROUPS = [
 ] as const;
 
 export type MuscleGroup = (typeof MUSCLE_GROUPS)[number];
-
-export const SYSTEM_MUSCLE_GROUP_KEYS = [
-  "chest",
-  "back",
-  "shoulders",
-  "biceps",
-  "triceps",
-  "quads",
-  "hamstrings",
-  "glutes",
-  "core",
-  "calves",
-  "forearms",
-] as const;
-
-export type SystemMuscleGroupKey = (typeof SYSTEM_MUSCLE_GROUP_KEYS)[number];

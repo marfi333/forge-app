@@ -42,7 +42,7 @@ function getTimeOfDayKind(
   return "greetingEvening";
 }
 
-export function selectMessage(
+function selectMessage(
   motivation: MotivationData,
   hour: number,
 ): SelectedMessage {

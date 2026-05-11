@@ -84,7 +84,7 @@ export async function GET(request: Request) {
       entry.setCount++;
     }
 
-    const result = [...bySession.values()].sort((a, b) =>
+    const result = [...bySession.values()].toSorted((a, b) =>
       a.date.localeCompare(b.date),
     );
     return Response.json(result);
@@ -131,7 +131,7 @@ export async function GET(request: Request) {
     if (weekEntry) weekEntry.sessionCount = sessions.size;
   }
 
-  const result = [...byWeek.values()].sort((a, b) =>
+  const result = [...byWeek.values()].toSorted((a, b) =>
     a.weekStart.localeCompare(b.weekStart),
   );
   return Response.json(result);

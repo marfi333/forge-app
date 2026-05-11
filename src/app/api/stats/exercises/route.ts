@@ -18,9 +18,9 @@ export async function GET() {
   const exercises = await db.select().from(schema.sessionExercises);
   const names = [
     ...new Set(
-      exercises.filter((e) => sessionIds.has(e.sessionId)).map((e) => e.name),
+      exercises.flatMap((e) => (sessionIds.has(e.sessionId) ? [e.name] : [])),
     ),
-  ].sort();
+  ].toSorted();
 
   return Response.json(names);
 }

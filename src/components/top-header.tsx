@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Bell } from "lucide-react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
@@ -41,9 +42,12 @@ export function TopHeader() {
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl pt-[env(safe-area-inset-top,0px)]">
       <div className="mx-auto flex h-14 max-w-md items-center justify-between px-5">
         {user?.image ? (
-          <img
+          <Image
             src={user.image}
             alt=""
+            width={32}
+            height={32}
+            unoptimized
             className="size-8 rounded-full ring-2 ring-primary/50"
           />
         ) : (

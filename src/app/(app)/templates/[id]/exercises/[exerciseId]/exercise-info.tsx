@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useHaptics } from "@/components/haptics-provider";
@@ -112,12 +113,15 @@ export function ExerciseInfo({
       )}
 
       {exercise.imageUrl && (
-        /* biome-ignore lint/performance/noImgElement: user-provided dynamic URLs */
-        <img
-          src={exercise.imageUrl}
-          alt={exercise.name}
-          className="w-full rounded-2xl object-cover"
-        />
+        <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
+          <Image
+            src={exercise.imageUrl}
+            alt={exercise.name}
+            fill
+            unoptimized
+            className="object-cover"
+          />
+        </div>
       )}
 
       {exercise.youtubeUrl && <YouTubePlayer url={exercise.youtubeUrl} />}
