@@ -14,7 +14,7 @@ const navItems = [
   { href: "/settings", labelKey: "settings" as const, icon: SettingsIcon },
 ];
 
-const hiddenRoutes = ["/sign-in", "/offline"];
+const hiddenRoutes = ["/", "/sign-in", "/offline"];
 
 export function BottomNav() {
   const pathname = usePathname();

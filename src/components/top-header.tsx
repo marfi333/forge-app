@@ -18,7 +18,7 @@ interface SessionUser {
   image?: string | null;
 }
 
-const hiddenRoutes = ["/sign-in", "/offline"];
+const hiddenRoutes = ["/", "/sign-in", "/offline"];
 
 export function TopHeader() {
   const pathname = usePathname();

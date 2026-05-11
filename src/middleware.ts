@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import type { Locale } from "@/i18n/config";
 import { defaultLocale, locales } from "@/i18n/config";
 
-const publicPaths = ["/sign-in", "/api/auth", "/offline"];
+const publicPrefixes = ["/sign-in", "/api/auth", "/api/landing-stats", "/offline"];
+const publicExact = ["/"];
 
 function resolveLocale(req: NextRequest): Locale {
   const cookie = req.cookies.get("NEXT_LOCALE")?.value;
@@ -21,7 +22,9 @@ function resolveLocale(req: NextRequest): Locale {
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  const isPublic = publicPaths.some((path) => pathname.startsWith(path));
+  const isPublic =
+    publicExact.includes(pathname) ||
+    publicPrefixes.some((path) => pathname.startsWith(path));
 
   const locale = resolveLocale(req);
   const response = isPublic
