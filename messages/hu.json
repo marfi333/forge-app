@@ -1,0 +1,192 @@
+{
+  "common": {
+    "back": "Vissza",
+    "save": "Mentés",
+    "saving": "Mentés...",
+    "cancel": "Mégse",
+    "delete": "Törlés",
+    "deleting": "Törlés...",
+    "add": "Hozzáadás",
+    "adding": "Hozzáadás...",
+    "workout": "Edzés",
+    "rest": "Pihenő",
+    "kg": "kg",
+    "reps": "ism."
+  },
+  "nav": {
+    "home": "Főoldal",
+    "plan": "Terv",
+    "stats": "Statisztika",
+    "settings": "Beállítások"
+  },
+  "header": {
+    "title": "FORGE"
+  },
+  "signIn": {
+    "tagline": "Kövesd. Fejlődj. Építs.",
+    "continueWithGoogle": "Folytatás Google-lel"
+  },
+  "error": {
+    "title": "Hiba történt",
+    "description": "Váratlan hiba lépett fel. Kérjük, próbáld újra.",
+    "tryAgain": "Újrapróbálás"
+  },
+  "notFound": {
+    "title": "Az oldal nem található",
+    "description": "A keresett oldal nem létezik.",
+    "goToCalendar": "Ugrás a naptárhoz"
+  },
+  "offline": {
+    "title": "Nincs internetkapcsolat",
+    "description": "Ellenőrizd a kapcsolatot, és próbáld újra."
+  },
+  "dashboard": {
+    "weeklyPlan": "Heti terv",
+    "completion": "Teljesítés",
+    "workouts": "/ {total} Edzés",
+    "restDaysPlanned": "{count} pihenőnap tervezve",
+    "progressLabel": "Heti teljesítési haladás",
+    "viewFullCalendar": "Teljes naptár megtekintése",
+    "startWorkout": "Edzés indítása",
+    "dayLabels": {
+      "mon": "Hé",
+      "tue": "Ke",
+      "wed": "Sze",
+      "thu": "Csü",
+      "fri": "Pé",
+      "sat": "Szo",
+      "sun": "Vas"
+    }
+  },
+  "calendar": {
+    "monthNames": {
+      "0": "Január",
+      "1": "Február",
+      "2": "Március",
+      "3": "Április",
+      "4": "Május",
+      "5": "Június",
+      "6": "Július",
+      "7": "Augusztus",
+      "8": "Szeptember",
+      "9": "Október",
+      "10": "November",
+      "11": "December"
+    },
+    "dayLabels": {
+      "sun": "V",
+      "mon": "H",
+      "tue": "K",
+      "wed": "Sze",
+      "thu": "Cs",
+      "fri": "P",
+      "sat": "Szo"
+    },
+    "legendWorkout": "Edzés",
+    "legendRest": "Pihenő",
+    "legendSession": "Naplózott edzés",
+    "restDay": "Pihenőnap",
+    "clearDay": "Nap törlése",
+    "clearDayConfirmation": "Biztosan törölni szeretnéd ennek a napnak a típusát? Ez a művelet nem vonható vissza.",
+    "sessions": "Edzések",
+    "completed": "Befejezett",
+    "inProgress": "Folyamatban",
+    "startWorkout": "Edzés indítása"
+  },
+  "sessions": {
+    "startWorkout": "Edzés indítása",
+    "fromTemplate": "Sablonból",
+    "noTemplatesYet": "Még nincsenek sablonok.",
+    "createOne": "Hozz létre egyet",
+    "start": "Indítás",
+    "orStartBlank": "Vagy kezdj üresen",
+    "creating": "Létrehozás...",
+    "emptyWorkout": "Üres edzés",
+    "completed": "Befejezett",
+    "completing": "Befejezés...",
+    "completeWorkout": "Edzés befejezése",
+    "notFound": "Az edzés nem található",
+    "backToCalendar": "Vissza a naptárhoz",
+    "noExercisesYet": "Még nincsenek gyakorlatok",
+    "addExercisePrompt": "Adj hozzá egy gyakorlatot a naplózás megkezdéséhez.",
+    "addSet": "Sorozat hozzáadása",
+    "addExercise": "Gyakorlat hozzáadása",
+    "exercisePlaceholder": "pl. Fekvenyomás, Guggolás...",
+    "deleteExercise": "Gyakorlat törlése",
+    "deleteExerciseConfirmation": "Biztosan törölni szeretnéd a(z) \"{name}\" gyakorlatot és az összes sorozatát? Ez a művelet nem vonható vissza.",
+    "setsVolume": "{sets, plural, one {# sorozat} other {# sorozat}}, összesen",
+    "exerciseCounter": "{current} / {total}"
+  },
+  "templates": {
+    "title": "Sablonok",
+    "newTemplate": "Új sablon",
+    "editTemplate": "Sablon szerkesztése",
+    "new": "Új",
+    "noTemplatesYet": "Még nincsenek sablonok",
+    "createFirstTemplate": "Hozd létre az első edzéssablonodat a kezdéshez.",
+    "deleteTemplate": "Sablon törlése",
+    "deleteTemplateConfirmation": "Biztosan törölni szeretnéd ezt a sablont? Ez a művelet nem vonható vissza.",
+    "name": "Név",
+    "namePlaceholder": "pl. Toló nap, Húzó nap, Láb...",
+    "weekday": "Hét napja",
+    "noWeekday": "Nincs hozzárendelve",
+    "muscleGroup": "Izomcsoport",
+    "noMuscleGroup": "Nincs izomcsoport",
+    "exerciseCount": "{count, plural, one {# gyakorlat} other {# gyakorlat}}",
+    "addExercise": "Gyakorlat hozzáadása",
+    "editExercise": "Gyakorlat szerkesztése",
+    "deleteExercise": "Gyakorlat törlése",
+    "deleteExerciseConfirmation": "Biztosan törölni szeretnéd a(z) \"{name}\" gyakorlatot? Ez a művelet nem vonható vissza.",
+    "exerciseName": "Név",
+    "exerciseNamePlaceholder": "pl. Fekvenyomás, Guggolás, Felhúzás...",
+    "description": "Leírás",
+    "descriptionPlaceholder": "Gyakorlat utasítások vagy megjegyzések...",
+    "image": "Kép",
+    "imagePlaceholder": "Kép URL vagy fájl feltöltése",
+    "uploading": "Feltöltés…",
+    "youtubeUrl": "YouTube URL",
+    "templateNotFound": "A sablon nem található",
+    "backToTemplates": "Vissza a sablonokhoz",
+    "noExercisesYet": "Még nincsenek gyakorlatok",
+    "addExercisesPrompt": "Adj hozzá gyakorlatokat az edzésrutin összeállításához.",
+    "exerciseNotFound": "A gyakorlat nem található",
+    "backToTemplate": "Vissza a sablonhoz"
+  },
+  "stats": {
+    "title": "Statisztika",
+    "week": "Hét",
+    "month": "Hónap",
+    "totalVolume": "Összes térfogat",
+    "totalSets": "Összes sorozat",
+    "workouts": "Edzések",
+    "exercisesWithPR": "Gyakorlatok PR-ral",
+    "exerciseProgression": "Gyakorlat fejlődés",
+    "volumeTrend": "Térfogat trend",
+    "personalRecords": "Személyes rekordok",
+    "perSession": "Edzésenként",
+    "perWeek": "Hetenként",
+    "noVolumeData": "Még nincs térfogat adat",
+    "completeForVolume": "Végezz el edzéseket a térfogat trendek megtekintéséhez.",
+    "noExerciseData": "Még nincs gyakorlat adat",
+    "completeForProgression": "Végezz el edzéseket a fejlődésed megtekintéséhez.",
+    "noSetsYet": "Még nincsenek befejezett sorozatok ehhez a gyakorlathoz.",
+    "bestWeight": "Legjobb súly (kg)",
+    "trainingActivity": "Edzés aktivitás",
+    "less": "Kevesebb",
+    "more": "Több",
+    "noRecordsYet": "Még nincsenek személyes rekordok",
+    "completeForRecords": "Végezz el edzéseket súlyokkal a PR-jaid megtekintéséhez.",
+    "activityDayLabels": {
+      "mon": "H",
+      "wed": "Sze",
+      "fri": "P"
+    }
+  },
+  "settings": {
+    "title": "Beállítások",
+    "signOut": "Kijelentkezés",
+    "version": "FORGE v{version}",
+    "language": "Nyelv",
+    "languageDescription": "Válaszd ki a kívánt nyelvet"
+  }
+}

@@ -143,9 +143,7 @@ describe("GET /api/stats/exercise-history", () => {
       .mockResolvedValueOnce(
         sessions.map((s) => ({ sessionId: s.id, date: s.date })),
       )
-      .mockResolvedValueOnce(
-        exercises.filter((e) => e.name === "Bench Press"),
-      );
+      .mockResolvedValueOnce(exercises.filter((e) => e.name === "Bench Press"));
     mockDb.from
       .mockReturnValueOnce(mockDb)
       .mockReturnValueOnce(mockDb)
@@ -385,9 +383,7 @@ describe("GET /api/stats/activity", () => {
   it("returns 401 when not authenticated", async () => {
     mockGetAuthedDb.mockResolvedValue({ db: null, userId: null });
     const { GET } = await import("./activity/route");
-    const res = await GET(
-      new Request("http://localhost/api/stats/activity"),
-    );
+    const res = await GET(new Request("http://localhost/api/stats/activity"));
     expect(res.status).toBe(401);
   });
 

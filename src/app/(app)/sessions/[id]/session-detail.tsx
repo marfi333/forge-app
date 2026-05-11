@@ -11,6 +11,7 @@ import {
   Trash2,
 } from "lucide-react";
 import Link from "next/link";
+import { useFormatter, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
@@ -87,6 +88,9 @@ function ElapsedTimer({ startedAt }: { startedAt: string }) {
 }
 
 function ExerciseVolume({ sets }: { sets: ExerciseSet[] }) {
+  const t = useTranslations("sessions");
+  const tc = useTranslations("common");
+  const format = useFormatter();
   const volume = sets
     .filter((s) => s.completed)
     .reduce((sum, s) => sum + (s.weight || 0) * (s.reps || 0), 0);
@@ -95,9 +99,9 @@ function ExerciseVolume({ sets }: { sets: ExerciseSet[] }) {
 
   return (
     <p className="text-sm text-muted-foreground">
-      {completedSets} set{completedSets !== 1 ? "s" : ""} totaling{" "}
+      {t("setsVolume", { sets: completedSets })}{" "}
       <span className="text-foreground font-medium">
-        {volume.toLocaleString()} kg
+        {format.number(volume)} {tc("kg")}
       </span>
     </p>
   );
@@ -112,6 +116,7 @@ function CompactSetRow({
   sessionId: string;
   exerciseId: string;
 }) {
+  const tc = useTranslations("common");
   const queryClient = useQueryClient();
   const [reps, setReps] = useState(String(set.reps ?? ""));
   const [weight, setWeight] = useState(String(set.weight ?? ""));
@@ -222,7 +227,7 @@ function CompactSetRow({
         </span>
         <Input
           className="h-8 w-16 text-center text-sm"
-          placeholder="kg"
+          placeholder={tc("kg")}
           inputMode="decimal"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
@@ -231,7 +236,7 @@ function CompactSetRow({
         <span className="text-sm text-muted-foreground">×</span>
         <Input
           className="h-8 w-16 text-center text-sm"
-          placeholder="reps"
+          placeholder={tc("reps")}
           inputMode="numeric"
           value={reps}
           onChange={(e) => setReps(e.target.value)}
@@ -262,7 +267,7 @@ function CompactSetRow({
           {set.setNumber}
         </span>
         <span className="flex-1 text-sm font-medium">
-          {set.weight ?? "—"} kg × {set.reps ?? "—"}
+          {set.weight ?? "—"} {tc("kg")} × {set.reps ?? "—"}
         </span>
       </button>
       <Button
@@ -278,6 +283,8 @@ function CompactSetRow({
 }
 
 export function SessionDetail({ sessionId }: { sessionId: string }) {
+  const t = useTranslations("sessions");
+  const tc = useTranslations("common");
   const queryClient = useQueryClient();
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [addExOpen, setAddExOpen] = useState(false);
@@ -399,10 +406,10 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
   if (!session) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16">
-        <p className="text-muted-foreground">Session not found</p>
+        <p className="text-muted-foreground">{t("notFound")}</p>
         <Link href="/calendar">
           <Button variant="outline" size="sm">
-            Back to calendar
+            {t("backToCalendar")}
           </Button>
         </Link>
       </div>
@@ -424,13 +431,13 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
           className="inline-flex h-11 items-center gap-1 -ml-1 px-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="size-4" />
-          Back
+          {tc("back")}
         </Link>
         {!isCompleted && <ElapsedTimer startedAt={session.createdAt} />}
         {isCompleted && (
           <span className="flex items-center gap-1.5 text-sm font-medium text-primary">
             <Check className="size-4" />
-            Completed
+            {t("completed")}
           </span>
         )}
       </div>
@@ -453,7 +460,10 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
                 {currentExercise.name}
               </h1>
               <span className="text-sm text-muted-foreground">
-                {safeIndex + 1} / {exercises.length}
+                {t("exerciseCounter", {
+                  current: safeIndex + 1,
+                  total: exercises.length,
+                })}
               </span>
             </div>
 
@@ -480,8 +490,10 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
             <ConfirmDeleteDialog
               open={deleteExConfirmOpen}
               onOpenChange={setDeleteExConfirmOpen}
-              title="Delete exercise"
-              description={`Are you sure you want to delete "${currentExercise.name}" and all its sets? This action cannot be undone.`}
+              title={t("deleteExercise")}
+              description={t("deleteExerciseConfirmation", {
+                name: currentExercise.name,
+              })}
               onConfirm={() => deleteExercise.mutate(currentExercise.id)}
               isPending={deleteExercise.isPending}
             />
@@ -507,14 +519,14 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
             disabled={addSet.isPending}
           >
             <Plus data-icon="inline-start" />
-            Add Set
+            {t("addSet")}
           </Button>
         </>
       ) : (
         <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-          <p className="text-muted-foreground">No exercises yet</p>
+          <p className="text-muted-foreground">{t("noExercisesYet")}</p>
           <p className="text-sm text-muted-foreground">
-            Add an exercise to start logging sets.
+            {t("addExercisePrompt")}
           </p>
         </div>
       )}
@@ -526,13 +538,13 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
             render={
               <Button variant="outline" className="flex-1 rounded-xl">
                 <Plus data-icon="inline-start" />
-                Add Exercise
+                {t("addExercise")}
               </Button>
             }
           />
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add Exercise</DialogTitle>
+              <DialogTitle>{t("addExercise")}</DialogTitle>
             </DialogHeader>
             <form
               onSubmit={(e) => {
@@ -542,7 +554,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
               }}
             >
               <Input
-                placeholder="e.g. Bench Press, Squat..."
+                placeholder={t("exercisePlaceholder")}
                 value={exerciseName}
                 onChange={(e) => setExerciseName(e.target.value)}
                 autoFocus
@@ -552,7 +564,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
                   type="submit"
                   disabled={!exerciseName.trim() || addExercise.isPending}
                 >
-                  {addExercise.isPending ? "Adding..." : "Add"}
+                  {addExercise.isPending ? tc("adding") : tc("add")}
                 </Button>
               </DialogFooter>
             </form>
@@ -565,7 +577,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
             onClick={() => completeSession.mutate()}
             disabled={completeSession.isPending}
           >
-            {completeSession.isPending ? "Completing..." : "Complete Workout"}
+            {completeSession.isPending ? t("completing") : t("completeWorkout")}
           </Button>
         )}
       </div>

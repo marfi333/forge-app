@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, FileText, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useFormatter, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { invalidateWorkoutDependentQueries } from "@/lib/query-invalidation";
@@ -45,6 +46,10 @@ export function NewSession() {
     },
   });
 
+  const t = useTranslations("sessions");
+  const tc = useTranslations("common");
+  const format = useFormatter();
+
   return (
     <div className="space-y-6">
       <div className="space-y-1">
@@ -53,18 +58,24 @@ export function NewSession() {
           className="inline-flex h-11 items-center gap-1 -ml-1 px-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
-          Back
+          {tc("back")}
         </Link>
-        <h1 className="text-xl font-bold tracking-tight">Start Workout</h1>
+        <h1 className="text-xl font-bold tracking-tight">
+          {t("startWorkout")}
+        </h1>
       </div>
 
       <p className="text-sm text-muted-foreground">
-        Date: {new Date(`${date}T12:00:00`).toLocaleDateString()}
+        {format.dateTime(new Date(`${date}T12:00:00`), {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
       </p>
 
       <div className="space-y-4">
         <h2 className="text-sm font-medium text-muted-foreground">
-          From Template
+          {t("fromTemplate")}
         </h2>
 
         {isLoading && (
@@ -80,9 +91,9 @@ export function NewSession() {
 
         {!isLoading && templates.length === 0 && (
           <p className="text-sm text-muted-foreground">
-            No templates yet.{" "}
+            {t("noTemplatesYet")}{" "}
             <Link href="/templates" className="text-primary underline">
-              Create one
+              {t("createOne")}
             </Link>
           </p>
         )}
@@ -98,7 +109,7 @@ export function NewSession() {
                 onClick={() => createSession.mutate(template.id)}
                 disabled={createSession.isPending}
               >
-                Start
+                {t("start")}
               </Button>
             </CardContent>
           </Card>
@@ -106,7 +117,7 @@ export function NewSession() {
 
         <div className="pt-4">
           <h2 className="mb-2 text-sm font-medium text-muted-foreground">
-            Or start blank
+            {t("orStartBlank")}
           </h2>
           <Button
             className="h-10 w-full"
@@ -114,7 +125,7 @@ export function NewSession() {
             disabled={createSession.isPending}
           >
             <Plus data-icon="inline-start" />
-            {createSession.isPending ? "Creating..." : "Empty Workout"}
+            {createSession.isPending ? t("creating") : t("emptyWorkout")}
           </Button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import {
   CartesianGrid,
@@ -20,6 +21,7 @@ interface HistoryEntry {
 }
 
 export function ExerciseChart({ exerciseNames }: { exerciseNames: string[] }) {
+  const t = useTranslations("stats");
   const [selectedExercise, setSelectedExercise] = useState("");
 
   const exercise = selectedExercise || exerciseNames[0] || "";
@@ -39,9 +41,9 @@ export function ExerciseChart({ exerciseNames }: { exerciseNames: string[] }) {
   if (exerciseNames.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-        <p className="text-muted-foreground">No exercise data yet</p>
+        <p className="text-muted-foreground">{t("noExerciseData")}</p>
         <p className="text-sm text-muted-foreground">
-          Complete some workouts to see your progression.
+          {t("completeForProgression")}
         </p>
       </div>
     );
@@ -72,13 +74,13 @@ export function ExerciseChart({ exerciseNames }: { exerciseNames: string[] }) {
       ) : chartData.length === 0 ? (
         <div className="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
           <p className="text-center text-sm text-muted-foreground">
-            No completed sets for this exercise yet.
+            {t("noSetsYet")}
           </p>
         </div>
       ) : (
         <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
           <p className="mb-3 text-sm font-medium text-muted-foreground">
-            Best Weight (kg)
+            {t("bestWeight")}
           </p>
           <div>
             <ResponsiveContainer width="100%" height={192}>

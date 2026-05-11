@@ -41,7 +41,10 @@ export function TopHeader() {
           <div className="size-8 rounded-full bg-muted" />
         )}
         <span className="text-base font-bold tracking-tight">FORGE</span>
-        <button type="button" className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground">
+        <button
+          type="button"
+          className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+        >
           <Bell className="size-4" />
         </button>
       </div>

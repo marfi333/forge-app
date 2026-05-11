@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Dumbbell, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 import { Button } from "@/components/ui/button";
@@ -50,6 +51,8 @@ function TemplateFormDialog({
   isPending: boolean;
   trigger?: React.ReactElement;
 }) {
+  const t = useTranslations("templates");
+  const tc = useTranslations("common");
   const [form, setForm] = useState<TemplateFormData>(initial);
 
   function handleOpenChange(next: boolean) {
@@ -76,11 +79,11 @@ function TemplateFormDialog({
               htmlFor="template-name"
               className="mb-2 block text-sm font-medium text-muted-foreground"
             >
-              Name
+              {t("name")}
             </label>
             <Input
               id="template-name"
-              placeholder="e.g. Push Day, Pull Day, Legs..."
+              placeholder={t("namePlaceholder")}
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               autoFocus
@@ -89,7 +92,7 @@ function TemplateFormDialog({
 
           <label className="block">
             <span className="mb-2 block text-sm font-medium text-muted-foreground">
-              Weekday
+              {t("weekday")}
             </span>
             <select
               value={form.weekday ?? ""}
@@ -101,7 +104,7 @@ function TemplateFormDialog({
               }
               className="h-10 w-full appearance-none rounded-xl border border-white/10 bg-white/5 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-size-[16px] bg-position-[right_12px_center] bg-no-repeat px-3 py-2 pr-9 text-base text-foreground backdrop-blur-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
             >
-              <option value="">No weekday assigned</option>
+              <option value="">{t("noWeekday")}</option>
               {WEEKDAYS.map((day) => (
                 <option key={day} value={day}>
                   {day}
@@ -112,7 +115,7 @@ function TemplateFormDialog({
 
           <label className="block">
             <span className="mb-2 block text-sm font-medium text-muted-foreground">
-              Muscle Group
+              {t("muscleGroup")}
             </span>
             <select
               value={form.muscleGroup ?? ""}
@@ -124,7 +127,7 @@ function TemplateFormDialog({
               }
               className="h-10 w-full appearance-none rounded-xl border border-white/10 bg-white/5 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23888%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m6%209%206%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-size-[16px] bg-position-[right_12px_center] bg-no-repeat px-3 py-2 pr-9 text-base text-foreground backdrop-blur-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
             >
-              <option value="">No muscle group</option>
+              <option value="">{t("noMuscleGroup")}</option>
               {MUSCLE_GROUPS.map((group) => (
                 <option key={group} value={group}>
                   {group}
@@ -135,7 +138,7 @@ function TemplateFormDialog({
 
           <DialogFooter>
             <Button type="submit" disabled={!form.name.trim() || isPending}>
-              {isPending ? "Saving..." : "Save"}
+              {isPending ? tc("saving") : tc("save")}
             </Button>
           </DialogFooter>
         </form>
@@ -145,6 +148,7 @@ function TemplateFormDialog({
 }
 
 export function TemplateList() {
+  const t = useTranslations("templates");
   const queryClient = useQueryClient();
   const [createOpen, setCreateOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
@@ -213,7 +217,7 @@ export function TemplateList() {
   if (isLoading) {
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold tracking-tight">Templates</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
         {[1, 2, 3].map((i) => (
           <div key={i} className="h-20 animate-pulse rounded-2xl bg-muted" />
         ))}
@@ -224,18 +228,18 @@ export function TemplateList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Templates</h1>
+        <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
         <TemplateFormDialog
           open={createOpen}
           onOpenChange={setCreateOpen}
-          title="New Template"
+          title={t("newTemplate")}
           initial={{ name: "", weekday: null, muscleGroup: null }}
           onSubmit={(data) => createMutation.mutate(data)}
           isPending={createMutation.isPending}
           trigger={
             <Button>
               <Plus data-icon="inline-start" />
-              New
+              {t("new")}
             </Button>
           }
         />
@@ -244,9 +248,9 @@ export function TemplateList() {
       {templates?.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-2 py-16 text-center">
           <Dumbbell className="size-10 text-muted-foreground" />
-          <p className="text-muted-foreground">No templates yet</p>
+          <p className="text-muted-foreground">{t("noTemplatesYet")}</p>
           <p className="text-sm text-muted-foreground">
-            Create your first workout template to get started.
+            {t("createFirstTemplate")}
           </p>
         </div>
       )}
@@ -299,8 +303,8 @@ export function TemplateList() {
         onOpenChange={(open) => {
           if (!open) setDeletingTemplateId(null);
         }}
-        title="Delete template"
-        description="Are you sure you want to delete this template? This action cannot be undone."
+        title={t("deleteTemplate")}
+        description={t("deleteTemplateConfirmation")}
         onConfirm={() => {
           if (deletingTemplateId) deleteMutation.mutate(deletingTemplateId);
         }}
@@ -313,7 +317,7 @@ export function TemplateList() {
           onOpenChange={(open) => {
             if (!open) setEditingTemplate(null);
           }}
-          title="Edit Template"
+          title={t("editTemplate")}
           initial={{
             name: editingTemplate.name,
             weekday: (editingTemplate.weekday as Weekday) ?? null,

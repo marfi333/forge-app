@@ -1,0 +1,192 @@
+{
+  "common": {
+    "back": "Back",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "add": "Add",
+    "adding": "Adding...",
+    "workout": "Workout",
+    "rest": "Rest",
+    "kg": "kg",
+    "reps": "reps"
+  },
+  "nav": {
+    "home": "Home",
+    "plan": "Plan",
+    "stats": "Stats",
+    "settings": "Settings"
+  },
+  "header": {
+    "title": "FORGE"
+  },
+  "signIn": {
+    "tagline": "Track. Progress. Build.",
+    "continueWithGoogle": "Continue with Google"
+  },
+  "error": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "tryAgain": "Try again"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you're looking for doesn't exist.",
+    "goToCalendar": "Go to Calendar"
+  },
+  "offline": {
+    "title": "You're offline",
+    "description": "Check your connection and try again."
+  },
+  "dashboard": {
+    "weeklyPlan": "Weekly Plan",
+    "completion": "Completion",
+    "workouts": "/ {total} Workouts",
+    "restDaysPlanned": "{count} Rest Days Planned",
+    "progressLabel": "Weekly completion progress",
+    "viewFullCalendar": "View Full Calendar",
+    "startWorkout": "Start Workout",
+    "dayLabels": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    }
+  },
+  "calendar": {
+    "monthNames": {
+      "0": "January",
+      "1": "February",
+      "2": "March",
+      "3": "April",
+      "4": "May",
+      "5": "June",
+      "6": "July",
+      "7": "August",
+      "8": "September",
+      "9": "October",
+      "10": "November",
+      "11": "December"
+    },
+    "dayLabels": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    },
+    "legendWorkout": "Workout",
+    "legendRest": "Rest",
+    "legendSession": "Session logged",
+    "restDay": "Rest Day",
+    "clearDay": "Clear day",
+    "clearDayConfirmation": "Are you sure you want to clear this day's type? This action cannot be undone.",
+    "sessions": "Sessions",
+    "completed": "Completed",
+    "inProgress": "In Progress",
+    "startWorkout": "Start Workout"
+  },
+  "sessions": {
+    "startWorkout": "Start Workout",
+    "fromTemplate": "From Template",
+    "noTemplatesYet": "No templates yet.",
+    "createOne": "Create one",
+    "start": "Start",
+    "orStartBlank": "Or start blank",
+    "creating": "Creating...",
+    "emptyWorkout": "Empty Workout",
+    "completed": "Completed",
+    "completing": "Completing...",
+    "completeWorkout": "Complete Workout",
+    "notFound": "Session not found",
+    "backToCalendar": "Back to calendar",
+    "noExercisesYet": "No exercises yet",
+    "addExercisePrompt": "Add an exercise to start logging sets.",
+    "addSet": "Add Set",
+    "addExercise": "Add Exercise",
+    "exercisePlaceholder": "e.g. Bench Press, Squat...",
+    "deleteExercise": "Delete exercise",
+    "deleteExerciseConfirmation": "Are you sure you want to delete \"{name}\" and all its sets? This action cannot be undone.",
+    "setsVolume": "{sets, plural, one {# set} other {# sets}} totaling",
+    "exerciseCounter": "{current} / {total}"
+  },
+  "templates": {
+    "title": "Templates",
+    "newTemplate": "New Template",
+    "editTemplate": "Edit Template",
+    "new": "New",
+    "noTemplatesYet": "No templates yet",
+    "createFirstTemplate": "Create your first workout template to get started.",
+    "deleteTemplate": "Delete template",
+    "deleteTemplateConfirmation": "Are you sure you want to delete this template? This action cannot be undone.",
+    "name": "Name",
+    "namePlaceholder": "e.g. Push Day, Pull Day, Legs...",
+    "weekday": "Weekday",
+    "noWeekday": "No weekday assigned",
+    "muscleGroup": "Muscle Group",
+    "noMuscleGroup": "No muscle group",
+    "exerciseCount": "{count, plural, one {# exercise} other {# exercises}}",
+    "addExercise": "Add Exercise",
+    "editExercise": "Edit Exercise",
+    "deleteExercise": "Delete exercise",
+    "deleteExerciseConfirmation": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+    "exerciseName": "Name",
+    "exerciseNamePlaceholder": "e.g. Bench Press, Squat, Deadlift...",
+    "description": "Description",
+    "descriptionPlaceholder": "Exercise instructions or notes...",
+    "image": "Image",
+    "imagePlaceholder": "Image URL or upload a file",
+    "uploading": "Uploading…",
+    "youtubeUrl": "YouTube URL",
+    "templateNotFound": "Template not found",
+    "backToTemplates": "Back to templates",
+    "noExercisesYet": "No exercises yet",
+    "addExercisesPrompt": "Add exercises to define your workout routine.",
+    "exerciseNotFound": "Exercise not found",
+    "backToTemplate": "Back to template"
+  },
+  "stats": {
+    "title": "Statistics",
+    "week": "Week",
+    "month": "Month",
+    "totalVolume": "Total Volume",
+    "totalSets": "Total Sets",
+    "workouts": "Workouts",
+    "exercisesWithPR": "Exercises w/ PR",
+    "exerciseProgression": "Exercise Progression",
+    "volumeTrend": "Volume Trend",
+    "personalRecords": "Personal Records",
+    "perSession": "Per Session",
+    "perWeek": "Per Week",
+    "noVolumeData": "No volume data yet",
+    "completeForVolume": "Complete workouts to see your volume trends.",
+    "noExerciseData": "No exercise data yet",
+    "completeForProgression": "Complete some workouts to see your progression.",
+    "noSetsYet": "No completed sets for this exercise yet.",
+    "bestWeight": "Best Weight (kg)",
+    "trainingActivity": "Training Activity",
+    "less": "Less",
+    "more": "More",
+    "noRecordsYet": "No personal records yet",
+    "completeForRecords": "Complete workouts with weights to see your PRs.",
+    "activityDayLabels": {
+      "mon": "Mon",
+      "wed": "Wed",
+      "fri": "Fri"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "signOut": "Sign Out",
+    "version": "FORGE v{version}",
+    "language": "Language",
+    "languageDescription": "Choose your preferred language"
+  }
+}

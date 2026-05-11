@@ -2,34 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const navItems = [
-  {
-    href: "/dashboard",
-    label: "Home",
-    icon: HomeIcon,
-  },
-  {
-    href: "/templates",
-    label: "Plan",
-    icon: ClipboardIcon,
-  },
-  {
-    href: "/stats",
-    label: "Stats",
-    icon: ChartIcon,
-  },
-  {
-    href: "/settings",
-    label: "Settings",
-    icon: SettingsIcon,
-  },
+  { href: "/dashboard", labelKey: "home" as const, icon: HomeIcon },
+  { href: "/templates", labelKey: "plan" as const, icon: ClipboardIcon },
+  { href: "/stats", labelKey: "stats" as const, icon: ChartIcon },
+  { href: "/settings", labelKey: "settings" as const, icon: SettingsIcon },
 ];
 
 const hiddenRoutes = ["/sign-in", "/offline"];
 
 export function BottomNav() {
   const pathname = usePathname();
+  const t = useTranslations("nav");
 
   if (hiddenRoutes.includes(pathname)) return null;
 
@@ -50,7 +36,9 @@ export function BottomNav() {
               }`}
             >
               <item.icon className="h-5 w-5" />
-              <span className="text-[10px] font-medium">{item.label}</span>
+              <span className="text-[10px] font-medium">
+                {t(item.labelKey)}
+              </span>
             </Link>
           );
         })}

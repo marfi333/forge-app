@@ -1,8 +1,11 @@
 import Image from "next/image";
-import { signIn } from "@/auth";
+import { getTranslations } from "next-intl/server";
 import appLogo from "@/../public/app_logo.png";
+import { signIn } from "@/auth";
 
-export default function SignInPage() {
+export default async function SignInPage() {
+  const t = await getTranslations("signIn");
+
   return (
     <div className="flex min-h-svh flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-card p-8 backdrop-blur-xl">
@@ -20,9 +23,7 @@ export default function SignInPage() {
                 FORGE
               </span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Track. Progress. Build.
-            </p>
+            <p className="text-sm text-muted-foreground">{t("tagline")}</p>
           </div>
 
           <form
@@ -36,7 +37,7 @@ export default function SignInPage() {
               className="inline-flex w-full items-center justify-center gap-3 rounded-xl bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100 active:bg-gray-200"
             >
               <GoogleIcon />
-              Continue with Google
+              {t("continueWithGoogle")}
             </button>
           </form>
         </div>

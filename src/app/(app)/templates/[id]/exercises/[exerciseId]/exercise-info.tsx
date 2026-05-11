@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { YouTubePlayer } from "@/components/youtube-player";
 
@@ -23,6 +24,9 @@ export function ExerciseInfo({
   templateId: string;
   exerciseId: string;
 }) {
+  const t = useTranslations("templates");
+  const tc = useTranslations("common");
+
   const { data: exercise, isLoading } = useQuery<Exercise>({
     queryKey: ["exercises", templateId, exerciseId],
     queryFn: async () => {
@@ -47,10 +51,10 @@ export function ExerciseInfo({
   if (!exercise) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16">
-        <p className="text-muted-foreground">Exercise not found</p>
+        <p className="text-muted-foreground">{t("exerciseNotFound")}</p>
         <Link href={`/templates/${templateId}`}>
           <Button variant="outline" size="sm">
-            Back to template
+            {t("backToTemplate")}
           </Button>
         </Link>
       </div>
@@ -65,7 +69,7 @@ export function ExerciseInfo({
           className="-ml-1 inline-flex h-11 items-center gap-1 px-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
-          Back
+          {tc("back")}
         </Link>
         <h1 className="text-xl font-bold tracking-tight">{exercise.name}</h1>
       </div>

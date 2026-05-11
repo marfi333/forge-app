@@ -16,6 +16,7 @@ import {
   Video,
 } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
@@ -84,6 +85,8 @@ function ExerciseFormDialog({
   templateId: string;
   trigger?: React.ReactElement;
 }) {
+  const t = useTranslations("templates");
+  const tc = useTranslations("common");
   const [form, setForm] = useState<ExerciseFormData>(initial);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -129,11 +132,11 @@ function ExerciseFormDialog({
               htmlFor={`exercise-name-${templateId}`}
               className="mb-2 block text-sm font-medium text-muted-foreground"
             >
-              Name
+              {t("exerciseName")}
             </label>
             <Input
               id={`exercise-name-${templateId}`}
-              placeholder="e.g. Bench Press, Squat, Deadlift..."
+              placeholder={t("exerciseNamePlaceholder")}
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               autoFocus
@@ -142,10 +145,10 @@ function ExerciseFormDialog({
 
           <label className="block">
             <span className="mb-2 block text-sm font-medium text-muted-foreground">
-              Description
+              {t("description")}
             </span>
             <textarea
-              placeholder="Exercise instructions or notes..."
+              placeholder={t("descriptionPlaceholder")}
               value={form.description}
               onChange={(e) =>
                 setForm({ ...form, description: e.target.value })
@@ -157,11 +160,11 @@ function ExerciseFormDialog({
 
           <div>
             <span className="mb-2 block text-sm font-medium text-muted-foreground">
-              Image
+              {t("image")}
             </span>
             <div className="flex gap-2">
               <Input
-                placeholder="Image URL or upload a file"
+                placeholder={t("imagePlaceholder")}
                 value={form.imageUrl}
                 onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
                 className="flex-1"
@@ -188,7 +191,7 @@ function ExerciseFormDialog({
               </Button>
             </div>
             {uploading && (
-              <p className="text-xs text-muted-foreground">Uploading…</p>
+              <p className="text-xs text-muted-foreground">{t("uploading")}</p>
             )}
             {form.imageUrl && !uploading && (
               /* biome-ignore lint/performance/noImgElement: user-provided dynamic URLs */
@@ -205,7 +208,7 @@ function ExerciseFormDialog({
               htmlFor={`exercise-youtube-${templateId}`}
               className="mb-2 block text-sm font-medium text-muted-foreground"
             >
-              YouTube URL
+              {t("youtubeUrl")}
             </label>
             <Input
               id={`exercise-youtube-${templateId}`}
@@ -221,7 +224,7 @@ function ExerciseFormDialog({
               type="submit"
               disabled={!form.name.trim() || isPending || uploading}
             >
-              {isPending ? "Saving..." : "Save"}
+              {isPending ? tc("saving") : tc("save")}
             </Button>
           </DialogFooter>
         </form>
@@ -245,6 +248,7 @@ function SortableExercise({
   onDelete: (id: string) => void;
   isDeleting: boolean;
 }) {
+  const t = useTranslations("templates");
   const [confirmOpen, setConfirmOpen] = useState(false);
   const { ref, isDragging } = useSortable({
     id: exercise.id,
@@ -304,8 +308,8 @@ function SortableExercise({
       <ConfirmDeleteDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        title="Delete exercise"
-        description={`Are you sure you want to delete "${exercise.name}"? This action cannot be undone.`}
+        title={t("deleteExercise")}
+        description={t("deleteExerciseConfirmation", { name: exercise.name })}
         onConfirm={() => {
           onDelete(exercise.id);
           setConfirmOpen(false);
@@ -317,6 +321,8 @@ function SortableExercise({
 }
 
 export function TemplateDetail({ templateId }: { templateId: string }) {
+  const t = useTranslations("templates");
+  const tc = useTranslations("common");
   const queryClient = useQueryClient();
   const [addOpen, setAddOpen] = useState(false);
   const [editingExercise, setEditingExercise] = useState<Exercise | null>(null);
@@ -496,10 +502,10 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
   if (!template) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16">
-        <p className="text-muted-foreground">Template not found</p>
+        <p className="text-muted-foreground">{t("templateNotFound")}</p>
         <Link href="/templates">
           <Button variant="outline" size="sm">
-            Back to templates
+            {t("backToTemplates")}
           </Button>
         </Link>
       </div>
@@ -514,7 +520,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
           className="-ml-1 inline-flex h-11 items-center gap-1 px-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
-          Back
+          {tc("back")}
         </Link>
         {editingName ? (
           <form
@@ -531,7 +537,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
               className="text-xl font-bold"
             />
             <Button size="sm" type="submit" disabled={!nameValue.trim()}>
-              Save
+              {tc("save")}
             </Button>
             <Button
               size="sm"
@@ -539,7 +545,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
               type="button"
               onClick={() => setEditingName(false)}
             >
-              Cancel
+              {tc("cancel")}
             </Button>
           </form>
         ) : (
@@ -572,12 +578,12 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
 
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-medium text-muted-foreground">
-          {exercises.length} {exercises.length === 1 ? "exercise" : "exercises"}
+          {t("exerciseCount", { count: exercises.length })}
         </h2>
         <ExerciseFormDialog
           open={addOpen}
           onOpenChange={setAddOpen}
-          title="Add Exercise"
+          title={t("addExercise")}
           initial={EMPTY_FORM}
           onSubmit={(data) => addExerciseMutation.mutate(data)}
           isPending={addExerciseMutation.isPending}
@@ -585,7 +591,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
           trigger={
             <Button size="sm" variant="outline">
               <Plus data-icon="inline-start" />
-              Add Exercise
+              {t("addExercise")}
             </Button>
           }
         />
@@ -593,9 +599,9 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
 
       {exercises.length === 0 && (
         <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-          <p className="text-muted-foreground">No exercises yet</p>
+          <p className="text-muted-foreground">{t("noExercisesYet")}</p>
           <p className="text-sm text-muted-foreground">
-            Add exercises to define your workout routine.
+            {t("addExercisesPrompt")}
           </p>
         </div>
       )}
@@ -642,7 +648,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
           onOpenChange={(open) => {
             if (!open) setEditingExercise(null);
           }}
-          title="Edit Exercise"
+          title={t("editExercise")}
           initial={{
             name: editingExercise.name,
             description: editingExercise.description ?? "",

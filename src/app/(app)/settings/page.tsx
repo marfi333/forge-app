@@ -1,15 +1,18 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { auth, signOut } from "@/auth";
+import { LanguageSwitcher } from "./language-switcher";
 
 export default async function SettingsPage() {
   const session = await auth();
   if (!session?.user) redirect("/sign-in");
 
   const user = session.user;
+  const t = await getTranslations("settings");
 
   return (
     <>
-      <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+      <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
 
       <div className="rounded-2xl border border-white/10 bg-card p-6 backdrop-blur-xl">
         <div className="flex items-center gap-4">
@@ -33,6 +36,8 @@ export default async function SettingsPage() {
         </div>
       </div>
 
+      <LanguageSwitcher />
+
       <div className="rounded-2xl border border-white/10 bg-card p-4 backdrop-blur-xl">
         <form
           action={async () => {
@@ -44,13 +49,13 @@ export default async function SettingsPage() {
             type="submit"
             className="w-full rounded-xl px-4 py-3 text-sm font-medium text-red-400 transition-colors hover:bg-red-400/10 active:bg-red-400/20"
           >
-            Sign Out
+            {t("signOut")}
           </button>
         </form>
       </div>
 
       <p className="text-center text-xs text-muted-foreground">
-        FORGE v{process.env.NEXT_PUBLIC_APP_VERSION}
+        {t("version", { version: process.env.NEXT_PUBLIC_APP_VERSION ?? "" })}
       </p>
     </>
   );
