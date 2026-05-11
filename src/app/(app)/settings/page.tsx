@@ -48,24 +48,25 @@ export default async function SettingsPage() {
         <NavbarStyleToggle />
       </div>
 
-      <div className="rounded-2xl border border-border bg-card p-4 backdrop-blur-xl space-y-1">
+      <div className="rounded-2xl border border-border bg-card backdrop-blur-xl">
         <ReplayTourButton />
-        <form
-          action={async () => {
-            "use server";
-            await signOut({ redirectTo: "/sign-in" });
-          }}
-        >
-          <button
-            type="submit"
-            className="w-full rounded-xl px-4 py-3 text-sm font-medium text-red-400 transition-colors hover:bg-red-400/10 active:bg-red-400/20"
-          >
-            {t("signOut")}
-          </button>
-        </form>
       </div>
 
-      <p className="text-center text-xs text-muted-foreground">
+      <form
+        action={async () => {
+          "use server";
+          await signOut({ redirectTo: "/sign-in" });
+        }}
+      >
+        <button
+          type="submit"
+          className="w-full rounded-xl px-4 py-3 text-sm font-medium text-red-400 transition-colors hover:bg-red-400/10 active:bg-red-400/20"
+        >
+          {t("signOut")}
+        </button>
+      </form>
+
+      <p className="mt-4 text-center text-xs text-muted-foreground">
         {t("version", { version: process.env.NEXT_PUBLIC_APP_VERSION ?? "" })}
       </p>
     </>
