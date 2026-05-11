@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useCallback, useRef, useState } from "react";
 import { useHaptics } from "@/components/haptics-provider";
 import { useNavbarStyle } from "@/components/navbar-style-provider";
 
@@ -75,31 +76,91 @@ function GlassNav({
   trigger: ReturnType<typeof useHaptics>["trigger"];
   t: (key: "home" | "plan" | "stats" | "settings") => string;
 }) {
+  const router = useRouter();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const lastHapticIndex = useRef<number | null>(null);
+
   const activeIndex = navItems.findIndex(
     (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
   );
 
+  const getIndexFromTouch = useCallback((clientX: number) => {
+    const container = containerRef.current;
+    if (!container) return null;
+    const rect = container.getBoundingClientRect();
+    const x = clientX - rect.left - 8;
+    const index = Math.floor(x / 72);
+    if (index < 0 || index >= navItems.length) return null;
+    return index;
+  }, []);
+
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      const index = getIndexFromTouch(e.touches[0].clientX);
+      if (index !== null) {
+        setDragIndex(index);
+        lastHapticIndex.current = index;
+        trigger("light");
+      }
+    },
+    [getIndexFromTouch, trigger],
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      const index = getIndexFromTouch(e.touches[0].clientX);
+      if (index !== null && index !== dragIndex) {
+        setDragIndex(index);
+        if (index !== lastHapticIndex.current) {
+          lastHapticIndex.current = index;
+          trigger("light");
+        }
+      }
+    },
+    [getIndexFromTouch, dragIndex, trigger],
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    if (dragIndex !== null) {
+      const target = navItems[dragIndex];
+      if (target && target.href !== pathname) {
+        router.push(target.href);
+      }
+      setDragIndex(null);
+      lastHapticIndex.current = null;
+    }
+  }, [dragIndex, pathname, router]);
+
+  const displayIndex = dragIndex ?? activeIndex;
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-6 pb-[calc(env(safe-area-inset-bottom,0)+12px)]">
-      <div className="relative flex items-center rounded-full border border-white/12 bg-white/6 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] px-2 py-2">
+      <div
+        ref={containerRef}
+        className="relative flex items-center rounded-full border border-white/12 bg-white/6 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] px-2 py-2"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
+      >
         <div
-          className="absolute top-1/2 -translate-y-1/2 h-9 w-[60px] rounded-full bg-primary/25 blur-lg transition-all duration-300 ease-in-out pointer-events-none"
+          className={`absolute top-1/2 -translate-y-1/2 h-9 w-[60px] rounded-full bg-primary/25 blur-lg pointer-events-none ${dragIndex !== null ? "transition-all duration-150 ease-out" : "transition-all duration-300 ease-in-out"}`}
           style={{
-            left: `calc(${activeIndex >= 0 ? activeIndex : 0} * 72px + 8px)`,
-            opacity: activeIndex >= 0 ? 1 : 0,
+            left: `calc(${displayIndex >= 0 ? displayIndex : 0} * 72px + 8px)`,
+            opacity: displayIndex >= 0 ? 1 : 0,
           }}
         />
-        {navItems.map((item) => {
+        {navItems.map((item, index) => {
           const isActive =
             pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const isDragTarget = dragIndex === index;
           return (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => trigger("light")}
-              className={`relative z-10 flex w-[68px] flex-col items-center gap-0.5 py-1.5 rounded-full transition-all duration-200 active:scale-90 ${
-                isActive ? "text-primary" : "text-white/50 hover:text-white/80"
-              }`}
+              className={`relative z-10 flex w-[68px] flex-col items-center gap-0.5 py-1.5 rounded-full transition-all duration-200 active:scale-90 ${isDragTarget ? "text-primary scale-110" : isActive ? "text-primary" : "text-white/50 hover:text-white/80"}`}
             >
               <item.icon className="h-5 w-5" />
               <span className="text-[10px] font-medium">
