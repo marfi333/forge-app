@@ -1,3 +1,17 @@
+# [1.7.0](https://github.com/marfi333/forge-app/compare/v1.6.1...v1.7.0) (2026-05-11)
+
+
+### Features
+
+* **theme:** add i18n keys for theme switcher (EN + HU) ([f1a83cc](https://github.com/marfi333/forge-app/commit/f1a83ccbc9b730bb60ce328c9940dd82d9189d1c))
+* **theme:** add ThemeSwitcher to settings page ([843a1d3](https://github.com/marfi333/forge-app/commit/843a1d3a5b32ba15567c79d9e23f22fb8d35e71d))
+* **theme:** create ThemeSwitcher component for settings ([ff98092](https://github.com/marfi333/forge-app/commit/ff980927d63eb01669c89aa71e4c2ca0296e7ec1))
+* **theme:** dynamic meta theme-color based on active theme ([09f540c](https://github.com/marfi333/forge-app/commit/09f540cf3a484883b36c3f8c14f111e2daf4bc77))
+* **theme:** install next-themes package ([e7c60db](https://github.com/marfi333/forge-app/commit/e7c60dbbc48b30e3d743002ee91acc19fc7815e1))
+* **theme:** integrate ThemeProvider with system default ([f3518bc](https://github.com/marfi333/forge-app/commit/f3518bcaa0ef4c487d9c3b19be206966391e6758))
+* **theme:** make Sonner toaster respect system theme ([8237d70](https://github.com/marfi333/forge-app/commit/8237d70b68fe4e3dab9baa5573e324ee19d9e361))
+* **theme:** replace hardcoded dark-specific styles with theme tokens ([b984176](https://github.com/marfi333/forge-app/commit/b984176c1d2626e6b2ee34f2ab6ec89008c9ca6a))
+
 ## [1.6.1](https://github.com/marfi333/forge-app/compare/v1.6.0...v1.6.1) (2026-05-11)
 
 
