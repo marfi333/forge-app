@@ -17,6 +17,8 @@ interface Exercise {
   imageUrl: string | null;
   youtubeUrl: string | null;
   order: number;
+  sets: number | null;
+  reps: number | null;
 }
 
 export function ExerciseInfo({
@@ -92,6 +94,16 @@ export function ExerciseInfo({
         <h1 className="text-xl font-bold tracking-tight">{exercise.name}</h1>
         <MuscleGroupBadges muscleGroups={muscleGroups} />
       </div>
+
+      {(exercise.sets || exercise.reps) && (
+        <p className="text-sm font-medium text-muted-foreground">
+          {exercise.sets && exercise.reps
+            ? `${exercise.sets} × ${exercise.reps}`
+            : exercise.sets
+              ? `${exercise.sets} ${t("sets").toLowerCase()}`
+              : `${exercise.reps} ${t("reps").toLowerCase()}`}
+        </p>
+      )}
 
       {exercise.description && (
         <p className="whitespace-pre-wrap text-sm text-muted-foreground">
