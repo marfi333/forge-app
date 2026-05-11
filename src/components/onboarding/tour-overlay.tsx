@@ -12,7 +12,7 @@ interface TourOverlayProps {
   onSkip: () => void;
 }
 
-interface Rect {
+interface ViewportRect {
   top: number;
   left: number;
   width: number;
@@ -21,6 +21,7 @@ interface Rect {
 
 const PADDING = 8;
 const TOOLTIP_GAP = 12;
+const VIEWPORT_MARGIN = 16;
 
 export function TourOverlay({
   step,
@@ -29,7 +30,7 @@ export function TourOverlay({
   onNext,
   onSkip,
 }: TourOverlayProps) {
-  const [targetRect, setTargetRect] = useState<Rect | null>(null);
+  const [rect, setRect] = useState<ViewportRect | null>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const [tooltipPosition, setTooltipPosition] = useState<"below" | "above">(
     "below",
@@ -38,16 +39,14 @@ export function TourOverlay({
   const measure = useCallback(() => {
     const el = document.querySelector(step.target);
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    setTargetRect({
-      top: rect.top + window.scrollY,
-      left: rect.left + window.scrollX,
-      width: rect.width,
-      height: rect.height,
-    });
+    const r = el.getBoundingClientRect();
+    setRect({ top: r.top, left: r.left, width: r.width, height: r.height });
 
-    const spaceBelow = window.innerHeight - rect.bottom;
-    setTooltipPosition(spaceBelow > 200 ? "below" : "above");
+    const spaceBelow = window.innerHeight - r.bottom;
+    const spaceAbove = r.top;
+    setTooltipPosition(
+      spaceBelow > 200 || spaceBelow >= spaceAbove ? "below" : "above",
+    );
 
     el.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [step.target]);
@@ -63,50 +62,85 @@ export function TourOverlay({
     };
   }, [measure]);
 
-  if (!targetRect) return null;
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  if (!rect) return null;
 
   const isLastStep = stepIndex === totalSteps - 1;
 
-  const spotlightStyle = {
-    top: targetRect.top - PADDING,
-    left: targetRect.left - PADDING,
-    width: targetRect.width + PADDING * 2,
-    height: targetRect.height + PADDING * 2,
-  };
+  const spotlightTop = rect.top - PADDING;
+  const spotlightLeft = rect.left - PADDING;
+  const spotlightWidth = rect.width + PADDING * 2;
+  const spotlightHeight = rect.height + PADDING * 2;
 
-  const tooltipTop =
-    tooltipPosition === "below"
-      ? targetRect.top + targetRect.height + PADDING + TOOLTIP_GAP
-      : targetRect.top - PADDING - TOOLTIP_GAP;
+  let tooltipTop: number;
+  let tooltipTransform: string | undefined;
+
+  if (tooltipPosition === "below") {
+    tooltipTop = rect.top + rect.height + PADDING + TOOLTIP_GAP;
+    tooltipTransform = undefined;
+
+    const tooltipEstimatedHeight = 180;
+    if (
+      tooltipTop + tooltipEstimatedHeight >
+      window.innerHeight - VIEWPORT_MARGIN
+    ) {
+      tooltipTop =
+        window.innerHeight - VIEWPORT_MARGIN - tooltipEstimatedHeight;
+    }
+  } else {
+    tooltipTop = rect.top - PADDING - TOOLTIP_GAP;
+    tooltipTransform = "translateY(-100%)";
+
+    if (tooltipTop < VIEWPORT_MARGIN) {
+      tooltipTop = VIEWPORT_MARGIN;
+      tooltipTransform = undefined;
+    }
+  }
 
   const overlay = (
     <div className="fixed inset-0 z-[9999]" aria-modal="true" role="dialog">
-      {/* Backdrop */}
+      {/* Backdrop using clip-path to cut out the spotlight */}
       <button
         type="button"
         aria-label="Close tour"
-        className="absolute inset-0 bg-black/70 transition-opacity duration-300"
+        className="fixed inset-0 bg-black/70 transition-opacity duration-300"
         onClick={onSkip}
+        style={{
+          clipPath: `polygon(
+            0% 0%, 0% 100%, 100% 100%, 100% 0%,
+            0% 0%,
+            0% ${spotlightTop}px,
+            ${spotlightLeft}px ${spotlightTop}px,
+            ${spotlightLeft}px ${spotlightTop + spotlightHeight}px,
+            ${spotlightLeft + spotlightWidth}px ${spotlightTop + spotlightHeight}px,
+            ${spotlightLeft + spotlightWidth}px ${spotlightTop}px,
+            0% ${spotlightTop}px
+          )`,
+        }}
       />
 
-      {/* Spotlight cutout */}
+      {/* Spotlight ring */}
       <div
-        className="absolute rounded-xl ring-2 ring-primary/60 transition-all duration-300 pointer-events-none"
+        className="fixed rounded-xl ring-2 ring-primary/60 pointer-events-none transition-all duration-300"
         style={{
-          ...spotlightStyle,
-          boxShadow: "0 0 0 9999px rgba(0,0,0,0.7)",
+          top: spotlightTop,
+          left: spotlightLeft,
+          width: spotlightWidth,
+          height: spotlightHeight,
         }}
       />
 
       {/* Tooltip */}
       <div
         ref={tooltipRef}
-        className="absolute left-4 right-4 max-w-sm mx-auto rounded-2xl border border-white/10 bg-card/95 backdrop-blur-xl p-5 shadow-xl transition-all duration-300"
-        style={{
-          top: tooltipTop,
-          transform:
-            tooltipPosition === "above" ? "translateY(-100%)" : undefined,
-        }}
+        className="fixed left-4 right-4 max-w-sm mx-auto rounded-2xl border border-white/10 bg-card/95 backdrop-blur-xl p-5 shadow-xl transition-all duration-300"
+        style={{ top: tooltipTop, transform: tooltipTransform }}
       >
         <p className="text-xs font-semibold text-primary mb-1">
           {stepIndex + 1} of {totalSteps}
