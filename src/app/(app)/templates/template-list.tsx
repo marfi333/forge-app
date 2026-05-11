@@ -296,7 +296,7 @@ export function TemplateList() {
                   size="icon-sm"
                   onClick={() => setDeletingTemplateId(template.id)}
                 >
-                  <Trash2 className="text-muted-foreground" />
+                  <Trash2 className="text-red-400" />
                 </Button>
               </div>
             </CardHeader>

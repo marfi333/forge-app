@@ -379,7 +379,7 @@ function SortableExercise({
             size="icon-sm"
             onClick={() => setConfirmOpen(true)}
           >
-            <Trash2 className="text-muted-foreground" />
+            <Trash2 className="text-red-400" />
           </Button>
         </div>
       </CardContent>

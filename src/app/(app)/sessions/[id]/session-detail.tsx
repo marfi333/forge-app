@@ -504,7 +504,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
               size="icon-sm"
               onClick={() => setDeleteExConfirmOpen(true)}
             >
-              <Trash2 className="size-4 text-muted-foreground" />
+              <Trash2 className="size-4 text-red-400" />
             </Button>
             <ConfirmDeleteDrawer
               open={deleteExConfirmOpen}
