@@ -1,10 +1,10 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { Activity, BarChart3, Timer } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
 import appLogo from "@/../public/app_logo.png";
 
 interface LandingStats {
@@ -15,14 +15,15 @@ interface LandingStats {
 
 export function LandingPage() {
   const t = useTranslations("landing");
-  const [stats, setStats] = useState<LandingStats | null>(null);
 
-  useEffect(() => {
-    fetch("/api/landing-stats")
-      .then((res) => res.json())
-      .then((data) => setStats(data as LandingStats))
-      .catch(() => {});
-  }, []);
+  const { data: stats } = useQuery<LandingStats>({
+    queryKey: ["landing-stats"],
+    queryFn: async () => {
+      const res = await fetch("/api/landing-stats");
+      if (!res.ok) throw new Error("Failed to fetch landing stats");
+      return res.json();
+    },
+  });
 
   return (
     <div className="min-h-svh bg-[#121414]">
@@ -92,9 +93,15 @@ export function LandingPage() {
         {stats && (
           <section className="px-5 py-12">
             <div className="mx-auto grid max-w-md grid-cols-3 gap-3">
-              <StatCard value={stats.totalWorkouts} label={t("stats.workouts")} />
+              <StatCard
+                value={stats.totalWorkouts}
+                label={t("stats.workouts")}
+              />
               <StatCard value={stats.totalUsers} label={t("stats.users")} />
-              <StatCard value={stats.totalExercises} label={t("stats.exercises")} />
+              <StatCard
+                value={stats.totalExercises}
+                label={t("stats.exercises")}
+              />
             </div>
           </section>
         )}
@@ -130,7 +137,9 @@ function FeatureCard({
     <div className="rounded-2xl border border-white/10 bg-[#1a1a1a]/80 p-5 backdrop-blur-xl">
       <div className="mb-3">{icon}</div>
       <h3 className="text-base font-bold text-white">{title}</h3>
-      <p className="mt-1 text-sm text-white/60 leading-relaxed">{description}</p>
+      <p className="mt-1 text-sm text-white/60 leading-relaxed">
+        {description}
+      </p>
     </div>
   );
 }
