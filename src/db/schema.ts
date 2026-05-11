@@ -16,6 +16,9 @@ export const users = sqliteTable("users", {
   createdAt: integer("created_at", { mode: "timestamp" })
     .notNull()
     .$defaultFn(() => new Date()),
+  onboardingCompletedAt: integer("onboarding_completed_at", {
+    mode: "timestamp",
+  }),
 });
 
 export const accounts = sqliteTable(

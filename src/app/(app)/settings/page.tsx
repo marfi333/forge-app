@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth, signOut } from "@/auth";
 import { HapticsToggle } from "@/components/haptics-toggle";
+import { ReplayTourButton } from "@/components/onboarding/replay-tour-button";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -38,7 +39,8 @@ export default async function SettingsPage() {
         <HapticsToggle />
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-card p-4 backdrop-blur-xl">
+      <div className="rounded-2xl border border-white/10 bg-card p-4 backdrop-blur-xl space-y-1">
+        <ReplayTourButton />
         <form
           action={async () => {
             "use server";

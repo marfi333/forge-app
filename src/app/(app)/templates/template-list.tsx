@@ -233,7 +233,7 @@ export function TemplateList() {
           onSubmit={(data) => createMutation.mutate(data)}
           isPending={createMutation.isPending}
           trigger={
-            <Button>
+            <Button data-tour="create-template">
               <Plus data-icon="inline-start" />
               New
             </Button>
@@ -251,7 +251,7 @@ export function TemplateList() {
         </div>
       )}
 
-      <div className="space-y-3">
+      <div data-tour="template-list" className="space-y-3">
         {templates?.map((template) => (
           <Card key={template.id} size="sm">
             <CardHeader className="flex flex-row items-center justify-between gap-2">
