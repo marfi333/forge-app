@@ -1,3 +1,18 @@
+# [1.11.0](https://github.com/marfi333/forge-app/compare/v1.10.0...v1.11.0) (2026-05-11)
+
+
+### Bug Fixes
+
+* **auth:** env CF typegen ([ab9145f](https://github.com/marfi333/forge-app/commit/ab9145fad4671b6e7e2f5ddd3ddde6e13c7cf805))
+* **auth:** middleware redirect ([58a1258](https://github.com/marfi333/forge-app/commit/58a125810d5effa972a52382aa23fef1e0e7b380))
+
+
+### Features
+
+* **auth:** add password authentication and registration ([3290d9f](https://github.com/marfi333/forge-app/commit/3290d9fb7cb4a94012ca7d6ee918ae00b71dc8fa))
+* **auth:** add password authentication and registration ([7ef8887](https://github.com/marfi333/forge-app/commit/7ef8887f98d5b739d0624595e4bc493ce40145ee))
+* **auth:** use toast messages for error feedback ([6163998](https://github.com/marfi333/forge-app/commit/6163998d8f41312ec11a4cb3918601cf1bdd6090))
+
 # [1.10.0](https://github.com/marfi333/forge-app/compare/v1.9.1...v1.10.0) (2026-05-11)
 
 
