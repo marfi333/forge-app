@@ -30,9 +30,7 @@ function getDateRange(period: "week" | "month", now: Date) {
   const previousStart = new Date(previousEnd);
   if (period === "week") {
     const day = previousStart.getDay();
-    previousStart.setDate(
-      previousStart.getDate() - day + (day === 0 ? -6 : 1),
-    );
+    previousStart.setDate(previousStart.getDate() - day + (day === 0 ? -6 : 1));
   } else {
     previousStart.setDate(1);
   }

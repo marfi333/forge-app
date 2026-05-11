@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Dumbbell, Moon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
 import { useHaptics } from "@/components/haptics-provider";
 import { Button } from "@/components/ui/button";
@@ -37,22 +38,15 @@ function getFirstDayOfWeek(year: number, month: number) {
   return new Date(year, month, 1).getDay();
 }
 
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAY_LABEL_KEYS = [
+  "sun",
+  "mon",
+  "tue",
+  "wed",
+  "thu",
+  "fri",
+  "sat",
+] as const;
 
 interface DayCellProps {
   day: number;
@@ -100,6 +94,7 @@ function DayCell({
 }
 
 export function CalendarView() {
+  const t = useTranslations("calendar");
   const queryClient = useQueryClient();
   const [currentDate, setCurrentDate] = useState(() => new Date());
   const [selectedDate, setSelectedDate] = useState(() => {
@@ -224,7 +219,7 @@ export function CalendarView() {
           <ChevronLeft />
         </Button>
         <h1 className="text-lg font-bold tracking-tight">
-          {MONTH_NAMES[month]} {year}
+          {t(`monthNames.${month}`)} {year}
         </h1>
         <Button variant="ghost" size="icon-sm" onClick={nextMonth}>
           <ChevronRight />
@@ -232,12 +227,12 @@ export function CalendarView() {
       </div>
 
       <div data-tour="calendar-grid" className="grid grid-cols-7 gap-1">
-        {DAY_LABELS.map((label) => (
+        {DAY_LABEL_KEYS.map((key) => (
           <div
-            key={label}
+            key={key}
             className="py-1 text-center text-xs font-medium text-muted-foreground"
           >
-            {label}
+            {t(`dayLabels.${key}`)}
           </div>
         ))}
 
@@ -271,13 +266,14 @@ export function CalendarView() {
 
       <div className="flex items-center gap-4 text-xs text-muted-foreground">
         <span className="flex items-center gap-1">
-          <Dumbbell className="size-3" /> Workout
+          <Dumbbell className="size-3" /> {t("legendWorkout")}
         </span>
         <span className="flex items-center gap-1">
-          <Moon className="size-3" /> Rest
+          <Moon className="size-3" /> {t("legendRest")}
         </span>
         <span className="flex items-center gap-1">
-          <span className="size-1.5 rounded-full bg-primary" /> Session logged
+          <span className="size-1.5 rounded-full bg-primary" />{" "}
+          {t("legendSession")}
         </span>
       </div>
 

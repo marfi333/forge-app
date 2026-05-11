@@ -2,6 +2,7 @@
 
 import { Check, Dumbbell, Moon, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useFormatter, useTranslations } from "next-intl";
 import { useState } from "react";
 import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 import { useHaptics } from "@/components/haptics-provider";
@@ -42,11 +43,15 @@ export function DayActionSheet({
 }: DayActionSheetProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const { trigger } = useHaptics();
+  const t = useTranslations("calendar");
+  const tc = useTranslations("common");
+  const format = useFormatter();
 
-  const formattedDate = new Date(`${selectedDate}T12:00:00`).toLocaleDateString(
-    "en-US",
-    { weekday: "long", month: "short", day: "numeric" },
-  );
+  const formattedDate = format.dateTime(new Date(`${selectedDate}T12:00:00`), {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  });
 
   function handleType(type: "workout" | "rest") {
     onSetType(type);
@@ -79,7 +84,7 @@ export function DayActionSheet({
             onClick={() => handleType("workout")}
           >
             <Dumbbell className="size-4" />
-            Workout
+            {tc("workout")}
           </Button>
           <Button
             variant={currentType === "rest" ? "default" : "outline"}
@@ -87,7 +92,7 @@ export function DayActionSheet({
             onClick={() => handleType("rest")}
           >
             <Moon className="size-4" />
-            Rest Day
+            {t("restDay")}
           </Button>
           <Button
             variant="outline"
@@ -102,15 +107,15 @@ export function DayActionSheet({
         <ConfirmDeleteDialog
           open={confirmOpen}
           onOpenChange={setConfirmOpen}
-          title="Clear day"
-          description="Are you sure you want to clear this day's type? This action cannot be undone."
+          title={t("clearDay")}
+          description={t("clearDayConfirmation")}
           onConfirm={handleClear}
         />
 
         {sessions.length > 0 && (
           <div className="space-y-2 px-4 pb-3">
             <p className="text-xs font-medium text-muted-foreground">
-              Sessions
+              {t("sessions")}
             </p>
             {sessions.map((s) => {
               const isCompleted = s.status === "completed";
@@ -143,7 +148,7 @@ export function DayActionSheet({
                     </div>
                     <div className="flex flex-col flex-1 min-w-0">
                       <span className="text-sm font-medium truncate">
-                        {s.templateName || "Workout"}
+                        {s.templateName || tc("workout")}
                       </span>
                       <span
                         className={`text-xs ${
@@ -155,9 +160,9 @@ export function DayActionSheet({
                         }`}
                       >
                         {isCompleted
-                          ? "Completed"
+                          ? t("completed")
                           : isInProgress
-                            ? "In Progress"
+                            ? t("inProgress")
                             : s.status}
                       </span>
                     </div>
@@ -170,7 +175,7 @@ export function DayActionSheet({
 
         <DrawerFooter>
           <Link href={`/sessions/new?date=${selectedDate}`} className="w-full">
-            <Button className="h-10 w-full">Start Workout</Button>
+            <Button className="h-10 w-full">{t("startWorkout")}</Button>
           </Link>
         </DrawerFooter>
       </DrawerContent>

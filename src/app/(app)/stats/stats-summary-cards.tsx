@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { TrendingDown, TrendingUp } from "lucide-react";
+import { useFormatter, useTranslations } from "next-intl";
 
 interface PeriodStats {
   totalVolume: number;
@@ -18,7 +19,10 @@ interface SummaryResponse {
 function TrendBadge({
   current,
   previous,
-}: { current: number; previous: number }) {
+}: {
+  current: number;
+  previous: number;
+}) {
   if (previous === 0) return null;
   const diff = current - previous;
   const pct = Math.round((diff / previous) * 100);
@@ -63,6 +67,8 @@ function StatCard({
 }
 
 export function StatsSummaryCards({ period }: { period: "week" | "month" }) {
+  const t = useTranslations("stats");
+  const format = useFormatter();
   const { data, isLoading } = useQuery<SummaryResponse>({
     queryKey: ["stats", "summary", period],
     queryFn: async () => {
@@ -101,25 +107,25 @@ export function StatsSummaryCards({ period }: { period: "week" | "month" }) {
   return (
     <div className="grid grid-cols-2 gap-3">
       <StatCard
-        label="Total Volume"
-        value={current.totalVolume.toLocaleString()}
+        label={t("totalVolume")}
+        value={format.number(current.totalVolume)}
         current={current.totalVolume}
         previous={previous.totalVolume}
       />
       <StatCard
-        label="Total Sets"
+        label={t("totalSets")}
         value={current.totalSets.toString()}
         current={current.totalSets}
         previous={previous.totalSets}
       />
       <StatCard
-        label="Workouts"
+        label={t("workouts")}
         value={current.workoutCount.toString()}
         current={current.workoutCount}
         previous={previous.workoutCount}
       />
       <StatCard
-        label="Exercises w/ PR"
+        label={t("exercisesWithPR")}
         value={current.prCount.toString()}
         current={current.prCount}
         previous={previous.prCount}

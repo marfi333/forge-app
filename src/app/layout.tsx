@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
 import { Toaster } from "sonner";
 import { BottomNav } from "@/components/bottom-nav";
 import { TourController } from "@/components/onboarding/tour-controller";
@@ -10,7 +12,7 @@ import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin"],
+  subsets: ["latin", "latin-ext"],
 });
 
 export const metadata: Metadata = {
@@ -41,22 +43,27 @@ export const viewport: Viewport = {
   themeColor: "#121414",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en" className="dark">
+    <html lang={locale} className="dark">
       <body className={`${inter.variable} font-sans antialiased`}>
-        <Providers>
-          <TopHeader />
-          {children}
-          <BottomNav />
-          <TourController />
-          <ServiceWorkerRegister />
-          <Toaster theme="dark" position="bottom-center" />
-        </Providers>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Providers>
+            <TopHeader />
+            {children}
+            <BottomNav />
+            <TourController />
+            <ServiceWorkerRegister />
+            <Toaster theme="dark" position="bottom-center" />
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

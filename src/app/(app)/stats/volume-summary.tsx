@@ -2,14 +2,9 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { TrendingUp } from "lucide-react";
+import { useFormatter, useTranslations } from "next-intl";
 import { useState } from "react";
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 interface SessionVolume {
   date: string;
@@ -24,12 +19,10 @@ interface WeekVolume {
   sessionCount: number;
 }
 
-function formatVolume(v: number): string {
-  if (v >= 1000) return `${(v / 1000).toFixed(1)}k`;
-  return v.toString();
-}
-
 export function VolumeSummary() {
+  const t = useTranslations("stats");
+  const tc = useTranslations("common");
+  const format = useFormatter();
   const [period, setPeriod] = useState<"session" | "week">("session");
 
   const { data, isLoading } = useQuery<SessionVolume[] | WeekVolume[]>({
@@ -66,7 +59,7 @@ export function VolumeSummary() {
           }`}
           onClick={() => setPeriod("session")}
         >
-          Per Session
+          {t("perSession")}
         </button>
         <button
           type="button"
@@ -77,7 +70,7 @@ export function VolumeSummary() {
           }`}
           onClick={() => setPeriod("week")}
         >
-          Per Week
+          {t("perWeek")}
         </button>
       </div>
 
@@ -85,9 +78,9 @@ export function VolumeSummary() {
         <div className="h-48 animate-pulse rounded-xl bg-white/5" />
       ) : chartData.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-          <p className="text-muted-foreground">No volume data yet</p>
+          <p className="text-muted-foreground">{t("noVolumeData")}</p>
           <p className="text-sm text-muted-foreground">
-            Complete workouts to see your volume trends.
+            {t("completeForVolume")}
           </p>
         </div>
       ) : (
@@ -95,12 +88,15 @@ export function VolumeSummary() {
           <div className="mb-4 flex items-start justify-between">
             <div>
               <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                Total Volume
+                {t("totalVolume")}
               </p>
               <p className="mt-1 text-3xl font-extrabold tracking-tight">
-                {formatVolume(totalVolume)}{" "}
+                {format.number(totalVolume, {
+                  notation: "compact",
+                  maximumFractionDigits: 1,
+                })}{" "}
                 <span className="text-base font-normal text-muted-foreground">
-                  kg
+                  {tc("kg")}
                 </span>
               </p>
             </div>

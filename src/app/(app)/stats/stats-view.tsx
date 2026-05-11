@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { ActivityGrid } from "./activity-grid";
 import { ExerciseChart } from "./exercise-chart";
@@ -8,11 +9,12 @@ import { PersonalRecords } from "./personal-records";
 import { StatsSummaryCards } from "./stats-summary-cards";
 import { VolumeSummary } from "./volume-summary";
 
-const PERIODS = ["Week", "Month"] as const;
-type Period = (typeof PERIODS)[number];
+const PERIOD_KEYS = ["week", "month"] as const;
+type PeriodKey = (typeof PERIOD_KEYS)[number];
 
 export function StatsView() {
-  const [period, setPeriod] = useState<Period>("Week");
+  const t = useTranslations("stats");
+  const [period, setPeriod] = useState<PeriodKey>("week");
 
   const { data: exerciseNames = [] } = useQuery<string[]>({
     queryKey: ["stats", "exercises"],
@@ -25,10 +27,10 @@ export function StatsView() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Statistics</h1>
+      <h1 className="text-2xl font-bold">{t("title")}</h1>
 
       <div className="flex gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
-        {PERIODS.map((p) => (
+        {PERIOD_KEYS.map((p) => (
           <button
             key={p}
             type="button"
@@ -39,23 +41,23 @@ export function StatsView() {
             }`}
             onClick={() => setPeriod(p)}
           >
-            {p}
+            {t(p)}
           </button>
         ))}
       </div>
 
-      <StatsSummaryCards period={period.toLowerCase() as "week" | "month"} />
+      <StatsSummaryCards period={period} />
 
       <section data-tour="stats-charts" className="space-y-2">
         <h2 className="text-sm font-medium text-muted-foreground">
-          Exercise Progression
+          {t("exerciseProgression")}
         </h2>
         <ExerciseChart exerciseNames={exerciseNames} />
       </section>
 
       <section className="space-y-2">
         <h2 className="text-sm font-medium text-muted-foreground">
-          Volume Trend
+          {t("volumeTrend")}
         </h2>
         <VolumeSummary />
       </section>
@@ -64,7 +66,7 @@ export function StatsView() {
 
       <section className="space-y-2">
         <h2 className="text-sm font-medium text-muted-foreground">
-          Personal Records
+          {t("personalRecords")}
         </h2>
         <PersonalRecords />
       </section>

@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Trophy } from "lucide-react";
+import { useFormatter, useTranslations } from "next-intl";
 
 interface PersonalRecord {
   exerciseName: string;
@@ -11,6 +12,9 @@ interface PersonalRecord {
 }
 
 export function PersonalRecords() {
+  const t = useTranslations("stats");
+  const tc = useTranslations("common");
+  const format = useFormatter();
   const { data: records = [], isLoading } = useQuery<PersonalRecord[]>({
     queryKey: ["stats", "personal-records"],
     queryFn: async () => {
@@ -24,10 +28,7 @@ export function PersonalRecords() {
     return (
       <div className="space-y-3">
         {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="h-16 animate-pulse rounded-xl bg-white/5"
-          />
+          <div key={i} className="h-16 animate-pulse rounded-xl bg-white/5" />
         ))}
       </div>
     );
@@ -37,9 +38,9 @@ export function PersonalRecords() {
     return (
       <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
         <Trophy className="size-8 text-muted-foreground" />
-        <p className="text-muted-foreground">No personal records yet</p>
+        <p className="text-muted-foreground">{t("noRecordsYet")}</p>
         <p className="text-sm text-muted-foreground">
-          Complete workouts with weights to see your PRs.
+          {t("completeForRecords")}
         </p>
       </div>
     );
@@ -58,16 +59,20 @@ export function PersonalRecords() {
           <div className="flex-1">
             <p className="font-semibold">{record.exerciseName}</p>
             <p className="text-sm text-muted-foreground">
-              {new Date(`${record.date}T12:00:00`).toLocaleDateString()}
+              {format.dateTime(new Date(`${record.date}T12:00:00`), {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
             </p>
           </div>
           <div className="text-right">
             <p className="text-lg font-bold text-chart-1">
-              {record.maxWeight} kg
+              {record.maxWeight} {tc("kg")}
             </p>
             {record.reps !== null && (
               <p className="text-xs text-muted-foreground">
-                {record.reps} reps
+                {record.reps} {tc("reps")}
               </p>
             )}
           </div>

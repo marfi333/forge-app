@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 
 interface ActivityDay {
   date: string;
@@ -29,9 +30,10 @@ const INTENSITY_CLASSES = [
   "bg-chart-1/80",
 ];
 
-const DAY_LABELS = ["Mon", "", "Wed", "", "Fri", "", ""];
+const DAY_LABEL_KEYS = ["mon", null, "wed", null, "fri", null, null] as const;
 
 export function ActivityGrid() {
+  const t = useTranslations("stats");
   const { data, isLoading } = useQuery<ActivityResponse>({
     queryKey: ["stats", "activity"],
     queryFn: async () => {
@@ -77,20 +79,23 @@ export function ActivityGrid() {
   return (
     <div className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
       <p className="mb-3 text-sm font-medium text-muted-foreground">
-        Training Activity
+        {t("trainingActivity")}
       </p>
       <div className="flex gap-1">
         <div className="flex flex-col gap-[3px] pr-1 pt-0">
-          {DAY_LABELS.map((label, i) => (
+          {DAY_LABEL_KEYS.map((key, i) => (
             <div
               key={`label-${i}`}
               className="flex h-[14px] items-center text-[9px] leading-none text-muted-foreground"
             >
-              {label}
+              {key ? t(`activityDayLabels.${key}`) : ""}
             </div>
           ))}
         </div>
-        <div className="grid flex-1 gap-[3px]" style={{ gridTemplateColumns: `repeat(${grid.length}, 1fr)` }}>
+        <div
+          className="grid flex-1 gap-[3px]"
+          style={{ gridTemplateColumns: `repeat(${grid.length}, 1fr)` }}
+        >
           {grid.map((week, wi) => (
             <div key={`week-${wi}`} className="flex flex-col gap-[3px]">
               {week.map((cell, di) => (
@@ -109,11 +114,11 @@ export function ActivityGrid() {
         </div>
       </div>
       <div className="mt-3 flex items-center justify-end gap-1.5 text-[10px] text-muted-foreground">
-        <span>Less</span>
+        <span>{t("less")}</span>
         {INTENSITY_CLASSES.map((cls, i) => (
           <div key={`legend-${i}`} className={`size-3 rounded-sm ${cls}`} />
         ))}
-        <span>More</span>
+        <span>{t("more")}</span>
       </div>
     </div>
   );
