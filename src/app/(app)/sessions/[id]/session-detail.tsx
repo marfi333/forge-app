@@ -383,7 +383,7 @@ function ExerciseAccordionItem({
       {/* Header row - always visible */}
       <button
         type="button"
-        className="flex w-full items-center gap-3 px-4 py-3 text-left"
+        className={`flex w-full items-center gap-3 px-4 text-left py-3 ${isExpanded ? "pb-5" : "py-4"}`}
         onClick={() => {
           trigger("light");
           onToggle();
@@ -399,6 +399,11 @@ function ExerciseAccordionItem({
             >
               {completedSets}/{totalSets}
             </span>
+            {isExpanded && (
+              <span className="text-xs text-muted-foreground">
+                <ExerciseVolume sets={exercise.sets} />
+              </span>
+            )}
           </div>
           {/* Progress bar */}
           {totalSets > 0 && (
@@ -411,36 +416,29 @@ function ExerciseAccordionItem({
           )}
         </div>
 
-        {/* Expanded header extras: volume + delete */}
-        {isExpanded && (
-          <div className="flex items-center gap-1 shrink-0">
-            <div className="text-xs text-muted-foreground">
-              <ExerciseVolume sets={exercise.sets} />
-            </div>
-            {!isCompleted && (
-              <>
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setDeleteExConfirmOpen(true);
-                  }}
-                >
-                  <Trash2 className="size-3.5 text-red-400" />
-                </Button>
-                <ConfirmDeleteDrawer
-                  open={deleteExConfirmOpen}
-                  onOpenChange={setDeleteExConfirmOpen}
-                  title={t("deleteExercise")}
-                  description={t("deleteExerciseConfirmation", {
-                    name: exercise.name,
-                  })}
-                  onConfirm={() => deleteExercise.mutate()}
-                  isPending={deleteExercise.isPending}
-                />
-              </>
-            )}
+        {/* Expanded header extras: delete */}
+        {isExpanded && !isCompleted && (
+          <div className="flex items-center shrink-0">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                setDeleteExConfirmOpen(true);
+              }}
+            >
+              <Trash2 className="size-3.5 text-red-400" />
+            </Button>
+            <ConfirmDeleteDrawer
+              open={deleteExConfirmOpen}
+              onOpenChange={setDeleteExConfirmOpen}
+              title={t("deleteExercise")}
+              description={t("deleteExerciseConfirmation", {
+                name: exercise.name,
+              })}
+              onConfirm={() => deleteExercise.mutate()}
+              isPending={deleteExercise.isPending}
+            />
           </div>
         )}
 
