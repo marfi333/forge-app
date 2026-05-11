@@ -8,7 +8,6 @@ import {
   ArrowLeft,
   GripVertical,
   Image as ImageIcon,
-  Info,
   Pencil,
   Plus,
   Trash2,
@@ -336,45 +335,42 @@ function SortableExercise({
     >
       <CardContent className="flex items-center gap-3 py-0">
         <GripVertical className="size-4 shrink-0 cursor-grab text-muted-foreground active:cursor-grabbing" />
-        <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="truncate font-medium">{exercise.name}</span>
-            {exercise.imageUrl && (
-              <ImageIcon className="size-3.5 shrink-0 text-muted-foreground" />
+        <Link href={`/templates/${templateId}/exercises/${exercise.id}`} className="flex min-w-0 flex-1 items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <span className="truncate font-medium">{exercise.name}</span>
+              {exercise.imageUrl && (
+                <ImageIcon className="size-3.5 shrink-0 text-muted-foreground" />
+              )}
+              {exercise.youtubeUrl && (
+                <Video className="size-3.5 shrink-0 text-muted-foreground" />
+              )}
+            </div>
+            {(exercise.sets || exercise.reps) && (
+              <p className="mt-0.5 text-xs font-medium text-primary">
+                {exercise.sets && exercise.reps
+                  ? `${exercise.sets} × ${exercise.reps}`
+                  : exercise.sets
+                    ? `${exercise.sets} sets`
+                    : `${exercise.reps} reps`}
+              </p>
             )}
-            {exercise.youtubeUrl && (
-              <Video className="size-3.5 shrink-0 text-muted-foreground" />
+            {exercise.description && (
+              <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                {exercise.description}
+              </p>
             )}
           </div>
-          {(exercise.sets || exercise.reps) && (
-            <p className="mt-0.5 text-xs font-medium text-primary">
-              {exercise.sets && exercise.reps
-                ? `${exercise.sets} × ${exercise.reps}`
-                : exercise.sets
-                  ? `${exercise.sets} sets`
-                  : `${exercise.reps} reps`}
-            </p>
+          {exercise.imageUrl && (
+            /* biome-ignore lint/performance/noImgElement: user-provided dynamic URLs */
+            <img
+              src={exercise.imageUrl}
+              alt={exercise.name}
+              className="size-10 shrink-0 rounded-lg object-cover"
+            />
           )}
-          {exercise.description && (
-            <p className="mt-0.5 truncate text-xs text-muted-foreground">
-              {exercise.description}
-            </p>
-          )}
-        </div>
-        {exercise.imageUrl && (
-          /* biome-ignore lint/performance/noImgElement: user-provided dynamic URLs */
-          <img
-            src={exercise.imageUrl}
-            alt={exercise.name}
-            className="size-10 shrink-0 rounded-lg object-cover"
-          />
-        )}
+        </Link>
         <div className="flex shrink-0 items-center gap-1">
-          <Link href={`/templates/${templateId}/exercises/${exercise.id}`}>
-            <Button variant="ghost" size="icon-sm">
-              <Info className="text-muted-foreground" />
-            </Button>
-          </Link>
           <Button variant="ghost" size="icon-sm" onClick={onEdit}>
             <Pencil className="text-muted-foreground" />
           </Button>
