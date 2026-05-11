@@ -3,8 +3,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Check,
+  ChevronDown,
   ChevronLeft,
-  ChevronRight,
   Minus,
   Plus,
   Timer,
@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ConfettiBoom from "react-confetti-boom";
 import { ConfirmDeleteDrawer } from "@/components/confirm-delete-drawer";
 import { useHaptics } from "@/components/haptics-provider";
@@ -295,55 +295,53 @@ function CompactSetRow({
   );
 }
 
-export function SessionDetail({ sessionId }: { sessionId: string }) {
+function ExerciseAccordionItem({
+  exercise,
+  sessionId,
+  isExpanded,
+  onToggle,
+  isCompleted,
+}: {
+  exercise: SessionExercise;
+  sessionId: string;
+  isExpanded: boolean;
+  onToggle: () => void;
+  isCompleted: boolean;
+}) {
   const t = useTranslations("sessions");
-  const tc = useTranslations("common");
   const queryClient = useQueryClient();
   const { trigger } = useHaptics();
-  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
-  const [addExOpen, setAddExOpen] = useState(false);
-  const [exerciseName, setExerciseName] = useState("");
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [contentHeight, setContentHeight] = useState<number>(0);
   const [deleteExConfirmOpen, setDeleteExConfirmOpen] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
 
-  const { data: session, isLoading } = useQuery<WorkoutSession>({
-    queryKey: ["sessions", sessionId],
-    queryFn: async () => {
-      const res = await fetch(`/api/sessions/${sessionId}`);
-      if (!res.ok) throw new Error("Failed to fetch session");
-      return res.json();
-    },
-  });
+  const completedSets = exercise.sets.filter((s) => s.completed).length;
+  const totalSets = exercise.sets.length;
+  const allComplete = totalSets > 0 && completedSets === totalSets;
+  const progress = totalSets > 0 ? completedSets / totalSets : 0;
 
-  const addExercise = useMutation({
-    mutationFn: async (name: string) => {
-      const order = session?.exercises.length ?? 0;
-      const res = await fetch(`/api/sessions/${sessionId}/exercises`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, order }),
+  useEffect(() => {
+    if (contentRef.current) {
+      const observer = new ResizeObserver(() => {
+        if (contentRef.current) {
+          setContentHeight(contentRef.current.scrollHeight);
+        }
       });
-      if (!res.ok) throw new Error("Failed to add exercise");
-      return res.json();
-    },
-    onSuccess: () => {
-      trigger("medium");
-      queryClient.invalidateQueries({
-        queryKey: ["sessions", sessionId],
-      });
-      invalidateWorkoutDependentQueries(queryClient);
-      setAddExOpen(false);
-      setExerciseName("");
-      if (session) {
-        setCurrentExerciseIndex(session.exercises.length);
-      }
-    },
-  });
+      observer.observe(contentRef.current);
+      return () => observer.disconnect();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (contentRef.current) {
+      setContentHeight(contentRef.current.scrollHeight);
+    }
+  }, [exercise.sets.length, isExpanded]);
 
   const deleteExercise = useMutation({
-    mutationFn: async (exerciseId: string) => {
+    mutationFn: async () => {
       const res = await fetch(
-        `/api/sessions/${sessionId}/exercises/${exerciseId}`,
+        `/api/sessions/${sessionId}/exercises/${exercise.id}`,
         { method: "DELETE" },
       );
       if (!res.ok) throw new Error("Failed to delete exercise");
@@ -355,22 +353,14 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
       });
       invalidateWorkoutDependentQueries(queryClient);
       setDeleteExConfirmOpen(false);
-      if (
-        session &&
-        currentExerciseIndex >= session.exercises.length - 1 &&
-        currentExerciseIndex > 0
-      ) {
-        setCurrentExerciseIndex(currentExerciseIndex - 1);
-      }
     },
   });
 
   const addSet = useMutation({
-    mutationFn: async (exerciseId: string) => {
-      const exercise = session?.exercises.find((e) => e.id === exerciseId);
-      const nextSetNumber = (exercise?.sets.length ?? 0) + 1;
+    mutationFn: async () => {
+      const nextSetNumber = (exercise.sets.length ?? 0) + 1;
       const res = await fetch(
-        `/api/sessions/${sessionId}/exercises/${exerciseId}/sets`,
+        `/api/sessions/${sessionId}/exercises/${exercise.id}/sets`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -385,6 +375,172 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
         queryKey: ["sessions", sessionId],
       });
       invalidateWorkoutDependentQueries(queryClient);
+    },
+  });
+
+  return (
+    <div className="rounded-2xl border border-border bg-card/60 backdrop-blur-md overflow-hidden">
+      {/* Header row - always visible */}
+      <button
+        type="button"
+        className="flex w-full items-center gap-3 px-4 py-3 text-left"
+        onClick={() => {
+          trigger("light");
+          onToggle();
+        }}
+      >
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold truncate">
+              {exercise.name}
+            </span>
+            <span
+              className={`text-xs tabular-nums ${allComplete ? "text-primary font-medium" : "text-muted-foreground"}`}
+            >
+              {completedSets}/{totalSets}
+            </span>
+          </div>
+          {/* Progress bar */}
+          {totalSets > 0 && (
+            <div className="mt-1.5 h-1 w-full rounded-full bg-muted-foreground/30">
+              <div
+                className={`h-full rounded-full transition-all duration-300 ${allComplete ? "bg-primary" : "bg-primary/70"}`}
+                style={{ width: `${progress * 100}%` }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Expanded header extras: volume + delete */}
+        {isExpanded && (
+          <div className="flex items-center gap-1 shrink-0">
+            <div className="text-xs text-muted-foreground">
+              <ExerciseVolume sets={exercise.sets} />
+            </div>
+            {!isCompleted && (
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDeleteExConfirmOpen(true);
+                  }}
+                >
+                  <Trash2 className="size-3.5 text-red-400" />
+                </Button>
+                <ConfirmDeleteDrawer
+                  open={deleteExConfirmOpen}
+                  onOpenChange={setDeleteExConfirmOpen}
+                  title={t("deleteExercise")}
+                  description={t("deleteExerciseConfirmation", {
+                    name: exercise.name,
+                  })}
+                  onConfirm={() => deleteExercise.mutate()}
+                  isPending={deleteExercise.isPending}
+                />
+              </>
+            )}
+          </div>
+        )}
+
+        <ChevronDown
+          className={`size-4 shrink-0 text-muted-foreground transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {/* Expandable content */}
+      <div
+        className="transition-[height,opacity] duration-200 ease-out overflow-hidden"
+        style={{
+          height: isExpanded ? `${contentHeight}px` : "0px",
+          opacity: isExpanded ? 1 : 0,
+        }}
+      >
+        <div ref={contentRef} className="px-4 pb-4 space-y-2">
+          {exercise.sets.map((set) => (
+            <CompactSetRow
+              key={set.id}
+              set={set}
+              sessionId={sessionId}
+              exerciseId={exercise.id}
+              readOnly={isCompleted}
+            />
+          ))}
+
+          {/* Add Set button */}
+          {!isCompleted && (
+            <Button
+              variant="outline"
+              className="w-full rounded-xl border-dashed border-border"
+              onClick={() => addSet.mutate()}
+              disabled={addSet.isPending}
+            >
+              <Plus data-icon="inline-start" />
+              {t("addSet")}
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function SessionDetail({ sessionId }: { sessionId: string }) {
+  const t = useTranslations("sessions");
+  const tc = useTranslations("common");
+  const queryClient = useQueryClient();
+  const { trigger } = useHaptics();
+  const [expandedExerciseId, setExpandedExerciseId] = useState<string | null>(
+    null,
+  );
+  const [addExOpen, setAddExOpen] = useState(false);
+  const [exerciseName, setExerciseName] = useState("");
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  const { data: session, isLoading } = useQuery<WorkoutSession>({
+    queryKey: ["sessions", sessionId],
+    queryFn: async () => {
+      const res = await fetch(`/api/sessions/${sessionId}`);
+      if (!res.ok) throw new Error("Failed to fetch session");
+      return res.json();
+    },
+  });
+
+  // Auto-expand first exercise when data loads
+  useEffect(() => {
+    if (session?.exercises.length && expandedExerciseId === null) {
+      setExpandedExerciseId(session.exercises[0].id);
+    }
+  }, [session?.exercises, expandedExerciseId]);
+
+  const handleToggleExercise = useCallback((exerciseId: string) => {
+    setExpandedExerciseId((prev) => (prev === exerciseId ? null : exerciseId));
+  }, []);
+
+  const addExercise = useMutation({
+    mutationFn: async (name: string) => {
+      const order = session?.exercises.length ?? 0;
+      const res = await fetch(`/api/sessions/${sessionId}/exercises`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, order }),
+      });
+      if (!res.ok) throw new Error("Failed to add exercise");
+      return res.json() as Promise<{ id: string }>;
+    },
+    onSuccess: (data) => {
+      trigger("medium");
+      queryClient.invalidateQueries({
+        queryKey: ["sessions", sessionId],
+      });
+      invalidateWorkoutDependentQueries(queryClient);
+      setAddExOpen(false);
+      setExerciseName("");
+      // Auto-expand newly added exercise
+      if (data?.id) {
+        setExpandedExerciseId(data.id);
+      }
     },
   });
 
@@ -436,8 +592,6 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
 
   const isCompleted = session.status === "completed";
   const exercises = session.exercises;
-  const safeIndex = Math.min(currentExerciseIndex, exercises.length - 1);
-  const currentExercise = exercises[safeIndex];
   const hasExercises = exercises.length > 0;
 
   return (
@@ -462,89 +616,19 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
         )}
       </div>
 
-      {hasExercises && currentExercise ? (
-        <>
-          {/* Exercise Navigation */}
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="icon"
-              disabled={safeIndex === 0}
-              onClick={() => setCurrentExerciseIndex(safeIndex - 1)}
-            >
-              <ChevronLeft className="size-5" />
-            </Button>
-
-            <div className="flex flex-col items-center text-center">
-              <h1 className="text-xl font-bold tracking-tight">
-                {currentExercise.name}
-              </h1>
-              <span className="text-sm text-muted-foreground">
-                {t("exerciseCounter", {
-                  current: safeIndex + 1,
-                  total: exercises.length,
-                })}
-              </span>
-            </div>
-
-            <Button
-              variant="ghost"
-              size="icon"
-              disabled={safeIndex === exercises.length - 1}
-              onClick={() => setCurrentExerciseIndex(safeIndex + 1)}
-            >
-              <ChevronRight className="size-5" />
-            </Button>
-          </div>
-
-          {/* Volume */}
-          <div className="flex items-center justify-between">
-            <ExerciseVolume sets={currentExercise.sets} />
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={() => setDeleteExConfirmOpen(true)}
-            >
-              <Trash2 className="size-4 text-red-400" />
-            </Button>
-            <ConfirmDeleteDrawer
-              open={deleteExConfirmOpen}
-              onOpenChange={setDeleteExConfirmOpen}
-              title={t("deleteExercise")}
-              description={t("deleteExerciseConfirmation", {
-                name: currentExercise.name,
-              })}
-              onConfirm={() => deleteExercise.mutate(currentExercise.id)}
-              isPending={deleteExercise.isPending}
+      {hasExercises ? (
+        <div className="space-y-3">
+          {exercises.map((exercise) => (
+            <ExerciseAccordionItem
+              key={exercise.id}
+              exercise={exercise}
+              sessionId={sessionId}
+              isExpanded={expandedExerciseId === exercise.id}
+              onToggle={() => handleToggleExercise(exercise.id)}
+              isCompleted={isCompleted}
             />
-          </div>
-
-          {/* Set Rows */}
-          <div className="space-y-2">
-            {currentExercise.sets.map((set) => (
-              <CompactSetRow
-                key={set.id}
-                set={set}
-                sessionId={sessionId}
-                exerciseId={currentExercise.id}
-                readOnly={isCompleted}
-              />
-            ))}
-          </div>
-
-          {/* Add Set */}
-          {!isCompleted && (
-            <Button
-              variant="outline"
-              className="w-full rounded-xl border-dashed border-border"
-              onClick={() => addSet.mutate(currentExercise.id)}
-              disabled={addSet.isPending}
-            >
-              <Plus data-icon="inline-start" />
-              {t("addSet")}
-            </Button>
-          )}
-        </>
+          ))}
+        </div>
       ) : (
         <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
           <p className="text-muted-foreground">{t("noExercisesYet")}</p>
