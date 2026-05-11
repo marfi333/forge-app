@@ -1,3 +1,18 @@
+# [1.8.0](https://github.com/marfi333/forge-app/compare/v1.7.0...v1.8.0) (2026-05-11)
+
+
+### Bug Fixes
+
+* settings page style changes ([c98f26f](https://github.com/marfi333/forge-app/commit/c98f26ff40ed589d1cd26c163f5001740651dbef))
+* template list items spacing ([089eb8e](https://github.com/marfi333/forge-app/commit/089eb8ebe536d71fe231a4f43f310e5e8e7b6add))
+* timer format ([47be477](https://github.com/marfi333/forge-app/commit/47be477842de0aff913dd27fbebc08f966202d24))
+* trash can icon color ([4c16e97](https://github.com/marfi333/forge-app/commit/4c16e978bf0163c18fc1b421eaa018bd0647c075))
+
+
+### Features
+
+* add dummy notification center ([eeb7bd7](https://github.com/marfi333/forge-app/commit/eeb7bd744e312e0d4258438cbcee29904f9076e8))
+
 # [1.7.0](https://github.com/marfi333/forge-app/compare/v1.6.1...v1.7.0) (2026-05-11)
 
 
