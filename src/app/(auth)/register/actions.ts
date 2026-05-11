@@ -1,7 +1,7 @@
 "use server";
 
 import { getCloudflareContext } from "@opennextjs/cloudflare";
-import disposableDomainsJson from "disposable-email-domains/index.json";
+// import disposableDomainsJson from "disposable-email-domains/index.json";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { createDb } from "@/db";
@@ -9,7 +9,7 @@ import * as schema from "@/db/schema";
 import { sendVerificationEmail } from "@/lib/email";
 import { hashPassword } from "@/lib/password";
 
-const disposableDomains = new Set<string>(disposableDomainsJson);
+// const disposableDomains = new Set<string>(disposableDomainsJson);
 
 const registerSchema = z
   .object({
@@ -47,9 +47,9 @@ export async function register(
   const { name, email, password } = parsed.data;
 
   const domain = email.split("@")[1].toLowerCase();
-  if (disposableDomains.has(domain)) {
+  /* if (disposableDomains.has(domain)) {
     return { error: "disposable_email" };
-  }
+  } */
 
   const { env } = getCloudflareContext();
   const db = createDb(env.DB);
