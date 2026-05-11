@@ -3,6 +3,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 interface SessionUser {
   name?: string | null;
@@ -14,6 +22,7 @@ const hiddenRoutes = ["/sign-in", "/offline"];
 
 export function TopHeader() {
   const pathname = usePathname();
+  const t = useTranslations("notifications");
 
   const { data: user } = useQuery<SessionUser | null>({
     queryKey: ["session-user"],
@@ -41,12 +50,25 @@ export function TopHeader() {
           <div className="size-8 rounded-full bg-muted" />
         )}
         <span className="text-3xl font-black tracking-tight">FORGE</span>
-        <button
-          type="button"
-          className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <Bell className="size-5" />
-        </button>
+        <Drawer>
+          <DrawerTrigger asChild>
+            <button
+              type="button"
+              className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <Bell className="size-5" />
+            </button>
+          </DrawerTrigger>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle>{t("title")}</DrawerTitle>
+            </DrawerHeader>
+            <div className="flex flex-col items-center justify-center gap-2 px-4 py-16 text-center">
+              <Bell className="size-6 text-muted-foreground" />
+              <p className="text-muted-foreground text-sm">{t("empty")}</p>
+            </div>
+          </DrawerContent>
+        </Drawer>
       </div>
     </header>
   );

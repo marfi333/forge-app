@@ -261,5 +261,9 @@
     "calendarGridDescription": "Track your training consistency. Tap any day to mark it as a workout or rest day.",
     "statsChartsTitle": "Your Progress",
     "statsChartsDescription": "Charts and personal records live here. Track your strength gains over time."
+  },
+  "notifications": {
+    "title": "Notification center",
+    "empty": "No notifications yet"
   }
 }
