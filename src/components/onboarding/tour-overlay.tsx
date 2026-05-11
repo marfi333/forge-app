@@ -48,18 +48,19 @@ export function TourOverlay({
     setTooltipPosition(
       spaceBelow > 200 || spaceBelow >= spaceAbove ? "below" : "above",
     );
-
-    el.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [step.target]);
 
   useEffect(() => {
-    const timer = setTimeout(measure, 100);
+    const el = document.querySelector(step.target);
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    requestAnimationFrame(measure);
+  }, [step.target, measure]);
+
+  useEffect(() => {
     window.addEventListener("resize", measure);
-    window.addEventListener("scroll", measure, true);
     return () => {
-      clearTimeout(timer);
       window.removeEventListener("resize", measure);
-      window.removeEventListener("scroll", measure, true);
     };
   }, [measure]);
 
@@ -112,7 +113,7 @@ export function TourOverlay({
       <button
         type="button"
         aria-label="Close tour"
-        className="fixed inset-0 bg-black/70 transition-opacity duration-300"
+        className="fixed inset-0 bg-black/70"
         onClick={onSkip}
         style={{
           clipPath: `polygon(
@@ -130,7 +131,7 @@ export function TourOverlay({
 
       {/* Spotlight ring */}
       <div
-        className="fixed rounded-xl ring-2 ring-primary/60 pointer-events-none transition-all duration-300"
+        className="fixed rounded-xl ring-2 ring-primary/60 pointer-events-none transition-all duration-100 ease-out"
         style={{
           top: spotlightTop,
           left: spotlightLeft,
@@ -142,7 +143,7 @@ export function TourOverlay({
       {/* Tooltip */}
       <div
         ref={tooltipRef}
-        className="fixed left-4 right-4 max-w-sm mx-auto rounded-2xl border border-border bg-card/95 backdrop-blur-xl p-5 shadow-xl transition-all duration-300"
+        className="fixed left-4 right-4 max-w-sm mx-auto rounded-2xl border border-border bg-card/95 backdrop-blur-xl p-5 shadow-xl transition-[top,opacity] duration-100 ease-out"
         style={{ top: tooltipTop, transform: tooltipTransform }}
       >
         <p className="text-xs font-semibold text-primary mb-1">
