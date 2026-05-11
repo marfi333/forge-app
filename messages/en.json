@@ -56,6 +56,16 @@
       "fri": "Fri",
       "sat": "Sat",
       "sun": "Sun"
+    },
+    "motivation": {
+      "pr": "New PR on {exercise}!",
+      "todayWorkout": "Workout day — let's crush it!",
+      "todayRest": "Rest day — enjoy the recovery",
+      "streak": "{count} days in a row! Keep going",
+      "nudge": "It's been {count} days — perfect time for a workout!",
+      "greetingMorning": "Good morning! Ready to crush it today?",
+      "greetingAfternoon": "Good afternoon! Make today count",
+      "greetingEvening": "Good evening! Finish the day strong"
     }
   },
   "calendar": {

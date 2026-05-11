@@ -5,6 +5,10 @@ import { Dumbbell, Footprints, Moon, Waves } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { TourTrigger } from "@/components/onboarding/tour-trigger";
+import {
+  MotivationalBanner,
+  MotivationalBannerSkeleton,
+} from "./motivational-banner";
 
 interface WeeklyPlanDay {
   weekday: string;
@@ -23,6 +27,12 @@ interface DashboardData {
   completedCount: number;
   workoutDays: number;
   restDays: number;
+  motivation: {
+    daysSinceLastWorkout: number | null;
+    streak: number;
+    todayIsWorkout: boolean;
+    recentPR: { exercise: string; weight: number } | null;
+  };
 }
 
 const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] as const;
@@ -60,6 +70,7 @@ export function DashboardView() {
   if (isLoading) {
     return (
       <div className="space-y-6">
+        <MotivationalBannerSkeleton />
         <div className="h-8 w-40 animate-pulse rounded-lg bg-muted" />
         <div className="h-32 animate-pulse rounded-xl bg-muted" />
         <div className="grid grid-cols-2 gap-3">
@@ -88,6 +99,7 @@ export function DashboardView() {
   return (
     <div className="space-y-6">
       <TourTrigger />
+      <MotivationalBanner motivation={data.motivation} />
       <h2 className="text-xl font-bold">{t("weeklyPlan")}</h2>
 
       {/* Summary Card */}

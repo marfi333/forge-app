@@ -1,4 +1,4 @@
-import { and, eq, gte, lte } from "drizzle-orm";
+import { and, desc, eq, gte, lt, lte, ne } from "drizzle-orm";
 import * as schema from "@/db/schema";
 import { getAuthedDb, unauthorized } from "@/lib/api";
 import { WEEKDAYS } from "@/lib/constants";
@@ -16,6 +16,41 @@ function getWeekBounds(today: string) {
     `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 
   return { weekStart: fmt(monday), weekEnd: fmt(sunday) };
+}
+
+function fmtDate(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function calculateStreak(completedDates: string[], today: string): number {
+  if (completedDates.length === 0) return 0;
+  const dateSet = new Set(completedDates);
+  let streak = 0;
+  const cursor = new Date(`${today}T12:00:00`);
+
+  if (!dateSet.has(today)) {
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  while (true) {
+    const key = fmtDate(cursor);
+    if (dateSet.has(key)) {
+      streak += 1;
+      cursor.setDate(cursor.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  return streak;
+}
+
+function daysBetween(from: string, to: string): number {
+  const fromDate = new Date(`${from}T12:00:00`);
+  const toDate = new Date(`${to}T12:00:00`);
+  return Math.round(
+    (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24),
+  );
 }
 
 export async function GET() {
@@ -64,6 +99,41 @@ export async function GET() {
       ),
   ]);
 
+  const streakCutoff = (() => {
+    const d = new Date(`${today}T12:00:00`);
+    d.setDate(d.getDate() - 60);
+    return fmtDate(d);
+  })();
+
+  const recentCompletedDates = await db
+    .select({ date: schema.workoutSessions.date })
+    .from(schema.workoutSessions)
+    .where(
+      and(
+        eq(schema.workoutSessions.userId, userId),
+        eq(schema.workoutSessions.status, "completed"),
+        lte(schema.workoutSessions.date, today),
+        gte(schema.workoutSessions.date, streakCutoff),
+      ),
+    )
+    .orderBy(desc(schema.workoutSessions.date));
+
+  const lastCompletedSession = await db
+    .select({
+      id: schema.workoutSessions.id,
+      date: schema.workoutSessions.date,
+    })
+    .from(schema.workoutSessions)
+    .where(
+      and(
+        eq(schema.workoutSessions.userId, userId),
+        eq(schema.workoutSessions.status, "completed"),
+        lte(schema.workoutSessions.date, today),
+      ),
+    )
+    .orderBy(desc(schema.workoutSessions.date))
+    .limit(1);
+
   const templatesByWeekday = new Map<
     string,
     { id: string; name: string; muscleGroup: string | null }
@@ -91,7 +161,7 @@ export async function GET() {
   const weeklyPlan = WEEKDAYS.map((weekday, i) => {
     const d = new Date(startDate);
     d.setDate(startDate.getDate() + i);
-    const date = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const date = fmtDate(d);
 
     const template = templatesByWeekday.get(weekday);
     const calendarType = calendarByDate.get(date);
@@ -123,6 +193,91 @@ export async function GET() {
   const restDays = weeklyPlan.filter((d) => d.dayType === "rest").length;
   const completedCount = weeklyPlan.filter((d) => d.isCompleted).length;
 
+  const todayPlan = weeklyPlan.find((d) => d.date === today);
+  const todayIsWorkout = todayPlan?.dayType === "workout";
+
+  const streak = calculateStreak(
+    recentCompletedDates.map((s) => s.date),
+    today,
+  );
+
+  const lastSession = lastCompletedSession[0] ?? null;
+  const daysSinceLastWorkout = lastSession
+    ? daysBetween(lastSession.date, today)
+    : null;
+
+  let recentPR: { exercise: string; weight: number } | null = null;
+  if (lastSession) {
+    const sets = await db
+      .select({
+        exerciseName: schema.sessionExercises.name,
+        weight: schema.exerciseSets.weight,
+      })
+      .from(schema.exerciseSets)
+      .innerJoin(
+        schema.sessionExercises,
+        eq(schema.exerciseSets.sessionExerciseId, schema.sessionExercises.id),
+      )
+      .where(
+        and(
+          eq(schema.sessionExercises.sessionId, lastSession.id),
+          eq(schema.exerciseSets.completed, true),
+        ),
+      );
+
+    const maxByExercise = new Map<string, number>();
+    for (const s of sets) {
+      if (s.weight == null) continue;
+      const current = maxByExercise.get(s.exerciseName) ?? 0;
+      if (s.weight > current) maxByExercise.set(s.exerciseName, s.weight);
+    }
+
+    if (maxByExercise.size > 0) {
+      const priorSets = await db
+        .select({
+          exerciseName: schema.sessionExercises.name,
+          weight: schema.exerciseSets.weight,
+        })
+        .from(schema.exerciseSets)
+        .innerJoin(
+          schema.sessionExercises,
+          eq(schema.exerciseSets.sessionExerciseId, schema.sessionExercises.id),
+        )
+        .innerJoin(
+          schema.workoutSessions,
+          eq(schema.sessionExercises.sessionId, schema.workoutSessions.id),
+        )
+        .where(
+          and(
+            eq(schema.workoutSessions.userId, userId),
+            eq(schema.workoutSessions.status, "completed"),
+            ne(schema.workoutSessions.id, lastSession.id),
+            lt(schema.workoutSessions.date, lastSession.date),
+            eq(schema.exerciseSets.completed, true),
+          ),
+        );
+
+      const priorMaxByExercise = new Map<string, number>();
+      for (const s of priorSets) {
+        if (s.weight == null) continue;
+        const current = priorMaxByExercise.get(s.exerciseName) ?? 0;
+        if (s.weight > current)
+          priorMaxByExercise.set(s.exerciseName, s.weight);
+      }
+
+      let bestPR: { exercise: string; weight: number } | null = null;
+      for (const [exercise, weight] of maxByExercise) {
+        const priorMax = priorMaxByExercise.get(exercise) ?? 0;
+        if (weight > priorMax) {
+          if (!bestPR || weight > bestPR.weight) {
+            bestPR = { exercise, weight };
+          }
+        }
+      }
+      recentPR = bestPR;
+    }
+  }
+
   return Response.json({
     today,
     weekStart,
@@ -131,5 +286,11 @@ export async function GET() {
     completedCount,
     workoutDays,
     restDays,
+    motivation: {
+      daysSinceLastWorkout,
+      streak,
+      todayIsWorkout,
+      recentPR,
+    },
   });
 }

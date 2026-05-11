@@ -56,6 +56,16 @@
       "fri": "Pé",
       "sat": "Szo",
       "sun": "Vas"
+    },
+    "motivation": {
+      "pr": "Új csúcs a következőben: {exercise}!",
+      "todayWorkout": "Edzésnap — gyerünk, nyomjuk!",
+      "todayRest": "Pihenőnap — élvezd a regenerációt",
+      "streak": "{count} nap egymás után! Csak így tovább",
+      "nudge": "{count} napja nem edzettél — itt az ideje!",
+      "greetingMorning": "Jó reggelt! Készen állsz a mai napra?",
+      "greetingAfternoon": "Jó napot! Tedd emlékezetessé a mai napot",
+      "greetingEvening": "Jó estét! Zárd erősen a napot"
     }
   },
   "calendar": {
