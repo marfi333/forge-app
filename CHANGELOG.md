@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/marfi333/forge-app/compare/v1.2.0...v1.2.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* readonly completed workout ([aa2c8f8](https://github.com/marfi333/forge-app/commit/aa2c8f8ed308af9ca24b649701a13e092d48face))
+
 # [1.2.0](https://github.com/marfi333/forge-app/compare/v1.1.0...v1.2.0) (2026-05-11)
 
 
