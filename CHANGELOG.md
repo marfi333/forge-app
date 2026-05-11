@@ -1,3 +1,13 @@
+## [1.3.1](https://github.com/marfi333/forge-app/compare/v1.3.0...v1.3.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* constrain DialogContent height and add DialogBody ([c37f369](https://github.com/marfi333/forge-app/commit/c37f369980f184273106e4145cfdb8d1d362c435))
+* constrain DrawerContent height and add DrawerBody ([dcd12c8](https://github.com/marfi333/forge-app/commit/dcd12c8618dd8e2e922706d7fc7a15d75fcd7bfa))
+* wrap Dialog content in DialogBody ([b070d90](https://github.com/marfi333/forge-app/commit/b070d90e6601763d51729a9cdd30f9e71eae96e9))
+* wrap Drawer content in DrawerBody ([36903fc](https://github.com/marfi333/forge-app/commit/36903fc5d494ea8501e6630fd7a6116e23d98b3c))
+
 # [1.3.0](https://github.com/marfi333/forge-app/compare/v1.2.1...v1.3.0) (2026-05-11)
 
 
