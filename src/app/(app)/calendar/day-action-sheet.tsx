@@ -9,6 +9,7 @@ import { useHaptics } from "@/components/haptics-provider";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
+  DrawerBody,
   DrawerContent,
   DrawerFooter,
   DrawerHeader,
@@ -77,47 +78,48 @@ export function DayActionSheet({
           <DrawerTitle>{formattedDate}</DrawerTitle>
         </DrawerHeader>
 
-        <div className="flex gap-2 px-4 pb-3">
-          <Button
-            variant={currentType === "workout" ? "default" : "outline"}
-            className="flex-1 gap-2"
-            onClick={() => handleType("workout")}
-          >
-            <Dumbbell className="size-4" />
-            {tc("workout")}
-          </Button>
-          <Button
-            variant={currentType === "rest" ? "default" : "outline"}
-            className="flex-1 gap-2"
-            onClick={() => handleType("rest")}
-          >
-            <Moon className="size-4" />
-            {t("restDay")}
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setConfirmOpen(true)}
-            disabled={!currentType}
-          >
-            <Trash2 className="size-4" />
-          </Button>
-        </div>
+        <DrawerBody>
+          <div className="flex gap-2 pb-3">
+            <Button
+              variant={currentType === "workout" ? "default" : "outline"}
+              className="flex-1 gap-2"
+              onClick={() => handleType("workout")}
+            >
+              <Dumbbell className="size-4" />
+              {tc("workout")}
+            </Button>
+            <Button
+              variant={currentType === "rest" ? "default" : "outline"}
+              className="flex-1 gap-2"
+              onClick={() => handleType("rest")}
+            >
+              <Moon className="size-4" />
+              {t("restDay")}
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => setConfirmOpen(true)}
+              disabled={!currentType}
+            >
+              <Trash2 className="size-4" />
+            </Button>
+          </div>
 
-        <ConfirmDeleteDialog
-          open={confirmOpen}
-          onOpenChange={setConfirmOpen}
-          title={t("clearDay")}
-          description={t("clearDayConfirmation")}
-          onConfirm={handleClear}
-        />
+          <ConfirmDeleteDialog
+            open={confirmOpen}
+            onOpenChange={setConfirmOpen}
+            title={t("clearDay")}
+            description={t("clearDayConfirmation")}
+            onConfirm={handleClear}
+          />
 
-        {sessions.length > 0 && (
-          <div className="space-y-2 px-4 pb-3">
-            <p className="text-xs font-medium text-muted-foreground">
-              {t("sessions")}
-            </p>
-            {sessions.map((s) => {
+          {sessions.length > 0 && (
+            <div className="space-y-2 pb-3">
+              <p className="text-xs font-medium text-muted-foreground">
+                {t("sessions")}
+              </p>
+              {sessions.map((s) => {
               const isCompleted = s.status === "completed";
               const isInProgress = s.status === "in_progress";
               return (
@@ -170,8 +172,9 @@ export function DayActionSheet({
                 </Link>
               );
             })}
-          </div>
-        )}
+            </div>
+          )}
+        </DrawerBody>
 
         <DrawerFooter>
           <Link href={`/sessions/new?date=${selectedDate}`} className="w-full">

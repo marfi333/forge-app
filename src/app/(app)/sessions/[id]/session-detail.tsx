@@ -19,6 +19,7 @@ import { useHaptics } from "@/components/haptics-provider";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -569,19 +570,22 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
                 <DialogTitle>{t("addExercise")}</DialogTitle>
               </DialogHeader>
               <form
+                className="contents"
                 onSubmit={(e) => {
                   e.preventDefault();
                   if (exerciseName.trim())
                     addExercise.mutate(exerciseName.trim());
                 }}
               >
-                <Input
-                  placeholder={t("exercisePlaceholder")}
-                  value={exerciseName}
-                  onChange={(e) => setExerciseName(e.target.value)}
-                  autoFocus
-                />
-                <DialogFooter className="mt-4">
+                <DialogBody>
+                  <Input
+                    placeholder={t("exercisePlaceholder")}
+                    value={exerciseName}
+                    onChange={(e) => setExerciseName(e.target.value)}
+                    autoFocus
+                  />
+                </DialogBody>
+                <DialogFooter>
                   <Button
                     type="submit"
                     disabled={!exerciseName.trim() || addExercise.isPending}

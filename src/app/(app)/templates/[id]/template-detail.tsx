@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -127,12 +128,13 @@ function ExerciseFormDialog({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <form
-          className="space-y-4"
+          className="contents"
           onSubmit={(e) => {
             e.preventDefault();
             if (form.name.trim()) onSubmit({ ...form, name: form.name.trim() });
           }}
         >
+          <DialogBody className="space-y-4">
           <div>
             <label
               htmlFor={`exercise-name-${templateId}`}
@@ -240,6 +242,7 @@ function ExerciseFormDialog({
             </div>
           )}
 
+          </DialogBody>
           <DialogFooter>
             <Button
               type="submit"

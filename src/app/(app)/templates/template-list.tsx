@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -69,12 +70,13 @@ function TemplateFormDialog({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
         <form
-          className="space-y-4"
+          className="contents"
           onSubmit={(e) => {
             e.preventDefault();
             if (form.name.trim()) onSubmit({ ...form, name: form.name.trim() });
           }}
         >
+          <DialogBody className="space-y-4">
           <div>
             <label
               htmlFor="template-name"
@@ -137,6 +139,7 @@ function TemplateFormDialog({
             </select>
           </label>
 
+          </DialogBody>
           <DialogFooter>
             <Button type="submit" disabled={!form.name.trim() || isPending}>
               {isPending ? tc("saving") : tc("save")}
