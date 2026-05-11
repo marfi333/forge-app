@@ -32,6 +32,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { MuscleGroupChips } from "@/components/muscle-group-chips";
 import { YouTubePlayer } from "@/components/youtube-player";
 
 interface Exercise {
@@ -58,6 +59,7 @@ interface ExerciseFormData {
   description: string;
   imageUrl: string;
   youtubeUrl: string;
+  muscleGroupIds: string[];
 }
 
 const EMPTY_FORM: ExerciseFormData = {
@@ -65,6 +67,7 @@ const EMPTY_FORM: ExerciseFormData = {
   description: "",
   imageUrl: "",
   youtubeUrl: "",
+  muscleGroupIds: [],
 };
 
 function ExerciseFormDialog({
@@ -75,6 +78,7 @@ function ExerciseFormDialog({
   onSubmit,
   isPending,
   templateId,
+  exerciseId,
   trigger,
 }: {
   open: boolean;
@@ -84,6 +88,7 @@ function ExerciseFormDialog({
   onSubmit: (data: ExerciseFormData) => void;
   isPending: boolean;
   templateId: string;
+  exerciseId?: string;
   trigger?: React.ReactElement;
 }) {
   const t = useTranslations("templates");
@@ -220,6 +225,21 @@ function ExerciseFormDialog({
             {form.youtubeUrl && <YouTubePlayer url={form.youtubeUrl} />}
           </div>
 
+          {exerciseId && (
+            <div>
+              <span className="mb-2 block text-sm font-medium text-muted-foreground">
+                {t("muscleGroups")}
+              </span>
+              <MuscleGroupChips
+                exerciseId={exerciseId}
+                selectedIds={form.muscleGroupIds}
+                onSelectionChange={(ids) =>
+                  setForm({ ...form, muscleGroupIds: ids })
+                }
+              />
+            </div>
+          )}
+
           <DialogFooter>
             <Button
               type="submit"
@@ -321,6 +341,57 @@ function SortableExercise({
   );
 }
 
+function EditExerciseDialog({
+  exercise,
+  templateId,
+  onClose,
+  onSubmit,
+  isPending,
+}: {
+  exercise: Exercise;
+  templateId: string;
+  onClose: () => void;
+  onSubmit: (data: ExerciseFormData) => void;
+  isPending: boolean;
+}) {
+  const t = useTranslations("templates");
+
+  const { data: muscleGroupIds, isLoading } = useQuery<string[]>({
+    queryKey: ["exercise-muscle-group-ids", exercise.id],
+    queryFn: async () => {
+      const res = await fetch(
+        `/api/template-exercises/${exercise.id}/muscle-groups`,
+      );
+      if (!res.ok) return [];
+      const groups = (await res.json()) as { id: string }[];
+      return groups.map((g) => g.id);
+    },
+  });
+
+  if (isLoading) return null;
+
+  return (
+    <ExerciseFormDialog
+      open={true}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+      title={t("editExercise")}
+      initial={{
+        name: exercise.name,
+        description: exercise.description ?? "",
+        imageUrl: exercise.imageUrl ?? "",
+        youtubeUrl: exercise.youtubeUrl ?? "",
+        muscleGroupIds: muscleGroupIds ?? [],
+      }}
+      onSubmit={onSubmit}
+      isPending={isPending}
+      templateId={templateId}
+      exerciseId={exercise.id}
+    />
+  );
+}
+
 export function TemplateDetail({ templateId }: { templateId: string }) {
   const t = useTranslations("templates");
   const tc = useTranslations("common");
@@ -403,10 +474,23 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
         }),
       });
       if (!res.ok) throw new Error("Failed to update exercise");
+
+      await fetch(`/api/template-exercises/${id}/muscle-groups`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ muscleGroupIds: data.muscleGroupIds }),
+      });
+
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (_data, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["templates", templateId] });
+      queryClient.invalidateQueries({
+        queryKey: ["exercise-muscle-group-ids", id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["exercise-muscle-groups", id],
+      });
       setEditingExercise(null);
     },
   });
@@ -648,23 +732,14 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
       </DragDropProvider>
 
       {editingExercise && (
-        <ExerciseFormDialog
-          open={!!editingExercise}
-          onOpenChange={(open) => {
-            if (!open) setEditingExercise(null);
-          }}
-          title={t("editExercise")}
-          initial={{
-            name: editingExercise.name,
-            description: editingExercise.description ?? "",
-            imageUrl: editingExercise.imageUrl ?? "",
-            youtubeUrl: editingExercise.youtubeUrl ?? "",
-          }}
+        <EditExerciseDialog
+          exercise={editingExercise}
+          templateId={templateId}
+          onClose={() => setEditingExercise(null)}
           onSubmit={(data) =>
             updateExerciseMutation.mutate({ id: editingExercise.id, data })
           }
           isPending={updateExerciseMutation.isPending}
-          templateId={templateId}
         />
       )}
     </div>

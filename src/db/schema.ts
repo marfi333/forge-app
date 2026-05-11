@@ -91,6 +91,35 @@ export const templateExercises = sqliteTable("template_exercises", {
   order: integer("order").notNull(),
 });
 
+export const muscleGroups = sqliteTable("muscle_groups", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id").references(() => users.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  isSystem: integer("is_system", { mode: "boolean" }).notNull().default(false),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .$defaultFn(() => new Date()),
+});
+
+export const exerciseMuscleGroups = sqliteTable(
+  "exercise_muscle_groups",
+  {
+    templateExerciseId: text("template_exercise_id")
+      .notNull()
+      .references(() => templateExercises.id, { onDelete: "cascade" }),
+    muscleGroupId: text("muscle_group_id")
+      .notNull()
+      .references(() => muscleGroups.id, { onDelete: "cascade" }),
+  },
+  (table) => [
+    primaryKey({
+      columns: [table.templateExerciseId, table.muscleGroupId],
+    }),
+  ],
+);
+
 export const calendarDays = sqliteTable("calendar_days", {
   id: text("id")
     .primaryKey()

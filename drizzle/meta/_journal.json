@@ -50,6 +50,13 @@
       "when": 1778459416975,
       "tag": "0006_messy_nick_fury",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1778461130473,
+      "tag": "0007_numerous_giant_man",
+      "breakpoints": true
     }
   ]
 }

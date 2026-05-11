@@ -131,6 +131,7 @@
     "weekday": "Hét napja",
     "noWeekday": "Nincs hozzárendelve",
     "muscleGroup": "Izomcsoport",
+    "muscleGroups": "Izomcsoportok",
     "noMuscleGroup": "Nincs izomcsoport",
     "exerciseCount": "{count, plural, one {# gyakorlat} other {# gyakorlat}}",
     "addExercise": "Gyakorlat hozzáadása",
@@ -207,7 +208,19 @@
     "Calves": "Vádli",
     "Forearms": "Alkar",
     "Upper Back": "Felső hát",
-    "Lower Back": "Derék"
+    "Lower Back": "Derék",
+    "chest": "Mellkas",
+    "back": "Hát",
+    "shoulders": "Váll",
+    "biceps": "Bicepsz",
+    "triceps": "Tricepsz",
+    "quads": "Combfeszítő",
+    "hamstrings": "Combhajlító",
+    "glutes": "Fenék",
+    "core": "Törzs",
+    "calves": "Vádli",
+    "forearms": "Alkar",
+    "customPlaceholder": "Egyéni izomcsoport neve"
   },
   "onboarding": {
     "stepOf": "{current} / {total}",

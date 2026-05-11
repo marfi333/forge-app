@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useHaptics } from "@/components/haptics-provider";
+import { MuscleGroupBadges } from "@/components/muscle-group-chips";
 import { Button } from "@/components/ui/button";
 import { YouTubePlayer } from "@/components/youtube-player";
 
@@ -38,6 +39,20 @@ export function ExerciseInfo({
       if (!res.ok) throw new Error("Failed to fetch exercise");
       return res.json();
     },
+  });
+
+  const { data: muscleGroups = [] } = useQuery<
+    { id: string; name: string; isSystem: boolean; userId: string | null }[]
+  >({
+    queryKey: ["exercise-muscle-groups", exerciseId],
+    queryFn: async () => {
+      const res = await fetch(
+        `/api/template-exercises/${exerciseId}/muscle-groups`,
+      );
+      if (!res.ok) throw new Error("Failed to fetch muscle groups");
+      return res.json();
+    },
+    enabled: !!exercise,
   });
 
   if (isLoading) {
@@ -75,6 +90,7 @@ export function ExerciseInfo({
           {tc("back")}
         </Link>
         <h1 className="text-xl font-bold tracking-tight">{exercise.name}</h1>
+        <MuscleGroupBadges muscleGroups={muscleGroups} />
       </div>
 
       {exercise.description && (
