@@ -1,3 +1,15 @@
+# [1.9.0](https://github.com/marfi333/forge-app/compare/v1.8.2...v1.9.0) (2026-05-11)
+
+
+### Bug Fixes
+
+* session item padding ([d8be11f](https://github.com/marfi333/forge-app/commit/d8be11f137d671893553dd494e956257ee52cc52))
+
+
+### Features
+
+* replace exercise carousel with accordion UI ([3286353](https://github.com/marfi333/forge-app/commit/32863531ada006be88874623c3a22964153537fa))
+
 ## [1.8.2](https://github.com/marfi333/forge-app/compare/v1.8.1...v1.8.2) (2026-05-11)
 
 
