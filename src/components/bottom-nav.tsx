@@ -39,7 +39,7 @@ function RegularNav({
   t: (key: "home" | "plan" | "stats" | "settings") => string;
 }) {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-background/80 backdrop-blur-xl pb-[env(safe-area-inset-bottom,0px)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-background/80 backdrop-blur-xl pb-[calc(env(safe-area-inset-bottom,0)-10px)]">
       <div className="mx-auto flex h-16 max-w-md items-center justify-around px-6">
         {navItems.map((item) => {
           const isActive =
@@ -135,7 +135,7 @@ function GlassNav({
   const displayIndex = dragIndex ?? activeIndex;
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-6 pb-[calc(env(safe-area-inset-bottom,0)+12px)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-6 pb-[calc(env(safe-area-inset-bottom,0)-6px)]">
       <div
         ref={containerRef}
         className="relative flex items-center rounded-full border border-white/12 bg-white/6 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] px-2 py-2"
