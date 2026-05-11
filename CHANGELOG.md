@@ -1,3 +1,11 @@
+## [1.11.1](https://github.com/marfi333/forge-app/compare/v1.11.0...v1.11.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* icon placeholder for profile img ([76e7068](https://github.com/marfi333/forge-app/commit/76e70686d70ba4f48ceb349092e56bf69ebc1a1e))
+* remove disposable emails (worker limit) ([7a0d6dd](https://github.com/marfi333/forge-app/commit/7a0d6ddb00a91df5868e8edbce63f395f6c60a51))
+
 # [1.11.0](https://github.com/marfi333/forge-app/compare/v1.10.0...v1.11.0) (2026-05-11)
 
 
