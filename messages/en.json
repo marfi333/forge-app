@@ -208,6 +208,10 @@
     "languageDescription": "Choose your preferred language",
     "hapticFeedback": "Haptic Feedback",
     "liquidGlassNavbar": "Liquid Glass Navbar",
+    "theme": "Theme",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "theme_system": "System",
     "replayTour": "Replay Onboarding Tour",
     "resetting": "Resetting..."
   },

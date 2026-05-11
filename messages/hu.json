@@ -208,6 +208,10 @@
     "languageDescription": "Válaszd ki a kívánt nyelvet",
     "hapticFeedback": "Haptikus visszajelzés",
     "liquidGlassNavbar": "Liquid Glass Navbar",
+    "theme": "Téma",
+    "theme_light": "Világos",
+    "theme_dark": "Sötét",
+    "theme_system": "Rendszer",
     "replayTour": "Bemutató újrajátszása",
     "resetting": "Visszaállítás..."
   },
