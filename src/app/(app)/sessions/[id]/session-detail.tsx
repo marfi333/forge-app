@@ -77,14 +77,15 @@ function ElapsedTimer({ startedAt }: { startedAt: string }) {
     return () => clearInterval(interval);
   }, [startedAt]);
 
-  const minutes = String(Math.floor(elapsed / 60)).padStart(2, "0");
+  const hours = Math.floor(elapsed / 3600);
+  const minutes = String(Math.floor((elapsed % 3600) / 60)).padStart(2, "0");
   const seconds = String(elapsed % 60).padStart(2, "0");
 
   return (
     <div className="flex items-center gap-2 text-muted-foreground">
       <Timer className="size-4" />
       <span className="text-lg font-mono font-semibold tabular-nums">
-        {minutes}:{seconds}
+        {hours > 0 ? `${hours}:${minutes}:${seconds}` : `${minutes}:${seconds}`}
       </span>
     </div>
   );
