@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ConfettiBoom from "react-confetti-boom";
 import { ConfirmDeleteDrawer } from "@/components/confirm-delete-drawer";
 import { useHaptics } from "@/components/haptics-provider";
@@ -311,8 +311,6 @@ function ExerciseAccordionItem({
   const t = useTranslations("sessions");
   const queryClient = useQueryClient();
   const { trigger } = useHaptics();
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [contentHeight, setContentHeight] = useState<number>(0);
   const [deleteExConfirmOpen, setDeleteExConfirmOpen] = useState(false);
 
   const completedSets = exercise.sets.filter((s) => s.completed).length;
@@ -320,23 +318,6 @@ function ExerciseAccordionItem({
   const allComplete = totalSets > 0 && completedSets === totalSets;
   const progress = totalSets > 0 ? completedSets / totalSets : 0;
 
-  useEffect(() => {
-    if (contentRef.current) {
-      const observer = new ResizeObserver(() => {
-        if (contentRef.current) {
-          setContentHeight(contentRef.current.scrollHeight);
-        }
-      });
-      observer.observe(contentRef.current);
-      return () => observer.disconnect();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (contentRef.current) {
-      setContentHeight(contentRef.current.scrollHeight);
-    }
-  }, [exercise.sets.length, isExpanded]);
 
   const deleteExercise = useMutation({
     mutationFn: async () => {
@@ -381,12 +362,20 @@ function ExerciseAccordionItem({
   return (
     <div className="rounded-2xl border border-border bg-card/60 backdrop-blur-md overflow-hidden">
       {/* Header row - always visible */}
-      <button
-        type="button"
-        className={`flex w-full items-center gap-3 px-4 text-left py-3 ${isExpanded ? "pb-5" : "py-4"}`}
+      <div
+        role="button"
+        tabIndex={0}
+        className={`flex w-full items-center gap-3 px-4 text-left cursor-pointer py-3 ${isExpanded ? "pb-5" : "py-4"}`}
         onClick={() => {
           trigger("light");
           onToggle();
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            trigger("light");
+            onToggle();
+          }
         }}
       >
         <div className="flex-1 min-w-0">
@@ -445,17 +434,18 @@ function ExerciseAccordionItem({
         <ChevronDown
           className={`size-4 shrink-0 text-muted-foreground transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
         />
-      </button>
+      </div>
 
       {/* Expandable content */}
       <div
-        className="transition-[height,opacity] duration-200 ease-out overflow-hidden"
+        className="grid transition-[grid-template-rows,opacity] duration-200 ease-out"
         style={{
-          height: isExpanded ? `${contentHeight}px` : "0px",
+          gridTemplateRows: isExpanded ? "1fr" : "0fr",
           opacity: isExpanded ? 1 : 0,
         }}
       >
-        <div ref={contentRef} className="px-4 pb-4 space-y-2">
+        <div className="overflow-hidden">
+        <div className="px-4 pb-4 space-y-2">
           {exercise.sets.map((set) => (
             <CompactSetRow
               key={set.id}
@@ -478,6 +468,7 @@ function ExerciseAccordionItem({
               {t("addSet")}
             </Button>
           )}
+        </div>
         </div>
       </div>
     </div>
