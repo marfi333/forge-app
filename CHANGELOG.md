@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/marfi333/forge-app/compare/v1.2.1...v1.3.0) (2026-05-11)
+
+
+### Features
+
+* exercise muscle groups ([62da21f](https://github.com/marfi333/forge-app/commit/62da21f888dda929aa258771b8b12f6f16410868))
+
 ## [1.2.1](https://github.com/marfi333/forge-app/compare/v1.2.0...v1.2.1) (2026-05-11)
 
 
