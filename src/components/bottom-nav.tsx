@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useHaptics } from "@/components/haptics-provider";
+import { useNavbarStyle } from "@/components/navbar-style-provider";
 
 const navItems = [
   { href: "/dashboard", labelKey: "home" as const, icon: HomeIcon },
@@ -17,10 +18,25 @@ const hiddenRoutes = ["/sign-in", "/offline"];
 export function BottomNav() {
   const pathname = usePathname();
   const { trigger } = useHaptics();
+  const { style } = useNavbarStyle();
   const t = useTranslations("nav");
 
   if (hiddenRoutes.includes(pathname)) return null;
 
+  if (style === "glass")
+    return <GlassNav pathname={pathname} trigger={trigger} t={t} />;
+  return <RegularNav pathname={pathname} trigger={trigger} t={t} />;
+}
+
+function RegularNav({
+  pathname,
+  trigger,
+  t,
+}: {
+  pathname: string;
+  trigger: ReturnType<typeof useHaptics>["trigger"];
+  t: (key: "home" | "plan" | "stats" | "settings") => string;
+}) {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-background/80 backdrop-blur-xl pb-[env(safe-area-inset-bottom,0px)]">
       <div className="mx-auto flex h-16 max-w-md items-center justify-around px-6">
@@ -36,6 +52,53 @@ export function BottomNav() {
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <item.icon className="h-5 w-5" />
+              <span className="text-[10px] font-medium">
+                {t(item.labelKey)}
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
+  );
+}
+
+function GlassNav({
+  pathname,
+  trigger,
+  t,
+}: {
+  pathname: string;
+  trigger: ReturnType<typeof useHaptics>["trigger"];
+  t: (key: "home" | "plan" | "stats" | "settings") => string;
+}) {
+  const activeIndex = navItems.findIndex(
+    (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
+  );
+
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center px-6 pb-[calc(env(safe-area-inset-bottom,0)+12px)]">
+      <div className="relative flex items-center rounded-full border border-white/12 bg-white/6 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] px-2 py-2">
+        <div
+          className="absolute top-1/2 -translate-y-1/2 h-9 w-[60px] rounded-full bg-primary/25 blur-lg transition-all duration-300 ease-in-out pointer-events-none"
+          style={{
+            left: `calc(${activeIndex >= 0 ? activeIndex : 0} * 72px + 8px)`,
+            opacity: activeIndex >= 0 ? 1 : 0,
+          }}
+        />
+        {navItems.map((item) => {
+          const isActive =
+            pathname === item.href || pathname.startsWith(`${item.href}/`);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => trigger("light")}
+              className={`relative z-10 flex w-[68px] flex-col items-center gap-0.5 py-1.5 rounded-full transition-all duration-200 active:scale-90 ${
+                isActive ? "text-primary" : "text-white/50 hover:text-white/80"
               }`}
             >
               <item.icon className="h-5 w-5" />

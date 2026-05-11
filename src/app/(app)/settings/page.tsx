@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth, signOut } from "@/auth";
 import { HapticsToggle } from "@/components/haptics-toggle";
+import { NavbarStyleToggle } from "@/components/navbar-style-toggle";
 import { ReplayTourButton } from "@/components/onboarding/replay-tour-button";
 import { LanguageSwitcher } from "./language-switcher";
 
@@ -40,8 +41,9 @@ export default async function SettingsPage() {
 
       <LanguageSwitcher />
 
-      <div className="rounded-2xl border border-white/10 bg-card backdrop-blur-xl">
+      <div className="rounded-2xl border border-white/10 bg-card backdrop-blur-xl divide-y divide-white/5">
         <HapticsToggle />
+        <NavbarStyleToggle />
       </div>
 
       <div className="rounded-2xl border border-white/10 bg-card p-4 backdrop-blur-xl space-y-1">

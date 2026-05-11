@@ -5,6 +5,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { HapticsProvider } from "@/components/haptics-provider";
+import { NavbarStyleProvider } from "@/components/navbar-style-provider";
 
 export function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -21,7 +22,9 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <NuqsAdapter>
-        <HapticsProvider>{children}</HapticsProvider>
+        <HapticsProvider>
+          <NavbarStyleProvider>{children}</NavbarStyleProvider>
+        </HapticsProvider>
       </NuqsAdapter>
     </QueryClientProvider>
   );
