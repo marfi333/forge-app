@@ -47,7 +47,9 @@ export function TopHeader() {
             className="size-8 rounded-full ring-2 ring-primary/50"
           />
         ) : (
-          <div className="size-8 rounded-full bg-muted" />
+          <div className="flex size-8 items-center justify-center rounded-full bg-primary/20 text-sm font-bold text-primary">
+            {user?.name?.charAt(0).toUpperCase() ?? "?"}
+          </div>
         )}
         <span className="text-3xl font-black tracking-tight">FORGE</span>
         <Drawer>
