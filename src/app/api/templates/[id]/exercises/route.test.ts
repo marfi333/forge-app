@@ -37,6 +37,8 @@ vi.mock("@/db/schema", () => ({
     templateId: "templateId",
     id: "id",
     order: "order",
+    sets: "sets",
+    reps: "reps",
   },
 }));
 
@@ -209,6 +211,77 @@ describe("POST /api/templates/[id]/exercises", () => {
     const req = new Request("http://localhost", {
       method: "POST",
       body: JSON.stringify({ name: "Bench", imageUrl: "not-a-url" }),
+    });
+    const res = await POST(req, makeParams("t1"));
+    expect(res.status).toBe(400);
+  });
+
+  it("creates exercise with sets and reps", async () => {
+    const template = { id: "t1", userId: "user1", name: "Push" };
+    const created = {
+      id: "e1",
+      templateId: "t1",
+      name: "Bench Press",
+      description: null,
+      imageUrl: null,
+      youtubeUrl: null,
+      order: 0,
+      sets: 3,
+      reps: 10,
+    };
+    mockDb.where.mockResolvedValueOnce([template]);
+    mockDb.returning.mockResolvedValueOnce([created]);
+    mockGetAuthedDb.mockResolvedValue({ db: mockDb as never, userId: "user1" });
+
+    const { POST } = await import("./route");
+    const req = new Request("http://localhost", {
+      method: "POST",
+      body: JSON.stringify({ name: "Bench Press", sets: 3, reps: 10 }),
+    });
+    const res = await POST(req, makeParams("t1"));
+    expect(res.status).toBe(201);
+    const data = (await res.json()) as { sets: number; reps: number };
+    expect(data.sets).toBe(3);
+    expect(data.reps).toBe(10);
+  });
+
+  it("creates exercise with null sets and reps", async () => {
+    const template = { id: "t1", userId: "user1", name: "Push" };
+    const created = {
+      id: "e1",
+      templateId: "t1",
+      name: "Bench Press",
+      description: null,
+      imageUrl: null,
+      youtubeUrl: null,
+      order: 0,
+      sets: null,
+      reps: null,
+    };
+    mockDb.where.mockResolvedValueOnce([template]);
+    mockDb.returning.mockResolvedValueOnce([created]);
+    mockGetAuthedDb.mockResolvedValue({ db: mockDb as never, userId: "user1" });
+
+    const { POST } = await import("./route");
+    const req = new Request("http://localhost", {
+      method: "POST",
+      body: JSON.stringify({ name: "Bench Press", sets: null, reps: null }),
+    });
+    const res = await POST(req, makeParams("t1"));
+    expect(res.status).toBe(201);
+    const data = (await res.json()) as { sets: null; reps: null };
+    expect(data.sets).toBeNull();
+    expect(data.reps).toBeNull();
+  });
+
+  it("returns 400 with invalid sets value", async () => {
+    const template = { id: "t1", userId: "user1", name: "Push" };
+    mockDb.where.mockResolvedValueOnce([template]);
+    mockGetAuthedDb.mockResolvedValue({ db: mockDb as never, userId: "user1" });
+    const { POST } = await import("./route");
+    const req = new Request("http://localhost", {
+      method: "POST",
+      body: JSON.stringify({ name: "Bench", sets: 0 }),
     });
     const res = await POST(req, makeParams("t1"));
     expect(res.status).toBe(400);

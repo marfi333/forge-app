@@ -21,6 +21,7 @@ import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
 import { useHaptics } from "@/components/haptics-provider";
+import { MuscleGroupChips } from "@/components/muscle-group-chips";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -33,7 +34,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { MuscleGroupChips } from "@/components/muscle-group-chips";
 import { YouTubePlayer } from "@/components/youtube-player";
 
 interface Exercise {
@@ -44,6 +44,8 @@ interface Exercise {
   imageUrl: string | null;
   youtubeUrl: string | null;
   order: number;
+  sets: number | null;
+  reps: number | null;
 }
 
 interface TemplateWithExercises {
@@ -61,6 +63,8 @@ interface ExerciseFormData {
   imageUrl: string;
   youtubeUrl: string;
   muscleGroupIds: string[];
+  sets: string;
+  reps: string;
 }
 
 const EMPTY_FORM: ExerciseFormData = {
@@ -69,6 +73,8 @@ const EMPTY_FORM: ExerciseFormData = {
   imageUrl: "",
   youtubeUrl: "",
   muscleGroupIds: [],
+  sets: "",
+  reps: "",
 };
 
 function ExerciseFormDialog({
@@ -149,6 +155,43 @@ function ExerciseFormDialog({
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               autoFocus
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label
+                htmlFor={`exercise-sets-${templateId}`}
+                className="mb-2 block text-sm font-medium text-muted-foreground"
+              >
+                {t("sets")}
+              </label>
+              <Input
+                id={`exercise-sets-${templateId}`}
+                type="number"
+                inputMode="numeric"
+                min="1"
+                placeholder="—"
+                value={form.sets}
+                onChange={(e) => setForm({ ...form, sets: e.target.value })}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor={`exercise-reps-${templateId}`}
+                className="mb-2 block text-sm font-medium text-muted-foreground"
+              >
+                {t("reps")}
+              </label>
+              <Input
+                id={`exercise-reps-${templateId}`}
+                type="number"
+                inputMode="numeric"
+                min="1"
+                placeholder="—"
+                value={form.reps}
+                onChange={(e) => setForm({ ...form, reps: e.target.value })}
+              />
+            </div>
           </div>
 
           <label className="block">
@@ -297,6 +340,15 @@ function SortableExercise({
               <Video className="size-3.5 shrink-0 text-muted-foreground" />
             )}
           </div>
+          {(exercise.sets || exercise.reps) && (
+            <p className="mt-0.5 text-xs font-medium text-primary">
+              {exercise.sets && exercise.reps
+                ? `${exercise.sets} × ${exercise.reps}`
+                : exercise.sets
+                  ? `${exercise.sets} sets`
+                  : `${exercise.reps} reps`}
+            </p>
+          )}
           {exercise.description && (
             <p className="mt-0.5 truncate text-xs text-muted-foreground">
               {exercise.description}
@@ -386,6 +438,8 @@ function EditExerciseDialog({
         imageUrl: exercise.imageUrl ?? "",
         youtubeUrl: exercise.youtubeUrl ?? "",
         muscleGroupIds: muscleGroupIds ?? [],
+        sets: exercise.sets?.toString() ?? "",
+        reps: exercise.reps?.toString() ?? "",
       }}
       onSubmit={onSubmit}
       isPending={isPending}
@@ -447,6 +501,8 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
           imageUrl: data.imageUrl || null,
           youtubeUrl: data.youtubeUrl || null,
           order,
+          sets: data.sets ? Number(data.sets) : null,
+          reps: data.reps ? Number(data.reps) : null,
         }),
       });
       if (!res.ok) throw new Error("Failed to add exercise");
@@ -474,6 +530,8 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
           description: data.description || null,
           imageUrl: data.imageUrl || null,
           youtubeUrl: data.youtubeUrl || null,
+          sets: data.sets ? Number(data.sets) : null,
+          reps: data.reps ? Number(data.reps) : null,
         }),
       });
       if (!res.ok) throw new Error("Failed to update exercise");

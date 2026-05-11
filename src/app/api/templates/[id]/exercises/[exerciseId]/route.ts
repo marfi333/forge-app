@@ -10,6 +10,8 @@ const updateExerciseSchema = z
     imageUrl: z.string().url().nullable().optional(),
     youtubeUrl: z.string().url().nullable().optional(),
     order: z.number().int().min(0).optional(),
+    sets: z.number().int().min(1).nullable().optional(),
+    reps: z.number().int().min(1).nullable().optional(),
   })
   .refine(
     (data) =>
@@ -17,7 +19,9 @@ const updateExerciseSchema = z
       data.description !== undefined ||
       data.imageUrl !== undefined ||
       data.youtubeUrl !== undefined ||
-      data.order !== undefined,
+      data.order !== undefined ||
+      data.sets !== undefined ||
+      data.reps !== undefined,
     { message: "At least one field is required" },
   );
 
@@ -90,6 +94,8 @@ export async function PATCH(
     imageUrl: string | null;
     youtubeUrl: string | null;
     order: number;
+    sets: number | null;
+    reps: number | null;
   }> = {};
   if (result.data.name !== undefined) updates.name = result.data.name;
   if (result.data.description !== undefined)
@@ -99,6 +105,8 @@ export async function PATCH(
   if (result.data.youtubeUrl !== undefined)
     updates.youtubeUrl = result.data.youtubeUrl;
   if (result.data.order !== undefined) updates.order = result.data.order;
+  if (result.data.sets !== undefined) updates.sets = result.data.sets;
+  if (result.data.reps !== undefined) updates.reps = result.data.reps;
 
   const [updated] = await db
     .update(schema.templateExercises)

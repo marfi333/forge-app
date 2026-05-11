@@ -151,7 +151,9 @@
     "noExercisesYet": "No exercises yet",
     "addExercisesPrompt": "Add exercises to define your workout routine.",
     "exerciseNotFound": "Exercise not found",
-    "backToTemplate": "Back to template"
+    "backToTemplate": "Back to template",
+    "sets": "Sets",
+    "reps": "Reps"
   },
   "stats": {
     "title": "Statistics",

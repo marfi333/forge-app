@@ -76,11 +76,23 @@ export async function POST(request: Request) {
       .orderBy(schema.templateExercises.order);
 
     for (const exercise of templateExercises) {
-      await db.insert(schema.sessionExercises).values({
-        sessionId: session.id,
-        name: exercise.name,
-        order: exercise.order,
-      });
+      const [sessionExercise] = await db
+        .insert(schema.sessionExercises)
+        .values({
+          sessionId: session.id,
+          name: exercise.name,
+          order: exercise.order,
+        })
+        .returning();
+
+      if (exercise.sets) {
+        for (let i = 1; i <= exercise.sets; i++) {
+          await db.insert(schema.exerciseSets).values({
+            sessionExerciseId: sessionExercise.id,
+            setNumber: i,
+          });
+        }
+      }
     }
   }
 

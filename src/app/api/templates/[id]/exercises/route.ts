@@ -9,6 +9,8 @@ const createExerciseSchema = z.object({
   imageUrl: z.string().url().nullable().optional(),
   youtubeUrl: z.string().url().nullable().optional(),
   order: z.number().int().min(0).default(0),
+  sets: z.number().int().min(1).nullable().optional(),
+  reps: z.number().int().min(1).nullable().optional(),
 });
 
 export async function GET(
@@ -78,6 +80,8 @@ export async function POST(
       imageUrl: result.data.imageUrl ?? null,
       youtubeUrl: result.data.youtubeUrl ?? null,
       order: result.data.order,
+      sets: result.data.sets ?? null,
+      reps: result.data.reps ?? null,
     })
     .returning();
 

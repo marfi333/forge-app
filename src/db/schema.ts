@@ -89,6 +89,8 @@ export const templateExercises = sqliteTable("template_exercises", {
   imageUrl: text("image_url"),
   youtubeUrl: text("youtube_url"),
   order: integer("order").notNull(),
+  sets: integer("sets"),
+  reps: integer("reps"),
 });
 
 export const muscleGroups = sqliteTable("muscle_groups", {

@@ -151,7 +151,9 @@
     "noExercisesYet": "Még nincsenek gyakorlatok",
     "addExercisesPrompt": "Adj hozzá gyakorlatokat az edzésrutin összeállításához.",
     "exerciseNotFound": "A gyakorlat nem található",
-    "backToTemplate": "Vissza a sablonhoz"
+    "backToTemplate": "Vissza a sablonhoz",
+    "sets": "Szettek",
+    "reps": "Ismétlések"
   },
   "stats": {
     "title": "Statisztika",

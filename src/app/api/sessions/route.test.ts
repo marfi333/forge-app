@@ -48,8 +48,11 @@ vi.mock("@/db/schema", () => ({
     templateId: "templateId",
     id: "id",
     order: "order",
+    sets: "sets",
+    reps: "reps",
   },
   sessionExercises: { sessionId: "sessionId", id: "id" },
+  exerciseSets: { sessionExerciseId: "sessionExerciseId", id: "id" },
 }));
 
 import { getAuthedDb } from "@/lib/api";
@@ -168,10 +171,31 @@ describe("POST /api/sessions", () => {
       status: "in_progress",
     };
     const templateExercises = [
-      { id: "te1", templateId: "t1", name: "Bench Press", order: 0 },
-      { id: "te2", templateId: "t1", name: "Squat", order: 1 },
+      {
+        id: "te1",
+        templateId: "t1",
+        name: "Bench Press",
+        order: 0,
+        sets: null,
+        reps: null,
+      },
+      {
+        id: "te2",
+        templateId: "t1",
+        name: "Squat",
+        order: 1,
+        sets: null,
+        reps: null,
+      },
     ];
-    mockDb.returning.mockResolvedValueOnce([created]);
+    mockDb.returning
+      .mockResolvedValueOnce([created])
+      .mockResolvedValueOnce([
+        { id: "se1", sessionId: "s1", name: "Bench Press", order: 0 },
+      ])
+      .mockResolvedValueOnce([
+        { id: "se2", sessionId: "s1", name: "Squat", order: 1 },
+      ]);
     mockDb.orderBy.mockResolvedValueOnce(templateExercises);
     mockGetAuthedDb.mockResolvedValue({
       db: mockDb as never,
@@ -186,5 +210,56 @@ describe("POST /api/sessions", () => {
     const res = await POST(req);
     expect(res.status).toBe(201);
     expect(mockDb.insert).toHaveBeenCalledTimes(3);
+  });
+
+  it("auto-creates exercise_sets rows when template has sets defined", async () => {
+    const created = {
+      id: "s1",
+      userId: "user1",
+      date: "2026-05-10",
+      templateId: "t1",
+      status: "in_progress",
+    };
+    const templateExercises = [
+      {
+        id: "te1",
+        templateId: "t1",
+        name: "Bench Press",
+        order: 0,
+        sets: 3,
+        reps: 10,
+      },
+      {
+        id: "te2",
+        templateId: "t1",
+        name: "Squat",
+        order: 1,
+        sets: null,
+        reps: null,
+      },
+    ];
+    mockDb.returning
+      .mockResolvedValueOnce([created])
+      .mockResolvedValueOnce([
+        { id: "se1", sessionId: "s1", name: "Bench Press", order: 0 },
+      ])
+      .mockResolvedValueOnce([
+        { id: "se2", sessionId: "s1", name: "Squat", order: 1 },
+      ]);
+    mockDb.orderBy.mockResolvedValueOnce(templateExercises);
+    mockGetAuthedDb.mockResolvedValue({
+      db: mockDb as never,
+      userId: "user1",
+    });
+
+    const { POST } = await import("./route");
+    const req = new Request("http://localhost/api/sessions", {
+      method: "POST",
+      body: JSON.stringify({ date: "2026-05-10", templateId: "t1" }),
+    });
+    const res = await POST(req);
+    expect(res.status).toBe(201);
+    // 1 session + 2 session exercises + 3 exercise sets = 6 inserts
+    expect(mockDb.insert).toHaveBeenCalledTimes(6);
   });
 });
