@@ -1,3 +1,13 @@
+## [1.6.1](https://github.com/marfi333/forge-app/compare/v1.6.0...v1.6.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* header logo size ([97b5d1f](https://github.com/marfi333/forge-app/commit/97b5d1f791e812fd2938f2749a55d7ade8d669a4))
+* navbar position ([1e9c4d6](https://github.com/marfi333/forge-app/commit/1e9c4d6b99a5d9ecae954dfab93173ecc5d192d0))
+* scroll reset state ([cbdd241](https://github.com/marfi333/forge-app/commit/cbdd241e84e6bdaa8800edf3159efede646bd73f))
+* template item click area ([00be058](https://github.com/marfi333/forge-app/commit/00be058e87e53af7603f947bb91b8e6cab278a39))
+
 # [1.6.0](https://github.com/marfi333/forge-app/compare/v1.5.0...v1.6.0) (2026-05-11)
 
 
