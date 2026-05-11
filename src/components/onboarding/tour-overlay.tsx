@@ -82,12 +82,11 @@ export function TourOverlay({
   const overlay = (
     <div className="fixed inset-0 z-[9999]" aria-modal="true" role="dialog">
       {/* Backdrop */}
-      <div
+      <button
+        type="button"
+        aria-label="Close tour"
         className="absolute inset-0 bg-black/70 transition-opacity duration-300"
         onClick={onSkip}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") onSkip();
-        }}
       />
 
       {/* Spotlight cutout */}

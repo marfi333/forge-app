@@ -126,9 +126,7 @@ describe("PATCH /api/onboarding", () => {
 
   it("sets onboardingCompletedAt when completed: true", async () => {
     const now = new Date();
-    mockDb.returning.mockResolvedValueOnce([
-      { onboardingCompletedAt: now },
-    ]);
+    mockDb.returning.mockResolvedValueOnce([{ onboardingCompletedAt: now }]);
     mockGetAuthedDb.mockResolvedValue({
       db: mockDb as never,
       userId: "user1",
@@ -145,9 +143,7 @@ describe("PATCH /api/onboarding", () => {
   });
 
   it("resets onboardingCompletedAt when completed: false", async () => {
-    mockDb.returning.mockResolvedValueOnce([
-      { onboardingCompletedAt: null },
-    ]);
+    mockDb.returning.mockResolvedValueOnce([{ onboardingCompletedAt: null }]);
     mockGetAuthedDb.mockResolvedValue({
       db: mockDb as never,
       userId: "user1",
