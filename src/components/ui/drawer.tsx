@@ -58,7 +58,7 @@ function DrawerContent({
       <DrawerPrimitive.Content
         data-slot="drawer-content"
         className={cn(
-          "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-2xl border border-white/10 bg-popover/95 backdrop-blur-xl",
+          "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto max-h-[calc(100dvh-2rem)] flex-col overflow-hidden rounded-t-2xl border border-white/10 bg-popover/95 backdrop-blur-xl",
           className,
         )}
         {...props}
@@ -74,7 +74,7 @@ function DrawerHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="drawer-header"
-      className={cn("grid gap-1.5 px-4 pt-2 pb-4", className)}
+      className={cn("grid shrink-0 gap-1.5 px-4 pt-2 pb-4", className)}
       {...props}
     />
   );
@@ -84,7 +84,17 @@ function DrawerFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="drawer-footer"
-      className={cn("mt-auto flex flex-col gap-2 px-4 pb-6", className)}
+      className={cn("mt-auto flex shrink-0 flex-col gap-2 px-4 pb-6", className)}
+      {...props}
+    />
+  );
+}
+
+function DrawerBody({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="drawer-body"
+      className={cn("min-h-0 flex-1 overflow-y-auto px-4", className)}
       {...props}
     />
   );
@@ -121,6 +131,7 @@ function DrawerDescription({
 
 export {
   Drawer,
+  DrawerBody,
   DrawerClose,
   DrawerContent,
   DrawerDescription,
