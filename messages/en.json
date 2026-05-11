@@ -265,5 +265,37 @@
   "notifications": {
     "title": "Notification center",
     "empty": "No notifications yet"
+  },
+  "landing": {
+    "signIn": "Sign In",
+    "hero": {
+      "title": "FORGE YOUR LIMITS",
+      "tagline": "High-intensity workout tracking built for athletes who demand precision in every rep, set, and rest.",
+      "cta": "Get Started"
+    },
+    "features": {
+      "metrics": {
+        "title": "Real-Time Metrics",
+        "description": "Track every set, rep, and weight in real-time with instant feedback on your performance."
+      },
+      "rest": {
+        "title": "Precision Rest",
+        "description": "Haptic-driven rest timers that adapt to your workout intensity for optimal recovery."
+      },
+      "analytics": {
+        "title": "Deep Analytics",
+        "description": "Performance trend analysis and insights to continuously optimize your training."
+      }
+    },
+    "stats": {
+      "workouts": "Workouts",
+      "users": "Athletes",
+      "exercises": "Exercises"
+    },
+    "footer": {
+      "title": "Ready to train?",
+      "tagline": "Join the community and start tracking your progress today.",
+      "cta": "Get Started"
+    }
   }
 }

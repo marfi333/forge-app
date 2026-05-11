@@ -265,5 +265,37 @@
   "notifications": {
     "title": "Értesítés központ",
     "empty": "Még nincsenek értesítések"
+  },
+  "landing": {
+    "signIn": "Bejelentkezés",
+    "hero": {
+      "title": "FORGE YOUR LIMITS",
+      "tagline": "Nagy intenzitású edzéskövető, amely precizitást követel minden ismétlésben, sorozatban és pihenőben.",
+      "cta": "Tovább az alkalmazásra"
+    },
+    "features": {
+      "metrics": {
+        "title": "Valós idejű metrikák",
+        "description": "Kövesd minden sorozatodat, ismétlésedet és súlyodat valós időben, azonnali visszajelzéssel."
+      },
+      "rest": {
+        "title": "Precíziós pihenő",
+        "description": "Haptikus pihenőidőzítők, amelyek alkalmazkodnak az edzésed intenzitásához az optimális regeneráció érdekében."
+      },
+      "analytics": {
+        "title": "Mélyreható analitika",
+        "description": "Teljesítmény-trendelemzés és betekintés az edzésed folyamatos optimalizálásához."
+      }
+    },
+    "stats": {
+      "workouts": "Edzések",
+      "users": "Sportolók",
+      "exercises": "Gyakorlatok"
+    },
+    "footer": {
+      "title": "Készen állsz az edzésre?",
+      "tagline": "Csatlakozz a közösséghez és kezdd el követni a fejlődésedet még ma.",
+      "cta": "Tovább az alkalmazásra"
+    }
   }
 }
