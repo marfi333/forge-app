@@ -19,6 +19,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
+import { useHaptics } from "@/components/haptics-provider";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -318,6 +319,7 @@ function SortableExercise({
 
 export function TemplateDetail({ templateId }: { templateId: string }) {
   const queryClient = useQueryClient();
+  const { trigger } = useHaptics();
   const [addOpen, setAddOpen] = useState(false);
   const [editingExercise, setEditingExercise] = useState<Exercise | null>(null);
   const [editingName, setEditingName] = useState(false);
@@ -511,6 +513,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
       <div className="space-y-1">
         <Link
           href="/templates"
+          onClick={() => trigger("light")}
           className="-ml-1 inline-flex h-11 items-center gap-1 px-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-4" />
@@ -609,6 +612,7 @@ export function TemplateDetail({ templateId }: { templateId: string }) {
             setLocalExercises(null);
             return;
           }
+          trigger("selection");
           const finalOrder = localExercises ?? exercises;
           const ids = finalOrder.map((e) => e.id);
           const originalIds = (template?.exercises ?? []).map((e) => e.id);

@@ -1,5 +1,6 @@
 "use client";
 
+import { useHaptics } from "@/components/haptics-provider";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +29,8 @@ export function ConfirmDeleteDialog({
   onConfirm,
   isPending,
 }: ConfirmDeleteDialogProps) {
+  const { trigger } = useHaptics();
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -40,7 +43,10 @@ export function ConfirmDeleteDialog({
           <AlertDialogAction
             variant="destructive"
             disabled={isPending}
-            onClick={onConfirm}
+            onClick={() => {
+              trigger("warning");
+              onConfirm();
+            }}
           >
             {isPending ? "Deleting..." : "Delete"}
           </AlertDialogAction>

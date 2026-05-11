@@ -13,6 +13,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
+import { useHaptics } from "@/components/haptics-provider";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -113,6 +114,7 @@ function CompactSetRow({
   exerciseId: string;
 }) {
   const queryClient = useQueryClient();
+  const { trigger } = useHaptics();
   const [reps, setReps] = useState(String(set.reps ?? ""));
   const [weight, setWeight] = useState(String(set.weight ?? ""));
   const [editing, setEditing] = useState(false);
@@ -269,7 +271,10 @@ function CompactSetRow({
         variant={set.completed ? "default" : "outline"}
         size="icon-sm"
         className="shrink-0"
-        onClick={() => updateSet.mutate({ completed: !set.completed })}
+        onClick={() => {
+          trigger("medium");
+          updateSet.mutate({ completed: !set.completed });
+        }}
       >
         <Check className="size-3.5" />
       </Button>
@@ -279,6 +284,7 @@ function CompactSetRow({
 
 export function SessionDetail({ sessionId }: { sessionId: string }) {
   const queryClient = useQueryClient();
+  const { trigger } = useHaptics();
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [addExOpen, setAddExOpen] = useState(false);
   const [exerciseName, setExerciseName] = useState("");
@@ -305,6 +311,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
       return res.json();
     },
     onSuccess: () => {
+      trigger("medium");
       queryClient.invalidateQueries({
         queryKey: ["sessions", sessionId],
       });
@@ -326,6 +333,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
       if (!res.ok) throw new Error("Failed to delete exercise");
     },
     onSuccess: () => {
+      trigger("medium");
       queryClient.invalidateQueries({
         queryKey: ["sessions", sessionId],
       });
@@ -375,6 +383,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
       return res.json();
     },
     onSuccess: () => {
+      trigger("success");
       queryClient.invalidateQueries({
         queryKey: ["sessions", sessionId],
       });
@@ -421,6 +430,7 @@ export function SessionDetail({ sessionId }: { sessionId: string }) {
       <div className="flex items-center justify-between">
         <Link
           href="/calendar"
+          onClick={() => trigger("light")}
           className="inline-flex h-11 items-center gap-1 -ml-1 px-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ChevronLeft className="size-4" />

@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useHaptics } from "@/components/haptics-provider";
 import { Button } from "@/components/ui/button";
 import { YouTubePlayer } from "@/components/youtube-player";
 
@@ -23,6 +24,7 @@ export function ExerciseInfo({
   templateId: string;
   exerciseId: string;
 }) {
+  const { trigger } = useHaptics();
   const { data: exercise, isLoading } = useQuery<Exercise>({
     queryKey: ["exercises", templateId, exerciseId],
     queryFn: async () => {
@@ -62,6 +64,7 @@ export function ExerciseInfo({
       <div className="space-y-1">
         <Link
           href={`/templates/${templateId}`}
+          onClick={() => trigger("light")}
           className="-ml-1 inline-flex h-11 items-center gap-1 px-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="size-4" />

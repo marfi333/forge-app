@@ -4,6 +4,7 @@ import { Check, Dumbbell, Moon, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { ConfirmDeleteDialog } from "@/components/confirm-delete-dialog";
+import { useHaptics } from "@/components/haptics-provider";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -40,6 +41,7 @@ export function DayActionSheet({
   onClear,
 }: DayActionSheetProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const { trigger } = useHaptics();
 
   const formattedDate = new Date(`${selectedDate}T12:00:00`).toLocaleDateString(
     "en-US",
@@ -58,7 +60,13 @@ export function DayActionSheet({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
+    <Drawer
+      open={open}
+      onOpenChange={(next) => {
+        trigger("light");
+        onOpenChange(next);
+      }}
+    >
       <DrawerContent>
         <DrawerHeader>
           <DrawerTitle>{formattedDate}</DrawerTitle>
